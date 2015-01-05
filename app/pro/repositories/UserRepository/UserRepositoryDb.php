@@ -23,7 +23,7 @@ class UserRepositoryDb implements UserRepositoryInterface {
 			$data = $users->whereHas('skills', function($q) use($langArr)
 			{
 				$q->whereIn('name', $langArr);
-			}, '=', count($langArr))->with('skills');
+			}, '=', count($langArr));
 		}else{
 			$data = $users;
 			foreach ($skillArr as $skl) {
@@ -37,7 +37,7 @@ class UserRepositoryDb implements UserRepositoryInterface {
 			}
 		}
 
-		return $data;
+		return $data->with('skills');
 	}
 
 	public function whereHasSkin($table, $arg, $val, $byArg){
