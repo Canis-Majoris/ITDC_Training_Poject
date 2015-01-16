@@ -23,8 +23,8 @@
 			<th class="FLname">Firstname/Lastname</th>
 			<th class="gend1">Gender</th>
 			
-			<th class="showskills">Skills</th>
-			<th colspan="2" class="col-xs-1 action1">Action</th>
+			<th class="skillshow">Skills</th>
+			<th class="action1">Action</th>
 		</thead>
 	</table>
 </div>
@@ -40,7 +40,7 @@
 					</a>
 				</td>
 				<td class="gend1">{{ $user->gender }}</td>
-				<td>
+				<td class="skillshow">
 					@foreach($user->skills as $skill)
 						<?php $lvl = null; $seletced_skill = 'default'; $color_shade = null;  $s = null;?>
 						@if(in_array($skill->name, $tagname))
@@ -82,13 +82,7 @@
 
 <script type="text/javascript">
 
-	$('form.delete_user').submit(function(e){
-		if(confirm("Do you really want to delete user?")){
-
-		}else{
-			e.preventDefault();
-		}	
-	});
+	
 	var counter = <?php echo $users->count(); ?>;
 	if (counter>=30) {
 		$(function() {

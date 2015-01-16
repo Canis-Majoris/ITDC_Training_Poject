@@ -52,7 +52,8 @@
 
 <a href="#" class="scrollToTop"></a>
 <script type="text/javascript">
-	$('form.delete_user').submit(function(e){
+
+	$('.users_skills_data').on("click", "form.delete_user", function(e){
 		if(confirm("Do you really want to delete user?")){
 
 		}else{
@@ -72,6 +73,16 @@
 	}
 
 	$('input[type="checkbox"]').click(evaluate).each(evaluate);
+
+    $(window).scroll(function(){
+       $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
+        
+       if ($(window).scrollTop() > 152){
+		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -152 + "px"});
+		} else {
+        $(".fixedheader1").css("top", "0px");
+    }
+    });
 </script>
 
 
