@@ -6,7 +6,8 @@
         {{ Session::get('message') }}
     </div>
 @endif
-
+<h1>Users</h1>
+<hr/>
 <div class="tag_bar">
 {{ Form::open(array('url' => 'filterskill', 'method' => 'get', 'id' => 'tagsubmit')) }}
 	<?php 
@@ -77,8 +78,8 @@
     $(window).scroll(function(){
        $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
         
-       if ($(window).scrollTop() > 152){
-		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -152 + "px"});
+       if ($(window).scrollTop() > 250){
+		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -250 + "px"});
 		} else {
         $(".fixedheader1").css("top", "0px");
     }

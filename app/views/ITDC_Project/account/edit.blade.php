@@ -7,6 +7,9 @@
         {{ Session::get('message') }}
     </div>
 @endif
+
+<h1>Edit Profile</h1>
+<hr/>
 {{ Form::open(array('route' => array('edit-post'), 'method' => 'POST')) }}
 
 
@@ -46,41 +49,56 @@
 	</div>
 </div>
 
-<div class="form-group">
-	<?php $oldPasswordError =  null ; $error_border_class = null;?>
-	@if($errors->has('old_password'))
-		<?php $oldPasswordError =  $errors->first('old_password') ; $error_border_class = 'error_border';?>
-	@endif
-	{{ Form::label('password', 'Old Password', ['class'=>'control-label']); }}
-	{{ Form::input('password', 'old_password', '', ['class'=>'form-control '.$error_border_class, 'id'=>'password', 'placeholder' => 'Enter current password']) }}
-	<div class="error_message_small">
-		{{ $oldPasswordError }}
+<?php
+	 $checked1 = null;
+	if (Input::old('pass_change')) {
+		$checked1 = 'checked';
+	}
+?>
+<div id="ck-button">
+   <label>
+		<input type="checkbox" id="checkbox1" value="1" name="pass_change" {{ $checked1 }}/><span>Change Password</span>
+	</label>
+</div>
+
+<div class="change_password" style="display:none;">
+	<div class="form-group">
+		<?php $oldPasswordError =  null ; $error_border_class = null;?>
+		@if($errors->has('old_password'))
+			<?php $oldPasswordError =  $errors->first('old_password') ; $error_border_class = 'error_border';?>
+		@endif
+		{{ Form::label('password', 'Old Password', ['class'=>'control-label']); }}
+		{{ Form::input('password', 'old_password', '', ['class'=>'form-control disp_pas_change '.$error_border_class, 'id'=>'password', 'placeholder' => 'Enter current password']) }}
+		<div class="error_message_small">
+			{{ $oldPasswordError }}
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php $passwordError =  null ; $error_border_class = null;?>
+		@if($errors->has('password'))
+			<?php $passwordError =  $errors->first('password') ; $error_border_class = 'error_border';?>
+		@endif
+		{{ Form::label('password', 'New Password', ['class'=>'control-label']); }}
+		{{ Form::input('password', 'password', '', ['class'=>'form-control disp_pas_change '.$error_border_class, 'id'=>'password', 'placeholder' => 'Enter new password']) }}
+		<div class="error_message_small">
+			{{ $passwordError }}
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php $confirm_passwordError =  null ; $error_border_class = null;?>
+		@if($errors->has('confirm_password'))
+			<?php $confirm_passwordError =  $errors->first('confirm_password') ; $error_border_class = 'error_border';?>
+		@endif
+		{{ Form::label('password', 'Confirm Password', ['class'=>'control-label']); }}
+		{{ Form::input('password', 'confirm_password', '', ['class'=>'form-control disp_pas_change '.$error_border_class, 'id'=>'password', 'placeholder' => 'Confirm new password']) }}
+		<div class="error_message_small"> 
+			{{ $confirm_passwordError }}
+		</div>
 	</div>
 </div>
 
-<div class="form-group">
-	<?php $passwordError =  null ; $error_border_class = null;?>
-	@if($errors->has('password'))
-		<?php $passwordError =  $errors->first('password') ; $error_border_class = 'error_border';?>
-	@endif
-	{{ Form::label('password', 'New Password', ['class'=>'control-label']); }}
-	{{ Form::input('password', 'password', '', ['class'=>'form-control '.$error_border_class, 'id'=>'password', 'placeholder' => 'Enter new password']) }}
-	<div class="error_message_small">
-		{{ $passwordError }}
-	</div>
-</div>
-
-<div class="form-group">
-	<?php $confirm_passwordError =  null ; $error_border_class = null;?>
-	@if($errors->has('confirm_password'))
-		<?php $confirm_passwordError =  $errors->first('confirm_password') ; $error_border_class = 'error_border';?>
-	@endif
-	{{ Form::label('password', 'Confirm Password', ['class'=>'control-label']); }}
-	{{ Form::input('password', 'confirm_password', '', ['class'=>'form-control '.$error_border_class, 'id'=>'password', 'placeholder' => 'Confirm new password']) }}
-	<div class="error_message_small"> 
-		{{ $confirm_passwordError }}
-	</div>
-</div>
 
 <div class="form-group">
 	{{ Form::label('gender', 'Gender', ['class'=>'control-label']) }}
@@ -154,6 +172,58 @@
 		counter++;
 	});
 	//$('#phonewrapper').append(localStorage.getItem("countPhones"));
+
+
+	//Password Change Click Function //////////////////////////
+	$('#buttonShowPassChange').on('click', function(e){
+		
+		$(".change_password").toggle();
+	    $(this).toggleClass('class1');
+
+ 		if ($('.change_password').css('display') == 'none') {
+       		$('.disp_pas_change').prop('disabled', true);
+	    }
+	    if ($('.change_password').css('display') == 'block') {
+	        $('.disp_pas_change').removeAttr('disabled');
+	    }   
+	});
+
+	if ($('.change_password').css('display') == 'none') {
+       		$('.disp_pas_change').prop('disabled', true);
+	    }
+	    if ($('.change_password').css('display') == 'block') {
+	        $('.disp_pas_change').removeAttr('disabled');
+	    }   
+
+
+    /*if( $('.change_password').is(':visible') ) {
+	    $(".disp_pas_change").prop('disabled', false);
+	}else{
+		 $(".disp_pas_change").prop('disabled', treu);
+	}*/
+	$(document).ready(function () {
+    	$('#checkbox1').change(function () {
+	        if (!this.checked){
+	        	$(".change_password").css("display", "none");
+	           	$('.disp_pas_change').prop('disabled', true);
+	        }
+	        else{
+	        	$(".change_password").css("display", "block");
+	            $('.disp_pas_change').removeAttr('disabled');
+	        }
+	    });
+	});
+
+	if (!$('#checkbox1').is(':checked')){
+    	$(".change_password").css("display", "none");
+       	$('.disp_pas_change').prop('disabled', true);
+    }
+    else{
+    	$(".change_password").css("display", "block");
+        $('.disp_pas_change').removeAttr('disabled');
+    }
+
+	///////////////////////////////////////////////////////////
 	
 </script>
 

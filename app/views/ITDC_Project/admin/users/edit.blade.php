@@ -1,5 +1,7 @@
 @extends('layouts.admin')
 @section('content')
+<h1>Edit User</h1>
+<hr>
 <script type="text/javascript">
 	$("input.question").click(function(){
 	 $(this).next(".answer").toggle();

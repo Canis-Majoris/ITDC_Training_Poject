@@ -17,12 +17,14 @@
 			}
 			$attempt = Auth::attempt([
 				'username' => $input['username'],
-				'password' => $input['password']
+				'password' => $input['password'],
+				'active'   => 1
 			], $r);
 			//$ps= Hash::make('1234567890');
 			
 
 			if ($attempt) {
+				dd("dfzdfdfsdfsd");
 				$this->grp = Auth::user()->type;
 				if (Auth::user()->status != 2) {
 					if ($this->grp == 0) {

@@ -1,14 +1,17 @@
 @extends('layouts.admin')
 @section('content')
+<h1>Create New User</h1>
+<hr>
+
 @if($errors->any())
 <script type="text/javascript">
 	var refreshKeep = true;
 </script>
- <ul>
+<ul>
 	@foreach($errors->all() as $error)
 	 	<li><h4>{{ $error }}</h4></li>
 	@endforeach
-	</ul>
+</ul>
 @endif
 {{ Form::open(array('route' => ['admin.user.store'], 'method' => 'POST')) }}
 <div class="form-group">
@@ -147,5 +150,11 @@
 	if($('input:radio[name=type]:checked').val() == "3"){
 	        $('#company_name_input').show();
 	    }else $('#company_name_input').hide();
+
+	$(document).ready(function () {
+	    $('#checkbox1').change(function () {
+	      $('#autoUpdate').fadeToggle();
+	    });
+	});
 </script>
 @stop

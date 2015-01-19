@@ -16,7 +16,7 @@ class AccountController extends BaseController {
 
 	public function getSignOut(){
 		Auth::logout();
-		return Redirect::route('home');
+		return Redirect::back();
 	}
 
 	public function postSignIn(){
@@ -133,11 +133,14 @@ class AccountController extends BaseController {
 		$cred = [
 			'firstname'        => 'required',
 			'lastname'         => 'required',
-			'email'            => 'required',
-			'old_password'     => 'required',
-			'password'         => 'required|min:6',
-			'confirm_password' => 'required|same:password'
+			'email'            => 'required'
 		];
+		if (isset($input['pass_change'])) {
+			$cred['old_password'] = 'required';
+			$cred['password'] = 'required|min:6';
+			$cred['confirm_password'] = 'required|same:password';
+		}
+		
 		$validator = Validator::make($input, $cred);
 		if ($validator->fails()) {
 			return Redirect::back()
@@ -145,29 +148,35 @@ class AccountController extends BaseController {
 			 	->withInput();
 		}else{
 			$user = User::find(Auth::user()->id);
-			$old_password = $input['old_password'];
-			$password = $input['password'];
-			//dd($user->getAuthPassword());
-			if (Hash::check($old_password, $user->getAuthPassword())) {
-				$user->fill($input);
-				$user->password = Hash::make($password);
-				///////////////
+			if (isset($input['pass_change'])) {
+				$old_password = $input['old_password'];
+				$password = $input['password'];
+				if (Hash::check($old_password, $user->getAuthPassword())) {
+					$user->fill($input);
+					$user->password = Hash::make($password);
+					if ($user->save()) {
+						$this->updateSkillsPhones($user, $input['phone']);
+						return Redirect::route('home')
+							->with('message_type','success')
+							->with('message', 'Your account has been successfully edited!');
+					}
+				}else{
+					return Redirect::back()
+						->withInput()
+					 	->with('message_type','danger')
+						->with('message', 'Yout old password is incorrect.');
+				}
+			}else{
 				$this->updateSkillsPhones($user, $input['phone']);
-				///////////////
+				$user->fill($input);
 				if ($user->save()) {
+					$this->updateSkillsPhones($user, $input['phone']);
 					return Redirect::route('home')
 						->with('message_type','success')
 						->with('message', 'Your account has been successfully edited!');
 				}
-			}else{
-				return Redirect::back()
-					->withInput()
-				 	->with('message_type','danger')
-					->with('message', 'Yout old password is incorrect.');
 			}
-
 		}
-
 		return Redirect::back()
 			->withInput()
 		 	->with('message_type','danger')

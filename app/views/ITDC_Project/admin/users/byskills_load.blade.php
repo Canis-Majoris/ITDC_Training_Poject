@@ -68,7 +68,8 @@
 			@endforeach
 		</tbody>
 	</table>
-	<div class="paginate_abs">
+</div>
+	<div class="">
 		{{$users->appends(Input::all())->links()}}
 	</div>
 
@@ -83,7 +84,7 @@
 <script type="text/javascript">
 
 	
-	var counter = <?php echo $users->count(); ?>;
+	/*var counter = <?php echo $users->count(); ?>;
 	if (counter>=30) {
 		$(function() {
 		    $('.scroll').jscroll({
@@ -96,7 +97,7 @@
 		       }
 		    });
 		});
-	};
+	};*/
 
 	
 	

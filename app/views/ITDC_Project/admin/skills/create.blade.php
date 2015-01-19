@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('content')
 {{ Form::open(array('route' => ['admin.skill.store'], 'method' => 'POST')) }}
+<h1>Create New Skill</h1>
+<hr>
 <div class="form-group">
 	{{ Form::label('name', 'Name', ['class'=>'control-label']); }}
 	{{ Form::input('text', 'name', '', ['class'=>'form-control', 'id'=>'name']) }}

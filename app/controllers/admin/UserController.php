@@ -15,7 +15,7 @@ class UserController extends BaseController {
 		$users = $this->gateway->all();
 		$skills = Skill::all();
 		$this->layout->content  = View::make('ITDC_Project.admin.users.index')->with(['skills' => $skills, 'tagname' => []]);
-		$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', ['users' => $users->paginate(40), 'skills' => $skills, 'tagname' => []]);
+		$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => []]);
 	}
 
 	public function show($id) {

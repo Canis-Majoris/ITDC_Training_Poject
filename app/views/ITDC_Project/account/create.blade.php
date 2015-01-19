@@ -192,7 +192,7 @@
 
 	if($('input:radio[name=type]:checked').val() == "3"){
 	        $('#company_name_input').show();
-	    }else $('#company_name_input').hide();
+	}else $('#company_name_input').hide();
 </script>
 
 @stop

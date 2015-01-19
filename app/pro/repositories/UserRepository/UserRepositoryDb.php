@@ -9,8 +9,8 @@ use DB;
 class UserRepositoryDb implements UserRepositoryInterface {
 
 	public function all() {
-		//return User::where('type', '=', '0')->orWhere('type', '=', '1')->with('skills');
-		return User::all();
+		return User::where('type', '=', '0')->orWhere('type', '=', '1')->with('skills');
+		//return User::all();
 	}
 
 	public function byId($id) {
@@ -171,13 +171,13 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		}
 		//dd($optional);
 		$users = $this->whereHasSkinMulti($langArr, $skillArr, $optional);
-		return ['users' => $users->paginate(40), 'skills' => $skills, 'tagname' => $langArr];
+		return ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => $langArr];
 	}
 
 	
 
 	public function bySkill($tag, $skills){
 		$users = $this->whereHasSkin('skills', 'name', $tag, '=');
-		return ['users' => $users->paginate(40), 'skills' => $skills, 'tagname' => [$tag]];
+		return ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => [$tag]];
 	}
 }

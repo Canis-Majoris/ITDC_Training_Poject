@@ -28,7 +28,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="{{ URL::route('home') }}">Project name</a>
+				<a class="navbar-brand" href="{{ URL::route('home') }}">Home</a>
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				
@@ -36,6 +36,9 @@
 				@if(Auth::check())
 					<li class="user_prof_link"><a href="{{ URL::route('user-profile', Auth::user()->username) }}">{{ Auth::user()->username }}</a></li>
 					<li class=""><a href="{{ URL::route('account-sign-out') }}">Log Out</a></li>
+					@if(Auth::user()->type == 0)
+						<li class="pull-right"><a href="{{ URL::to('admin/user') }}">Administrator Panel</a></li>
+					@endif
 				@endif
 				</ul>
 				@if(!Auth::check())
@@ -90,4 +93,16 @@
 		@yield('ragac')
 	</div><!-- /.container -->
 </body>
+
+<script type="text/javascript">
+	$(window).scroll(function(){
+       $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
+        
+       if ($(window).scrollTop() > 152){
+		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -152 + "px"});
+		} else {
+        $(".fixedheader1").css("top", "0px");
+    }
+    });
+</script>
 </html>

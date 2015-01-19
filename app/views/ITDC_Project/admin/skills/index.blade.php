@@ -6,6 +6,8 @@
         {{ Session::get('message') }}
     </div>
 @endif
+<h1>Skills</h1>
+<hr>
 <p class="text-right pull-right">
 	<a href="{{ URL::to('admin/skill/create') }}" class="btn btn-success">
 		<i class="glyphicon glyphicon-plus"></i> Create Skill

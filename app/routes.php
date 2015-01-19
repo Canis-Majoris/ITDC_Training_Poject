@@ -38,8 +38,8 @@ Route::controller('contact', 'ContactController');
 
 /************Routes For Authorisation*************/
 
-Route::get('login', 'SessionsController@create');
-Route::get('logout', 'SessionsController@destroy');
+Route::get('login', ['as' => 'login', 'uses' => 'SessionsController@create']);
+Route::get('logout', ['as' => 'logout', 'uses' => 'SessionsController@destroy']);
 Route::resource('sessions', 'SessionsController');
 /*Route::get('profile', function()
 {
@@ -82,7 +82,7 @@ Route::get('adminpage', 'UsersController@getindex'
 
 Route::get('news/{atr}/{par}', 'NewsController@newsInd');
 
-Route::group(['prefix' => 'admin'], function()
+Route::group(['prefix' => 'admin', 'before' => 'auth'], function()
 {
 	Route::resource('user', 'UserController');
 	Route::resource('skill', 'SkillController');
