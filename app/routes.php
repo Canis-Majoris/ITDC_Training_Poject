@@ -18,7 +18,7 @@
 	return View::make('hello');
 });*/
 
-Route::get('home', 'HomeController@index');
+
 Route::any('filterskill', 'UserController@filterSkills');
 Route::get('tag/{name}', 'UserController@byTag');
 /*Route::get('about', function(){
@@ -72,7 +72,6 @@ Route::get('adminpage', 'UsersController@getindex'
 	});
 	return View::make('news.mainpage');
 }]);*/
-Route::get('homepage', 'NewsController@getindex');
 
 /************Routes For NewsController*************/
 
@@ -83,8 +82,98 @@ Route::get('homepage', 'NewsController@getindex');
 
 Route::get('news/{atr}/{par}', 'NewsController@newsInd');
 
-Route::group(['prefix' => 'admin'/*, 'before'=>'auth.basic'*/], function()
+Route::group(['prefix' => 'admin'], function()
 {
 	Route::resource('user', 'UserController');
 	Route::resource('skill', 'SkillController');
+});
+
+
+
+/*
+/	homepage route
+*/
+Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+Route::group(['before' => 'guest', 'prefix' => '/'], function(){
+
+	/*
+	/ CSRF protection group
+	*/
+	Route::group(['before' => 'csrf'], function(){
+
+		/*
+		/ Create account (POST)
+		*/
+		Route::post('account/create', [
+			'as'=> 'account-create-post',
+			'uses' => 'AccountController@postCreate'
+		]);
+
+		/*
+		/ Sing In (POST)
+		*/
+		Route::post('account/sign-in', [
+			'as' => 'account-sign-in-post',
+			'uses' => 'AccountController@postSignIn'
+		]);
+	});
+
+	
+	/*
+	/ Sing In (GET)
+	*/
+	Route::get('/account/sign-in', [
+		'as' => 'account-sign-in',
+		'uses' => 'AccountController@getSignIn'
+	]);
+
+	/*
+	/ Create account (GET)
+	*/
+	Route::get('account/create', [
+		'as'=> 'account-create',
+		'uses' => 'AccountController@getCreate'
+	]);
+	/*
+	/ Account activatin (GET)
+	*/
+	Route::get('/account/activate/{code}', [
+		'as' => 'account-activate',
+		'uses' => 'AccountController@getActivate'
+	]);
+});
+
+/*
+/ Authenticated group
+*/
+Route::group(['before' => 'auth_home'], function(){
+	/*
+	/ CSRF protection group
+	*/
+	Route::group(['before' => 'csrf'], function(){
+		/*
+		/ Account edit (POST)
+		*/
+		Route::post('/account/edit', [
+			'as' => 'edit-post',
+			'uses' => 'AccountController@postEdit'
+		]);
+	});
+
+	/*
+	/ Sign out (GET)
+	*/
+	Route::get('/account/sign-out', [
+		'as' => 'account-sign-out',
+		'uses' => 'AccountController@getSignOut'
+	]);
+
+	/*
+	/ Account edit (GET)
+	*/
+
+	Route::get('/account/edit', [
+		'as' => 'edit',
+		'uses' => 'AccountController@getEdit'
+	]);
 });

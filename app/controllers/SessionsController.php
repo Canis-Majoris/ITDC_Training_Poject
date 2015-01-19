@@ -20,13 +20,13 @@
 				'password' => $input['password']
 			], $r);
 			//$ps= Hash::make('1234567890');
-			//dd($ps);
+			
 
 			if ($attempt) {
 				$this->grp = Auth::user()->type;
 				if (Auth::user()->status != 2) {
-					if ($this->grp == 1) {
-						return Redirect::intended('adminpage')->with('flash_message', 'You have been logged in!');
+					if ($this->grp == 0) {
+						return Redirect::intended('admin/user')->with('flash_message', 'You have been logged in!');
 					}
 					else return Redirect::intended('homepage')->with('flash_message', 'You have been logged in!')->withInput();
 				}
@@ -37,8 +37,8 @@
 			$this->grp = Auth::user()->type;
 			Auth::logout();
 
-			if ($this->grp == 1) {
-				return Redirect::to('login')->with('flash_message', 'You have been logged out!');
+			if ($this->grp == 0) {
+				return Redirect::to('admin/user')->with('flash_message', 'You have been logged out!');
 			}else return Redirect::to('homepage')->with('flash_message', 'You have been logged out!');
 		}
 	}

@@ -1,69 +1,23 @@
 <?php
+use pro\gateways\UserGateway;
 
 class HomeController extends BaseController {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Default Home Controller
-	|--------------------------------------------------------------------------
-	|
-	| You may wish to use controllers instead of, or in addition to, Closure
-	| based routes. That's great! Here is an example controller method to
-	| get you started. To route to this controller, just add the route:
-	|
-	|	Route::get('/', 'HomeController@showWelcome');
-	|
-	*/
+	protected $layout = 'layouts.home';
+	//protected $users_skills = 'ITDC_Project.admin.users.index';
+	private $gateway;
 
-
-	/******* define layout ********/
-	public function __construct()
-    {
-        $this->layout = 'layouts.skilltemp';
-    }
-
-    /******* get all users with skills ********/
-	public function index()
-	{
-		$users = User::with('skills')->paginate(30);
-		$skills = Skill::all();
-		return View::make('home.skills', ['users' => $users, 'skills' => $skills, 'tagname' => []]);
+	public function __construct(UserGateway $gateway) {
+		$this->gateway = $gateway;
 	}
 
-	/******* filter users by skills ********/
-	public function filterSkills(){
-		$input = Input::all();
-		$skills = Skill::all();
-		$langArr = [];
-		if (count($input) < 2) {
-			$users = User::with('skills')->paginate(30);
-			return View::make('home.skills', ['users' => $users, 'skills' => $skills, 'tagname' => []]);
-		}
-		
-		foreach ($input as $k => $v) {
-			if ($k != '_token') {
-				$langArr[] = $k;
-			}
-		}
+	public function index() {
+		$users = $this->gateway->all();
+		/*Mail::send('emails.auth.test', ['name' => 'Gigi'], function($message){
+			$message -> to('gigi.khomeriki@gmail.com', 'Gigi')->subject('Test email');
+		});*/
+		$this->layout->content = View::make('ITDC_Project.home.main.index')->with(['users' => $users]);
 
-		$users = User::whereHas('skills', function($q) use($langArr)
-		{
-			$q->whereIn('name', $langArr);
-		}, '=', count($langArr))->with('skills')->paginate(30);
-		
-		return View::make('home.skills', ['users' => $users, 'skills' => $skills, 'tagname' => $langArr]);
-	}
 
-	/******* filter users by tag ********/
-	public function byTag($tag){
-		$skills = Skill::all();
-		$users = User::whereHas('skills', function($q) use($tag)
-		{
-			$q->where('name','=', $tag);
-		})->with('skills')->paginate(30);
-
-		return View::make('home.skills', ['users' => $users, 'skills' => $skills, 'tagname' => [$tag]]);
 	}
 }
-
-?>

@@ -42,7 +42,7 @@ Route::filter('old', function()
 |
 */
 
-Route::filter('auth', function()
+Route::filter('auth_home', function()
 {
 	if (Auth::guest())
 	{
@@ -52,7 +52,7 @@ Route::filter('auth', function()
 		}
 		else
 		{
-			return Redirect::guest('login');
+			return Redirect::guest(URL::back());
 		}
 	}
 });

@@ -34,6 +34,7 @@
 				<ul class="nav navbar-nav">
 					<li><a href="{{ URL::to('admin/user') }}">Users</a></li>
 					<li><a href="{{ URL::to('admin/skill') }}">Skills</a></li>
+					<li><a href="../logout">Log Out</a></li>
 				</ul>
 			</div><!--/.nav-collapse -->
 		</div>

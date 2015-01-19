@@ -4,7 +4,7 @@ use pro\gateways\UserGateway;
 class UserController extends BaseController {
 
 	protected $layout = 'layouts.admin';
-	protected $users_skills = 'admin.users.index';
+	protected $users_skills = 'ITDC_Project.admin.users.index';
 	private $gateway;
 
 	public function __construct(UserGateway $gateway) {
@@ -14,19 +14,19 @@ class UserController extends BaseController {
 	public function index() {
 		$users = $this->gateway->all();
 		$skills = Skill::all();
-		$this->layout->content  = View::make('admin.users.index')->with(['skills' => $skills, 'tagname' => []]);
-		$this->layout->content->usr_skl = View::make('admin.users.byskills_load', ['users' => $users->paginate(40), 'skills' => $skills, 'tagname' => []]);
+		$this->layout->content  = View::make('ITDC_Project.admin.users.index')->with(['skills' => $skills, 'tagname' => []]);
+		$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', ['users' => $users->paginate(40), 'skills' => $skills, 'tagname' => []]);
 	}
 
 	public function show($id) {
 		$user = $this->gateway->byId($id);
-		$this->layout->content = View::make('admin.users.show')->with('user', $user);
+		$this->layout->content = View::make('ITDC_Project.admin.users.show')->with('user', $user);
 	}
 
 	public function create() {
 		$skills = Skill::get();
 		//Input::flash();
-		$this->layout->content = View::make('admin.users.create')->with(['skills'=> $skills]);
+		$this->layout->content = View::make('ITDC_Project.admin.users.create')->with(['skills'=> $skills]);
 	}
 
 	public function store() {
@@ -41,7 +41,7 @@ class UserController extends BaseController {
 	public function edit($id) {
 		$user = $this->gateway->byIdWSkills($id);
 		$skills = Skill::get();
-		$this->layout->content = View::make('admin.users.edit')->with(array(
+		$this->layout->content = View::make('ITDC_Project.admin.users.edit')->with(array(
 			'user'=> $user,
 			'skills'=> $skills
 		));
@@ -69,8 +69,8 @@ class UserController extends BaseController {
 		$data = $this->gateway->bySkillTags($input, $skills);
 		if (is_array($data)) {
 			Input::flash();
-			$this->layout->content = View::make('admin.users.index', ['skills' => $skills, 'tagname' => $data['tagname']]);
-			$this->layout->content->usr_skl = View::make('admin.users.byskills_load', $data);
+			$this->layout->content = View::make('ITDC_Project.admin.users.index', ['skills' => $skills, 'tagname' => $data['tagname']]);
+			$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', $data);
 		}else{ 
 			return Redirect::to('admin/user');
 		}
@@ -80,8 +80,8 @@ class UserController extends BaseController {
 		$skills = Skill::all();
 		
 		$data = $this->gateway->bySkill($tag, $skills);
-		$this->layout->content = View::make('admin.users.index', ['skills' => $skills, 'tagname' => $data['tagname']]);
-		$this->layout->content->usr_skl = View::make('admin.users.byskills_load', $data);
+		$this->layout->content = View::make('ITDC_Project.admin.users.index', ['skills' => $skills, 'tagname' => $data['tagname']]);
+		$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', $data);
 	}
 
 }

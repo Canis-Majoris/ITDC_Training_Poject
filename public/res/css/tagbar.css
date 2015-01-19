@@ -187,6 +187,49 @@ input[type="checkbox"].checkbox1:disabled + label {
     background: rgba(70, 70, 70, 0.9);
     color: #FFF;
 }
-.navbar{
+.login_inline_form{
+    max-width: 560px;
+    margin-top: 15px;
+}
+.error_message_small{
+    position: absolute;
+    font-size: 10px;
+    color: red;
+}
+.error_border{
+    border-color: red !important;
 
+}
+.rememberMe_label{
+    color: lightgray;
+    display: inline;
+    font-size: 12px;
+}
+.forgot_password_small{
+    position: absolute;
+    
+    font-size: 10px;
+
+}
+.forgot_password_small a{
+    color: lightblue !important;
+}
+.home_navbar{
+    padding: 5px !important;
+    min-height: 60px;
+}
+.home-error_message_small{
+    position: absolute;
+    top: 0;
+    font-size: 9px;
+    color: red;
+}
+#inline-loginform{
+    display: inline-block !important;
+}
+.register_button_wrap{
+    display: inline;
+}
+.user_prof_link{
+    color: lightgray;
 }

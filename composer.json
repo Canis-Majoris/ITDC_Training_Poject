@@ -15,6 +15,7 @@
 			"app/commands",
 			"app/controllers",
 			"app/controllers/admin",
+			"app/controllers/home",
 			"app/models",
 			"app/database/migrations",
 			"app/database/seeds",

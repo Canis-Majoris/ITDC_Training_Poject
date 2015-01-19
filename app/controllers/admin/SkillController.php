@@ -14,15 +14,15 @@ class SkillController extends BaseController {
 	public function index()
 	{
 		$skills = $this->gateway->all();
-		return View::make('admin.skills.index')->with('skills', $skills);
+		return View::make('ITDC_Project.admin.skills.index')->with('skills', $skills);
 	}
 	public function show($id) {
 		$skill = $this->gateway->withUser($id);
-		return View::make('admin.skills.show')->with('skill', $skill);
+		return View::make('ITDC_Project.admin.skills.show')->with('skill', $skill);
 	}
 
 	public function create() {
-		return View::make('admin.skills.create');
+		return View::make('ITDC_Project.admin.skills.create');
 	}
 
 	public function store() {
@@ -35,7 +35,7 @@ class SkillController extends BaseController {
 
 	public function edit($id) {
 		$skill = $this->gateway->byId($id);
-		return View::make('admin.skills.edit')->with('skill', $skill);
+		return View::make('ITDC_Project.admin.skills.edit')->with('skill', $skill);
 	}
 
 	public function update($id) {

@@ -9,7 +9,8 @@ use DB;
 class UserRepositoryDb implements UserRepositoryInterface {
 
 	public function all() {
-		return User::where('type', '=', '0')->orWhere('type', '=', '1')->with('skills');
+		//return User::where('type', '=', '0')->orWhere('type', '=', '1')->with('skills');
+		return User::all();
 	}
 
 	public function byId($id) {
@@ -88,14 +89,15 @@ class UserRepositoryDb implements UserRepositoryInterface {
 	    $newrules['password'] = 'required';
 	    
 	    
-	    if (isset($input['password'])) {
-	    	$user->password = Hash::make($input['password']);
-	    }
+	    
 
 	    if (isset($input['type'])&&$input['type'] == 3) {
 	    	$newrules['company_name'] = 'required';
 	    }
 	    $user->extendRules($newrules);
+	    if (isset($input['password'])) {
+	    	$input['password'] = Hash::make($input['password']);
+	    }
 	    $user->fill($input);
 		$user->save();
 		$phones = null;
