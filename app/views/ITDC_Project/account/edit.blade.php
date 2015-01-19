@@ -1,38 +1,87 @@
 @extends('layouts.home')
 @section('ragac')
-<script type="text/javascript">
-	$("input.question").click(function(){
-	 $(this).next(".answer").toggle();
-	}); 
-	
-</script>
-{{ Form::open(array('route' => array('admin.user.update', $user->id), 'method' => 'PUT')) }}
+
+@if(Session::has('message'))
+    <div class="alert alert-{{ Session::get('message_type') }} alert-dismissible">
+    	<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+        {{ Session::get('message') }}
+    </div>
+@endif
+{{ Form::open(array('route' => array('edit-post'), 'method' => 'POST')) }}
 
 
 <div class="form-group">
+	<?php $firstnameError =  null ; $error_border_class = null;?>
+	@if($errors->has('firstname'))
+		<?php $firstnameError =  $errors->first('firstname') ; $error_border_class = 'error_border';?>
+	@endif
 	{{ Form::label('firstname', 'Firstname', ['class'=>'control-label']); }}
-	{{ Form::input('text', 'firstname', $user->firstname, ['class'=>'form-control', 'id'=>'firstname']) }}
+	{{ Form::input('text', 'firstname', $user->firstname, ['class'=>'form-control '.$error_border_class, 'id'=>'firstname']) }}
+	<div class="error_message_small">
+		{{ $firstnameError }}
+	</div>
 </div>
 
 <div class="form-group">
+	<?php $lastnameError =  null ; $error_border_class = null;?>
+	@if($errors->has('lastname'))
+		<?php $lastnameError =  $errors->first('lastname') ; $error_border_class = 'error_border';?>
+	@endif
 	{{ Form::label('lastname', 'Lastname', ['class'=>'control-label']); }}
-	{{ Form::input('text', 'lastname', $user->lastname, ['class'=>'form-control', 'id'=>'lastname']) }}
+	{{ Form::input('text', 'lastname', $user->lastname, ['class'=>'form-control '.$error_border_class, 'id'=>'lastname']) }}
+	<div class="error_message_small">
+		{{ $lastnameError }}
+	</div>
 </div>
 
 <div class="form-group">
+	<?php $emailError =  null ; $error_border_class = null;?>
+	@if($errors->has('email'))
+		<?php $emailError =  $errors->first('email') ; $error_border_class = 'error_border';?>
+	@endif
 	{{ Form::label('email', 'E-mail', ['class'=>'control-label']); }}
-	{{ Form::input('text', 'email', $user->email, ['class'=>'form-control', 'id'=>'email']) }}
+	{{ Form::input('text', 'email', $user->email, ['class'=>'form-control '.$error_border_class, 'id'=>'email']) }}
+	<div class="error_message_small">
+		{{ $emailError }}
+	</div>
 </div>
 
 <div class="form-group">
+	<?php $oldPasswordError =  null ; $error_border_class = null;?>
+	@if($errors->has('old_password'))
+		<?php $oldPasswordError =  $errors->first('old_password') ; $error_border_class = 'error_border';?>
+	@endif
 	{{ Form::label('password', 'Old Password', ['class'=>'control-label']); }}
-	{{ Form::input('password', 'old_password', '', ['class'=>'form-control', 'id'=>'password', 'placeholder' => 'Enter new password']) }}
+	{{ Form::input('password', 'old_password', '', ['class'=>'form-control '.$error_border_class, 'id'=>'password', 'placeholder' => 'Enter current password']) }}
+	<div class="error_message_small">
+		{{ $oldPasswordError }}
+	</div>
 </div>
 
 <div class="form-group">
-	{{ Form::label('password', 'Password', ['class'=>'control-label']); }}
-	{{ Form::input('password', 'password', '', ['class'=>'form-control', 'id'=>'password', 'placeholder' => 'Enter new password']) }}
+	<?php $passwordError =  null ; $error_border_class = null;?>
+	@if($errors->has('password'))
+		<?php $passwordError =  $errors->first('password') ; $error_border_class = 'error_border';?>
+	@endif
+	{{ Form::label('password', 'New Password', ['class'=>'control-label']); }}
+	{{ Form::input('password', 'password', '', ['class'=>'form-control '.$error_border_class, 'id'=>'password', 'placeholder' => 'Enter new password']) }}
+	<div class="error_message_small">
+		{{ $passwordError }}
+	</div>
 </div>
+
+<div class="form-group">
+	<?php $confirm_passwordError =  null ; $error_border_class = null;?>
+	@if($errors->has('confirm_password'))
+		<?php $confirm_passwordError =  $errors->first('confirm_password') ; $error_border_class = 'error_border';?>
+	@endif
+	{{ Form::label('password', 'Confirm Password', ['class'=>'control-label']); }}
+	{{ Form::input('password', 'confirm_password', '', ['class'=>'form-control '.$error_border_class, 'id'=>'password', 'placeholder' => 'Confirm new password']) }}
+	<div class="error_message_small"> 
+		{{ $confirm_passwordError }}
+	</div>
+</div>
+
 <div class="form-group">
 	{{ Form::label('gender', 'Gender', ['class'=>'control-label']) }}
 	<div class="gend_wrap_1">
@@ -46,13 +95,14 @@
 </div>
 
 <div class="phone_container" id="phonewrapper">
-	<?php  $oldPhones = $user->phones; 
+	<?php  
+		$oldPhones = Input::old('phone'); 
+		$currPhones = $user->phones;
 	?>
 	<div class="form-group">
 		{{ Form::label('phone', 'Phone', ['class'=>'control-label']); }}
-
-		@if(sizeof($oldPhones)!=0)
-			@foreach($oldPhones as $pId => $v)
+		@if(sizeof($currPhones)!=0)
+			@foreach($currPhones as $pId => $v)
 				@if($v->phone!=null)
 				<div class="input-group phone_wrap_1">
 				  	<span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-phone-alt"></span></span>
@@ -60,6 +110,7 @@
 				</div>
 				@endif
 			@endforeach
+		
 		@else
 		<div class="input-group">
 			 <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-phone-alt"></span></span>
@@ -68,31 +119,14 @@
 		@endif
 		
 	</div>
+	<span id="fooBar"> </span>
 	
 </div>
+
+
+
 <input type="button" value="ტელეფონის დამატება" id="phoneadd" class="btn btn-default">
 <div class="form-group">
-
-<h4>Skills</h4>
-@foreach($skills as $skill)
-	<?php $checked = false; $lvl = null;?>
-	@foreach($user->skills as $user_skill)
-		@if($skill->id==$user_skill->id)
-			<?php $checked = true; $lvl = $user_skill->pivot->level; ?> 
-		@endif
-	@endforeach
-	<div class="col-md-4">
-		{{ Form::label($skill->id,$skill->name , ['class'=>'control-label pad_sk']) }}	
-		{{ Form::checkbox('skill[]',$skill->id, $checked, ['class' => 'check_1 pad_sk']  ) }}
-		<div class="lvl_inp">
-			{{ Form::input('text', 'level['.$skill->id.']', $lvl, ['class'=>'form-control', 'placeholder' => 'Skill level'] ) }}
-		</div>
-	
-	</div>
-@endforeach
-</div>
-
-
 
 
 {{ Form::submit('Save', ['class'=>'btn btn-primary pull-right'])}}

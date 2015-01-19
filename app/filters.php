@@ -52,7 +52,7 @@ Route::filter('auth_home', function()
 		}
 		else
 		{
-			return Redirect::guest(URL::back());
+			return Redirect::guest(URL::route('home'));
 		}
 	}
 });

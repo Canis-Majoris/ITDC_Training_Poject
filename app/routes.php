@@ -116,9 +116,61 @@ Route::group(['before' => 'guest', 'prefix' => '/'], function(){
 			'as' => 'account-sign-in-post',
 			'uses' => 'AccountController@postSignIn'
 		]);
-	});
+			/*
+		/ Forgot password (POST)
+		*/
+		Route::post('/account/forgot-password', [
+			'as' => 'account-forgot-password-post',
+			'uses' => 'AccountController@postForgotPassword'
+		]);
 
 	
+	});
+/////////////////////////////////
+	Route::post('/account/recover-password', [
+		'as' => 'recover-password-post',
+		'uses' => 'RemindersController@postRemind'
+	]);
+/////////////////////////////////
+/////////////////////////////
+
+	Route::get('/account/recover-password', [
+		'as' => 'recover-password',
+		'uses' => 'RemindersController@getRemind'
+	]);
+
+/////////////////////////////
+/////////////////////////////////
+	Route::post('/password/reset', [
+		'as' => 'resert-password-post',
+		'uses' => 'RemindersController@postReset'
+	]);
+/////////////////////////////////
+/////////////////////////////
+
+	Route::get('/password/reset/{token}', [
+		'as' => 'reset-password',
+		'uses' => 'RemindersController@getReset'
+	]);
+
+/////////////////////////////
+
+	/*
+	/ Forgot password (GET)
+	*/
+	Route::get('/account/forgot-password', [
+		'as' => 'account-forgot-password',
+		'uses' => 'AccountController@getForgotPassword'
+	]);
+
+	/*
+	/ Recover password (GET)
+	*/
+	Route::get('/account/recover/{code}', [
+		'as' => 'account-recover',
+		'uses' => 'AccountController@getRecover'
+	]);
+
 	/*
 	/ Sing In (GET)
 	*/
@@ -154,7 +206,7 @@ Route::group(['before' => 'auth_home'], function(){
 		/*
 		/ Account edit (POST)
 		*/
-		Route::post('/account/edit', [
+		Route::post('account/edit', [
 			'as' => 'edit-post',
 			'uses' => 'AccountController@postEdit'
 		]);
@@ -177,3 +229,10 @@ Route::group(['before' => 'auth_home'], function(){
 		'uses' => 'AccountController@getEdit'
 	]);
 });
+
+///User Profile
+
+Route::get('/user/{username}', [
+	'as' => 'user-profile',
+	'uses' => 'ProfileController@user'
+]);

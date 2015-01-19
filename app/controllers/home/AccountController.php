@@ -123,11 +123,156 @@ class AccountController extends BaseController {
 	
 
 	public function getEdit(){
-		$this->layout->content = View::make('ITDC_Project.account.edit')->with(['user' => Auth::user()]);
+
+		$user = User::find(Auth::user()->id);
+		$this->layout->content = View::make('ITDC_Project.account.edit')->with(['user' => $user]);
 	}
 
 	public function postEdit(){
-		$this->layout->content = View::make('ITDC_Project.account.edit');
+		$input = Input::all();
+		$cred = [
+			'firstname'        => 'required',
+			'lastname'         => 'required',
+			'email'            => 'required',
+			'old_password'     => 'required',
+			'password'         => 'required|min:6',
+			'confirm_password' => 'required|same:password'
+		];
+		$validator = Validator::make($input, $cred);
+		if ($validator->fails()) {
+			return Redirect::back()
+			    ->withErrors($validator)
+			 	->withInput();
+		}else{
+			$user = User::find(Auth::user()->id);
+			$old_password = $input['old_password'];
+			$password = $input['password'];
+			//dd($user->getAuthPassword());
+			if (Hash::check($old_password, $user->getAuthPassword())) {
+				$user->fill($input);
+				$user->password = Hash::make($password);
+				///////////////
+				$this->updateSkillsPhones($user, $input['phone']);
+				///////////////
+				if ($user->save()) {
+					return Redirect::route('home')
+						->with('message_type','success')
+						->with('message', 'Your account has been successfully edited!');
+				}
+			}else{
+				return Redirect::back()
+					->withInput()
+				 	->with('message_type','danger')
+					->with('message', 'Yout old password is incorrect.');
+			}
+
+		}
+
+		return Redirect::back()
+			->withInput()
+		 	->with('message_type','danger')
+			->with('message', 'Aaghhh... We could not edit yout profile...');
+
+	 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	 /*
+	 / Custom Password Recovery
+	 */
+
+	 /*public function getForgotPassword(){
+	 	$this->layout->content = View::make('ITDC_Project.account.forgot');
+	 }
+
+	 public function postForgotPassword(){
+	 	$cred = [
+	 		'email' => 'required|email'
+	 	];
+
+	 	$validator = Validator::make(Input::all(), $cred);
+	 	if ($validator->fails()) {
+	 		return Redirect::back()
+			    ->withErrors($validator)
+			 	->withInput();
+	 	}else{
+	 		$user = User::where('email', '=', Input::get('email'));
+	 		if ($user->count()) {
+	 			$user = $user->first();
+	 			$code = str_random(60);
+	 			$password = str_random(10);
+	 			$user->code = $code;
+	 			$user->password_temp = Hash::make($password);
+	 			if ($user->save()) {
+	 				Mail::send('emails.auth.forgot', ['link' => URL::route('account-recover', $code), 'username' => $user->username, 'password' => $password, 'name' => 'Gigi'], function($message) use($user) {
+						$message->to($user->email, $user->username)->subject('ITDC Project Password Reset');
+					});
+
+					return Redirect::route('home')
+						->with('message_type','success')
+						->with('message', 'We have sent you a new password by Email');
+	 			}
+	 		}
+	 	}
+
+	 	return Redirect::back()
+			->withInput()
+		 	->with('message_type','danger')
+			->with('message', 'Could not request new password...');
+	 }
+
+	 public function getRecover($code){
+	 	$user = User::where('code', '=', $code)->where('password_temp', '!=', '');
+	 	if ($user->count()) {
+	 		$user = $user->first();
+	 		$user->password = $user->password_temp;
+	 		$user->password_temp = '';
+	 		$user->code = '';
+	 		if ($user->save()) {
+	 			return Redirect::route('home')
+	 				->with('message_type','success')
+					->with('message', 'Your password has been reovered.');
+	 		}
+
+	 		return Redirect::route('home')
+	 			->with('message_type','danger')
+				->with('message', 'Could not recover your password');
+	 	}
+	 }
+*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+/////////////////////////////////////////////////////////
+
+	public function managePhones($user, $phones){
+			$allPhones = [];
+			foreach ($phones as $k => $v) {
+				if ($v!=null) {
+					$allPhones[] = new Phone(['phone' => $v]);
+				}
+			}
+			$user->phones()->delete();
+			$user->phones()->saveMany($allPhones);
+	}
+
+	public function manageSkills($user, $skills, $levels){
+		$sl = [];
+		foreach ($skills as $skill) {
+			if (!empty($levels[$skill])) {
+				$sl[$skill] = ['level' => $levels[$skill]];
+			}
+			$user->skills()->sync($sl);
+		}
+	}
+
+	public function updateSkillsPhones($user, $phones=null, $skills=null, $levels=null){
+		if (isset($skills) && isset($levels)) {
+			$this->manageSkills($user, $skills, $levels);
+		}
+		if (isset($phones)) {
+			$this->managePhones($user, $phones);
+		}
 	}
 }
 

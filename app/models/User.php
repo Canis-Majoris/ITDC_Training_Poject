@@ -56,4 +56,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     	return 'female';
     }
 
+    public function getAuthPassword(){
+	    return $this->password;
+	}
+
 }

@@ -34,7 +34,7 @@
 				
 				<ul class="nav navbar-nav home_navbar">
 				@if(Auth::check())
-					<li class="user_prof_link"><a href="{{ URL::route('edit') }}">{{ Auth::user()->username }}</a></li>
+					<li class="user_prof_link"><a href="{{ URL::route('user-profile', Auth::user()->username) }}">{{ Auth::user()->username }}</a></li>
 					<li class=""><a href="{{ URL::route('account-sign-out') }}">Log Out</a></li>
 				@endif
 				</ul>
@@ -65,7 +65,7 @@
 					    <label class="sr-only" for="exampleInputPassword2">Password</label>
 					    {{ Form::password('password_login', array('id' => 'login-password exampleInputPassword2', 'class' => 'form-control input-sm '.$error_border_class, 'placeholder' => 'Password')) }}
 						<div class="forgot_password_small">
-							<a href="#">Forgot password?</a>
+							<a href="{{ URL::route('recover-password') }}">Forgot password?</a>
 						</div>
 					  </div>
 					  <div class="checkbox">
