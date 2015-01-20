@@ -17,6 +17,7 @@
 	<script src="{{ URL::asset('res/js/backtotop.js') }}"></script>
 	<script src="{{ URL::asset('res/js/users/addphone.js') }}"></script>
 	<script src="{{ URL::asset('res/js/jscroll/jquery.jscroll.min.js') }}"></script>
+	<script src="{{ URL::asset('packages/ckeditor/ckeditor.js') }}"></script>
 </head>
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -54,8 +55,7 @@
 							{{ $emailError }}
 						</div>
 					    <label class="sr-only" for="exampleInputEmail2">Email address</label>
-					    {{ Form::email('email_login','', array('id' => 'login-email', 'class' => 'form-control input-sm '.$error_border_class, 'placeholder' => 'Email')) }}
-					    
+				    	{{ Form::email('email_login','', array('id' => 'login-email', 'class' => 'form-control input-sm glyphicon '.$error_border_class, 'placeholder' => '&#57352; Email')) }}
 					  </div>
 					  <div class="form-group">
 					  	<?php $passwordError =  null ; $error_border_class = null;?>
@@ -65,8 +65,9 @@
 						<div class="home-error_message_small">
 							{{ $passwordError }}
 						</div>
+						
 					    <label class="sr-only" for="exampleInputPassword2">Password</label>
-					    {{ Form::password('password_login', array('id' => 'login-password exampleInputPassword2', 'class' => 'form-control input-sm '.$error_border_class, 'placeholder' => 'Password')) }}
+					    {{ Form::password('password_login', array('id' => 'login-password exampleInputPassword2', 'class' => 'form-control input-sm glyphicon '.$error_border_class, 'placeholder' => '&#57395; Password')) }}
 						<div class="forgot_password_small">
 							<a href="{{ URL::route('recover-password') }}">Forgot password?</a>
 						</div>
@@ -89,7 +90,7 @@
 		</div>
 	</nav>
 
-	<div class="container">
+	<div class="container users_skills_data">
 		@yield('ragac')
 	</div><!-- /.container -->
 </body>
@@ -98,11 +99,19 @@
 	$(window).scroll(function(){
        $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
         
-       if ($(window).scrollTop() > 152){
-		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -152 + "px"});
+       if ($(window).scrollTop() > 105){
+		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -105 + "px"});
 		} else {
         $(".fixedheader1").css("top", "0px");
     }
     });
+
+    $('.users_skills_data').on("click", "form.delete_user", function(e){
+		if(confirm("Do you really want to delete user?")){
+
+		}else{
+			e.preventDefault();
+		}	
+	});
 </script>
 </html>

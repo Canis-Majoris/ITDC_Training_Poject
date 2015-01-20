@@ -13,8 +13,9 @@
         {{ Session::get('status') }}
     </div>
 @endif
-
-<h1>Forgot Password</h1>
+<div class="input_wrapper_2">
+	<h1>Forgot Password</h1>
+	<hr>
 	{{ Form::open(array('route' => array('recover-password-post'), 'method' => 'POST')) }}
 
 		<div class="form-group">
@@ -31,5 +32,6 @@
 
 	{{ Form::submit('Send Reminder', ['class'=>'btn btn-primary pull-right'])}}
 	{{ Form::close(); }}
+</div>
 
 @stop

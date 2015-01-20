@@ -292,3 +292,33 @@ input[type="checkbox"].checkbox1:disabled + label {
     font-size: 30px !important;
     font-weight: bold !important;
 }
+.input_wrapper_2{
+    max-width: 40%;
+    margin: 0 auto;
+}
+.input_wrapper_3{
+    max-width: 60%;
+    margin: 0 auto;
+}
+.phone_container{
+    margin-bottom: 10px;
+}
+#phoneadd{
+    margin-bottom: 10px !important;
+}
+
+.form-control.glyphicon {
+    font-family:inherit;
+}
+.form-control.glyphicon::-webkit-input-placeholder:first-letter {
+    font-family:"Glyphicons Halflings";
+}
+.form-control.glyphicon:-moz-placeholder:first-letter {
+    font-family:"Glyphicons Halflings";
+}
+.form-control.glyphicon::-moz-placeholder:first-letter {
+    font-family:"Glyphicons Halflings";
+}
+.form-control.glyphicon:-ms-input-placeholder:first-letter {
+    font-family:"Glyphicons Halflings";
+}

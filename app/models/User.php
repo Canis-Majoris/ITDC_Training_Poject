@@ -23,15 +23,23 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @var array
 	 */
 	protected $hidden = array('password', 'remember_token');
-	protected $fillable = array('firstname', 'lastname', 'username', 'password', 'password_temp', 'code', 'active', 'email', 'gender', 'type', 'company_name', 'avatar');
-	/*protected $throwValidationExceptions = true;
-	protected $rules = [
-        'username'   => 'required',
-        'firstname'  => 'required',
-        'lastname'   => 'required',
-        'email'      => 'required',
-        'type'       => 'required',
-    ];*/
+	protected $fillable = array(
+		'firstname',
+		'lastname',
+		'username',
+		'password', 
+		'password_temp', 
+		'code', 
+		'active', 
+		'email', 
+		'gender', 
+		'type', 
+		'company_name', 
+		'avatar',
+		'description'
+	);
+	protected $throwValidationExceptions = true;
+	protected $rules = [];
 
 	public function phones(){
 		return $this->hasMany('Phone');
@@ -40,6 +48,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public function skills()
     {
         return $this->belongsToMany('Skill')->withPivot('level');
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany('Course')->withPivot('mark');
     }
 
     public function extendRules($newRules){

@@ -18,15 +18,14 @@ class UserRepositoryDb implements UserRepositoryInterface {
 	}
 
 	public function whereHasSkinMulti($langArr, $skillArr, $optimal){
-		//dd($optimal);
-		$users = $this->all();
+		$users= $this->all();
 		if ($optimal == null) {
 			$data = $users->whereHas('skills', function($q) use($langArr)
 			{
 				$q->whereIn('name', $langArr);
 			}, '=', count($langArr));
 		}else{
-			$data = $users;
+			$data = User::query();
 			foreach ($skillArr as $skl) {
 				$data->whereHas('skills', function($q) use($skl, $optimal)
 				{
@@ -41,7 +40,7 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		return $data->with('skills');
 	}
 
-	public function whereHasSkin($table, $arg, $val, $byArg){
+	public function whereHasSkill($table, $arg, $val, $byArg){
 
 		$comp = [$arg, $val, $byArg];
 		$users = $this->all();
@@ -86,10 +85,15 @@ class UserRepositoryDb implements UserRepositoryInterface {
 	public function create($input) {
 	    $user = new User;
 	    //dd($user->rules);
-	    $newrules['password'] = 'required';
-	    
-	    
-	    
+
+	    $newrules = [
+	        'username'   => 'required',
+	        'firstname'  => 'required',
+	        'lastname'   => 'required',
+	        'email'      => 'required|email',
+	        'type'       => 'required',
+	        'password'   => 'required|min:6'
+    	];
 
 	    if (isset($input['type'])&&$input['type'] == 3) {
 	    	$newrules['company_name'] = 'required';
@@ -122,6 +126,15 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		if(is_null($user)) {
 			return Redirect::to('admin/user');
 		}
+
+		$newrules = [
+	        'username'   => 'required',
+	        'firstname'  => 'required',
+	        'lastname'   => 'required',
+	        'email'      => 'required|email',
+	        'type'       => 'required',
+    	];
+    	$user->extendRules($newrules);
 		$user->fill($input);
 		if($pass = $input['password']) {
 			$user->password = Hash::make($pass);
@@ -177,7 +190,7 @@ class UserRepositoryDb implements UserRepositoryInterface {
 	
 
 	public function bySkill($tag, $skills){
-		$users = $this->whereHasSkin('skills', 'name', $tag, '=');
+		$users = $this->whereHasSkill('skills', 'name', $tag, '=');
 		return ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => [$tag]];
 	}
 }

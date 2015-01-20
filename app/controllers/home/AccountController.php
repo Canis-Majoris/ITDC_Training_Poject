@@ -140,7 +140,7 @@ class AccountController extends BaseController {
 			$cred['password'] = 'required|min:6';
 			$cred['confirm_password'] = 'required|same:password';
 		}
-		
+		//dd($input['description']);
 		$validator = Validator::make($input, $cred);
 		if ($validator->fails()) {
 			return Redirect::back()

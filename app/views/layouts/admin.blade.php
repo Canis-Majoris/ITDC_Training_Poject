@@ -17,6 +17,7 @@
 	<script src="{{ URL::asset('res/js/backtotop.js') }}"></script>
 	<script src="{{ URL::asset('res/js/users/addphone.js') }}"></script>
 	<script src="{{ URL::asset('res/js/jscroll/jquery.jscroll.min.js') }}"></script>
+  <script src="{{ URL::asset('packages/ckeditor/ckeditor.js') }}"></script>
 
 
   <link rel="stylesheet" href="http://student.itdc.ge/g.xomeriki/ci/CSS/dashboard.css">

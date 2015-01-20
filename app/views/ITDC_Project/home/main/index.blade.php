@@ -6,12 +6,12 @@
         {{ Session::get('message') }}
     </div>
 @endif
+<h2>Users</h2>
+<hr>
 <div class="fixedheader1">
 	<table class="table table-bordered table-hover table-striped">
 		<thead>
 			<th class="FLname">Firstname/Lastname</th>
-			<th class="gend1">Gender</th>
-			
 			<th class="skillshow">Skills</th>
 			@if(Auth::check())
 				<th class="action1">Action</th>
@@ -29,7 +29,6 @@
 						{{ $user->username}}
 					</a>
 				</td>
-				<td class="gend1">{{ $user->gender }}</td>
 				<td class="skillshow">
 					@foreach($user->skills as $skill)
 						<?php $lvl = null; $seletced_skill = 'default'; $color_shade = null;  $s = null;
@@ -69,6 +68,8 @@
 	<script type="text/javascript">
 
 	/////// pagination wrap
+
+	
 		
 	</script>
 @stop

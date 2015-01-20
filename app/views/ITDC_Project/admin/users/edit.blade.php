@@ -8,6 +8,16 @@
 	}); 
 	
 </script>
+@if($errors->any())
+<script type="text/javascript">
+	var refreshKeep = true;
+</script>
+<ul>
+	@foreach($errors->all() as $error)
+	 	<li><h4>{{ $error }}</h4></li>
+	@endforeach
+</ul>
+@endif
 {{ Form::open(array('route' => array('admin.user.update', $user->id), 'method' => 'PUT')) }}
 
 
@@ -68,6 +78,11 @@
 	
 </div>
 <input type="button" value="ტელეფონის დამატება" id="phoneadd" class="btn btn-default">
+
+<div class="form-group">
+		{{ Form::label('about_youtself', 'About Yourself', ['class'=>'control-label']); }}
+		{{ Form::textarea('description', $user->description, ['class' => 'field form-control', 'size' => '30x5', 'id' => 'about_youtself_1']) }}
+	</div>
 <div class="form-group">
 
 <h4>Skills</h4>
@@ -96,6 +111,12 @@
 
 {{ Form::close(); }}
 <script type="text/javascript">
+
+	CKEDITOR.replace('about_youtself_1', {
+		uiColor: '#E6E6E6',
+		language: 'ka'
+	});
+
 	var counter = 2;
 	//var appendform = '';
 
