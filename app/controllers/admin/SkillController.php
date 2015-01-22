@@ -50,7 +50,7 @@ class SkillController extends BaseController {
 		$this->gateway->delete($id);
 		return Redirect::to('admin/skill')
 			->with('message_type','success')
-			->with('message', 'User deleted successfully');
+			->with('message', 'Skill deleted successfully');
 	}
 
 }

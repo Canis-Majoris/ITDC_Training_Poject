@@ -8,17 +8,24 @@
 @endif
 <h2>Users</h2>
 <hr>
+
+<div class="">
+	{{$users->appends(Input::all())->links()}}
+</div>
+
 <div class="fixedheader1">
 	<table class="table table-bordered table-hover table-striped">
 		<thead>
 			<th class="FLname">Firstname/Lastname</th>
 			<th class="skillshow">Skills</th>
+			<th class="skillshow">Courses</th>
 			@if(Auth::check())
 				<th class="action1">Action</th>
 			@endif
 		</thead>
 	</table>
 </div>
+
 <div class="scroll">
 	<table class="table table-bordered table-hover table-striped">
 		<tbody>
@@ -37,6 +44,17 @@
 						?>
 
 						<a href="{{ URL::to('#') }}" class="label label-{{ $seletced_skill }} bordered_1" {{ $color_shade }}>{{ $skill->name.$s.$lvl }}</a>
+					@endforeach
+				</td>
+				<td class="skillshow">
+				
+					@foreach($user->courses as $course)
+						<?php $lvl = null; $seletced_course = 'default'; $color_shade = null;  $s = null;
+							$lvl = $course->pivot->mark; $seletced_course = 'info'; $s = ', LVL:';
+							$color_shade = 'style="background-color:hsl(120,40%,'.(100-$lvl).'%)"';
+						?>
+
+						<a href="{{ URL::to('#') }}" class="label label-{{ $seletced_course }} bordered_1" {{ $color_shade }}>{{ $course->name.$s.$lvl }}</a>
 					@endforeach
 				</td>
 				@if(Auth::check())
@@ -59,19 +77,19 @@
 	</table>
 </div>
 
+<div class="">
+	{{$users->appends(Input::all())->links()}}
+</div>
 
-	<div class="">
-		{{$users->appends(Input::all())->links()}}
-	</div>
+<a href="#" class="scrollToTop"></a>
 
+<script type="text/javascript">
 
-	<script type="text/javascript">
+/////// pagination wrap
 
-	/////// pagination wrap
 
 	
-		
-	</script>
+</script>
 @stop
 
 <!-- ////////////////////////////////////////////////////// -->

@@ -99,8 +99,8 @@
 	$(window).scroll(function(){
        $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
         
-       if ($(window).scrollTop() > 105){
-		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -105 + "px"});
+       if ($(window).scrollTop() > 185){
+		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -185 + "px"});
 		} else {
         $(".fixedheader1").css("top", "0px");
     }

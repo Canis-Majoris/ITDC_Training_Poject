@@ -11,21 +11,21 @@
 <div class="tag_bar pull-left">
 
 <p class="tag_header">
-@if(!empty($tagname))
-	
-	@if(count($tagname)>1)
-		@foreach($tagname as $tag)
-		@if($tag != end($tagname))
-		{{ $tag.', '  }}
+	@if(!empty($tagname))
+		
+		@if(count($tagname)>1)
+			@foreach($tagname as $tag)
+			@if($tag != end($tagname))
+			{{ $tag.', '  }}
+			@else
+			{{ $tag }}
+			@endif
+			@endforeach
 		@else
-		{{ $tag }}
+		{{ $tagname[0] }}
 		@endif
-		@endforeach
-	@else
-	{{ $tagname[0] }}
+		
 	@endif
-	
-@endif
 </p>
 
 	{{ Form::open(array('url' => 'filterskill', 'method' => 'get', 'id' => 'tagsubmit')) }}
@@ -96,14 +96,18 @@
 			<i class="glyphicon glyphicon-plus"></i> Create User
 		</a>
 	</p>
+
 	<div class="users_skills_data">
 		@yield('usr_skl')
 		
 	</div>
 </div>
 
+<!--Scroll up --------------------------------------------------------------------------------------------> 
 
 <a href="#" class="scrollToTop"></a>
+
+<!--------------------------------------------------------------------------------------------> 
 <script type="text/javascript">
 
 	$('.users_skills_data').on("click", "form.delete_user", function(e){
@@ -130,8 +134,8 @@
     $(window).scroll(function(){
        $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
         
-       if ($(window).scrollTop() > 157){
-		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -157 + "px"});
+       if ($(window).scrollTop() > 190){
+		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -190 + "px"});
 		} else {
         $(".fixedheader1").css("top", "0px");
     }

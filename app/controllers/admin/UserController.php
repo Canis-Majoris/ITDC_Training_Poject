@@ -12,7 +12,7 @@ class UserController extends BaseController {
 	}
 
 	public function index() {
-		$users = $this->gateway->all();
+		$users = $this->gateway->allStudents();
 		$skills = Skill::all();
 		$courses = Course::all();
 		$this->layout->content  = View::make('ITDC_Project.admin.users.index')->with(['skills' => $skills, 'tagname' => [], 'courses' => $courses, 'courseTagname' => []]);
@@ -26,13 +26,12 @@ class UserController extends BaseController {
 
 	public function create() {
 		$skills = Skill::get();
-		//Input::flash();
-		$this->layout->content = View::make('ITDC_Project.admin.users.create')->with(['skills'=> $skills]);
+		$courses = Course::get();
+		$this->layout->content = View::make('ITDC_Project.admin.users.create')->with(['skills'=> $skills, 'courses' => $courses]);
 	}
 
 	public function store() {
 		$input = Input::all();
-
 		$this->gateway->create($input);
 		return Redirect::to('admin/user')
 			->with('message_type','success')
@@ -42,9 +41,11 @@ class UserController extends BaseController {
 	public function edit($id) {
 		$user = $this->gateway->byIdWSkills($id);
 		$skills = Skill::get();
+		$courses = Course::get();
 		$this->layout->content = View::make('ITDC_Project.admin.users.edit')->with(array(
 			'user'=> $user,
-			'skills'=> $skills
+			'skills'=> $skills,
+			'courses' => $courses
 		));
 	}
 

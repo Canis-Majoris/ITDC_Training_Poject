@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 <div class="action_wrapper_1">
-	{{ Form::open(array('route' => array('admin.skill.update', $skill->id), 'method' => 'PUT')) }}
-	<h1>Edit Skill</h1>
+	{{ Form::open(array('route' => ['admin.course.store'], 'method' => 'POST')) }}
+	<h1>Create New Course</h1>
 	<hr>
 	<div class="form-group">
 		{{ Form::label('name', 'Name', ['class'=>'control-label']); }}
-		{{ Form::input('text', 'name', $skill->name, ['class'=>'form-control', 'id'=>'name']) }}
+		{{ Form::input('text', 'name', '', ['class'=>'form-control', 'id'=>'name']) }}
 	</div>
 	{{ Form::submit('Save', ['class'=>'btn btn-primary pull-right'])}}
 

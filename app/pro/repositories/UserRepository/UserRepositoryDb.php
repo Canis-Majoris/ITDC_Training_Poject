@@ -8,12 +8,32 @@ use Course;
 use Redirect;
 use DB;
 class UserRepositoryDb implements UserRepositoryInterface {
-
+	/*
+	/ retrieving company employees
+	*/
 	public function all() {
-		return User::where('type', '=', '0')->orWhere('type', '=', '1');
+		return User::where( function ($q) {
+                $q->where('type','=', '1')
+                    ->orWhere('type','=','2')
+                    ->orWhere('type','=','3');
+            });
 		//return User::all();
 	}
 
+	public function allStudents() {
+		return User::where( function ($q) {
+                $q->where('type','=', '0')
+                    ->orWhere('type','=','1');
+            });
+		//return User::all();
+	}
+
+	public function byIdWSkills($id) {
+		return  User::with('phones')->with('skills')->find($id);
+	}
+	/*
+	/ retrieving user by id
+	*/
 	public function byId($id) {
 		return User::with('phones')->find($id);
 	}
@@ -68,7 +88,7 @@ class UserRepositoryDb implements UserRepositoryInterface {
 	public function whereHasSkill($table, $arg, $val, $byArg){
 
 		$comp = [$arg, $val, $byArg];
-		$users = $this->all();
+		$users = $this->allStudents();
 		$data = $users->whereHas($table, function($q) use($comp)
 		{
 			$q->where($comp[0], $comp[2], $comp[1]);
@@ -77,6 +97,12 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		return $data;
 	}
 
+//---------------------------------------------------------------------------------------------------------------------
+	/*
+	/ Additional data update functions
+	*/
+
+	//for phones
 	public function managePhones($user, $phones){
 			$allPhones = [];
 			foreach ($phones as $k => $v) {
@@ -88,6 +114,7 @@ class UserRepositoryDb implements UserRepositoryInterface {
 			$user->phones()->saveMany($allPhones);
 	}
 
+	//for skills
 	public function manageSkills($user, $skills, $levels){
 		$sl = [];
 		foreach ($skills as $skill) {
@@ -98,12 +125,30 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		}
 	}
 
-	public function updateSkillsPhones($user, $phones, $skills, $levels){
-		if (isset($skills) && isset($levels)) {
-			$this->manageSkills($user, $skills, $levels);
+	//for courses
+	public function manageCourses($user, $courses, $levels){
+
+		$sl = [];
+		foreach ($courses as $course) {
+			if (!empty($levels[$course])) {
+				$sl[$course] = ['mark' => $levels[$course]];
+			}
+			$user->courses()->sync($sl);
 		}
-		if (isset($phones)) {
-			$this->managePhones($user, $phones);
+	}
+//---------------------------------------------------------------------------------------------------------------------
+	/*
+	/ Helper function for ditributing additional data updates
+	*/
+	public function updateAll($user, $updateData){
+		if (isset($updateData['skills']) && isset($updateData['levels_sk'])) {
+			$this->manageSkills($user, $updateData['skills'], $updateData['levels_sk']);
+		}
+		if (isset($updateData['courses']) && isset($updateData['levels_cr'])) {
+			$this->manageCourses($user, $updateData['courses'], $updateData['levels_cr']);
+		}
+		if (isset($updateData['phones'])) {
+			$this->managePhones($user, $updateData['phones']);
 		}
 	}
 
@@ -133,18 +178,31 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		if (isset($input['phone'])) {
 			$phones = $input['phone'];
 		}
-		$skills = null; $levels = null;
+		$skills = null; $levels_sk = null;
 		if (isset($input['skill']) && isset($input['level'])) {
 			$skills = $input['skill'];
-			$levels = $input['level'];
+			$levels_sk = $input['level'];
 		}
-		$this->updateSkillsPhones($user, $phones, $skills, $levels);
+		$courses = null; $levels_cr = null;
+		if (isset($input['course']) && isset($input['level_cr'])) {
+			$courses = $input['course'];
+			$levels_cr = $input['level_cr'];
+		}
+
+		// All data to update
+		$updateData = [
+			'phones' => $phones,
+			'skills' => $skills,
+			'levels_sk' => $levels_sk,
+			'courses' => $courses,
+			'levels_cr' => $levels_cr
+		];
+
+		$this->updateAll($user, $updateData);
 		return $user;
 	}
 
-	public function byIdWSkills($id) {
-		return  User::with('phones')->with('skills')->find($id);
-	}
+	
 	
 	public function update($id, $input) {
 		$user = $this->byId($id);
@@ -169,12 +227,25 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		if (isset($input['phone'])) {
 			$phones = $input['phone'];
 		}
-		$skills = null; $levels = null;
+		$skills = null; $levels_sk = null;
 		if (isset($input['skill']) && isset($input['level'])) {
 			$skills = $input['skill'];
-			$levels = $input['level'];
+			$levels_sk = $input['level'];
 		}
-		$this->updateSkillsPhones($user, $phones, $skills, $levels);
+		$courses = null; $levels_cr = null;
+		if (isset($input['course']) && isset($input['level_cr'])) {
+			$courses = $input['course'];
+			$levels_cr = $input['level_cr'];
+		}
+		// All data to update
+		$updateData = [
+			'phones' => $phones,
+			'skills' => $skills,
+			'levels_sk' => $levels_sk,
+			'courses' => $courses,
+			'levels_cr' => $levels_cr
+		];
+		$this->updateAll($user, $updateData);
 		return $user;
 		
 	}
@@ -188,7 +259,7 @@ class UserRepositoryDb implements UserRepositoryInterface {
 	}
 
 	public function bySkillTags($input, $skills, $courses){
-		$users = User::where('type', '=', '1');
+		$users = $this->allStudents();
 
 		$levels_sk = $input['levelFil'];
 		$levels_cr = $input['cr_levelFil'];
@@ -239,10 +310,15 @@ class UserRepositoryDb implements UserRepositoryInterface {
 	}
 
 	
-
+	/*
+	/ filtering by one tag
+	*/
 	public function bySkill($tag, $skills){
 		$courses = Course::all();
 		$users = $this->whereHasSkill('skills', 'name', $tag, '=');
 		return ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => [$tag], 'courses' => $courses, 'courseTagname' => []];
 	}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 }

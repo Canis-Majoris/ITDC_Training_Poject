@@ -72,22 +72,20 @@ input[type="checkbox"].checkbox1:disabled + label {
 }
 
 .FLname{
-    width: 20%;
+    width: 14%;
 }
 .action1{
-    width: 9% ;
+    width:6px; ;
 }
 .gend1{
     width: 7%;
 }
 .skillshow{
-    width: 64%;
+    width: 39%;
 }
 .edit1{
-    width: 3%;
 }
 .delete1{
-    width: 3%;
 }
 .paginate_abs{
     position: fixed;
@@ -335,4 +333,14 @@ input[type="checkbox"].checkbox1:disabled + label {
 }
 .main_comtainer_admin{
     padding: 10px 0 5px 10px !important;
+}
+.nerrow_inp_1{
+    width: 110px !important;
+}
+.action_wrapper_1{
+    width: 70%;
+    margin: 0 auto;
+}
+.select_additional_wrapper_1{
+    width: auto !important;
 }

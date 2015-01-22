@@ -86,6 +86,7 @@ Route::group(['prefix' => 'admin', 'before' => 'auth'], function()
 {
 	Route::resource('user', 'UserController');
 	Route::resource('skill', 'SkillController');
+	Route::resource('course', 'CourseController');
 });
 
 

@@ -12,6 +12,9 @@ class UserGateway {
 	public function all() {
 		return $this->userRepo->all();
 	}
+	public function allStudents(){
+		return $this->userRepo->allStudents();
+	}
 	public function byId($id) {
 		return $this->userRepo->byId($id);
 	}

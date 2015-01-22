@@ -1,14 +1,19 @@
 @extends('ITDC_Project.admin.users.index')
 @section('usr_skl')
 
+<div class="">
+	{{$users->appends(Input::all())->links()}}
+</div>
+
+<div class="clear"></div>
+
 <div class="fixedheader1">
 	<table class="table table-bordered table-hover table-striped">
 		<thead>
 			<th class="FLname">Firstname/Lastname</th>
-			<th class="gend1">Gender</th>
-			
 			<th class="skillshow">Skills</th>
-			<th class="action1">Action</th>
+			<th class="skillshow">Courses</th>
+			<th colspan=2 class="action1">Action</th>
 		</thead>
 	</table>
 </div>
@@ -23,7 +28,6 @@
 						{{ $user->username}}
 					</a>
 				</td>
-				<td class="gend1">{{ $user->gender }}</td>
 				<td class="skillshow">
 					@foreach($user->skills as $skill)
 						<?php $lvl = null; $seletced_skill = 'default'; $color_shade = null;  $s = null;?>
@@ -34,6 +38,19 @@
 						?>
 						@endif
 						<a href="{{ URL::to('tag/'.$skill->name) }}" class="label label-{{ $seletced_skill }} bordered_1" {{ $color_shade }}>{{ $skill->name.$s.$lvl }}</a>
+					@endforeach
+				</td>
+				<td class="skillshow">
+				
+					@foreach($user->courses as $course)
+						<?php $lvl = null; $seletced_course = 'default'; $color_shade = null;  $s = null;?>
+						@if(in_array($course->name, $courseTagname))
+						<?php 
+							$lvl = $course->pivot->mark; $seletced_course = 'info'; $s = ', LVL:';
+							$color_shade = 'style="background-color:hsl(120,40%,'.(100-$lvl).'%)"';
+						?>
+						@endif
+						<a href="{{ URL::to('#') }}" class="label label-{{ $seletced_course }} bordered_1" {{ $color_shade }}>{{ $course->name.$s.$lvl }}</a>
 					@endforeach
 				</td>
 				<td class="edit1">
@@ -53,9 +70,10 @@
 		</tbody>
 	</table>
 </div>
-	<div class="">
-		{{$users->appends(Input::all())->links()}}
-	</div>
+
+<div class="">
+	{{$users->appends(Input::all())->links()}}
+</div>
 
 	<!--<ul>
 	    @foreach($users as $m)
