@@ -4,12 +4,12 @@ use Faker\Factory as Faker;
 class CourseTableSeeder extends Seeder {
 	public function run()
 	{
-		Skill::truncate();
-		Skill::create(['name'=>'ინტერფეისის დეველოპმენტი']);
-		Skill::create(['name'=>'ვებ პროგრამირება და მონაცემთა ბაზები']);
-		Skill::create(['name'=>'ვებ დიზაინი']);
-		Skill::create(['name'=>'ვებ ადმინისტრირება']);
-		Skill::create(['name'=>'Linux სისტემების ადმინისტრირება']);
-		Skill::create(['name'=>'ინტერნეტ მარკეტინგი']);
+		Course::truncate();
+		Course::create(['name'=>'ინტერფეისის დეველოპმენტი']);
+		Course::create(['name'=>'ვებ პროგრამირება და მონაცემთა ბაზები']);
+		Course::create(['name'=>'ვებ დიზაინი']);
+		Course::create(['name'=>'ვებ ადმინისტრირება']);
+		Course::create(['name'=>'Linux სისტემების ადმინისტრირება']);
+		Course::create(['name'=>'ინტერნეტ მარკეტინგი']);
 	}
 }

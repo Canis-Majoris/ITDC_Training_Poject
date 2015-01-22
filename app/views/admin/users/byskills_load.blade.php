@@ -1,6 +1,22 @@
-@extends('ITDC_Project.admin.users.index')
+@extends('admin.users.index')
 @section('usr_skl')
-
+<p class="tag_header">
+@if(!empty($tagname))
+	
+	@if(count($tagname)>1)
+		@foreach($tagname as $tag)
+		@if($tag != end($tagname))
+		{{ $tag.', '  }}
+		@else
+		{{ $tag }}
+		@endif
+		@endforeach
+	@else
+	{{ $tagname[0] }}
+	@endif
+	
+@endif
+</p>
 <div class="fixedheader1">
 	<table class="table table-bordered table-hover table-striped">
 		<thead>
@@ -52,8 +68,7 @@
 			@endforeach
 		</tbody>
 	</table>
-</div>
-	<div class="">
+	<div class="paginate_abs">
 		{{$users->appends(Input::all())->links()}}
 	</div>
 
@@ -68,7 +83,7 @@
 <script type="text/javascript">
 
 	
-	/*var counter = <?php echo $users->count(); ?>;
+	var counter = <?php echo $users->count(); ?>;
 	if (counter>=30) {
 		$(function() {
 		    $('.scroll').jscroll({
@@ -81,7 +96,7 @@
 		       }
 		    });
 		});
-	};*/
+	};
 
 	
 	

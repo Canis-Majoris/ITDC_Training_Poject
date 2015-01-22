@@ -4,12 +4,13 @@ use User;
 use Hash;
 use Skill;
 use Phone;
+use Course;
 use Redirect;
 use DB;
 class UserRepositoryDb implements UserRepositoryInterface {
 
 	public function all() {
-		return User::where('type', '=', '0')->orWhere('type', '=', '1')->with('skills');
+		return User::where('type', '=', '0')->orWhere('type', '=', '1');
 		//return User::all();
 	}
 
@@ -17,15 +18,15 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		return User::with('phones')->find($id);
 	}
 
-	public function whereHasSkinMulti($langArr, $skillArr, $optimal){
-		$users= $this->all();
+	public function whereHasSkillMulti($langArr, $skillArr, $optimal, $users){
+		$U = $users;
 		if ($optimal == null) {
-			$data = $users->whereHas('skills', function($q) use($langArr)
+			$data = $U->whereHas('skills', function($q) use($langArr)
 			{
 				$q->whereIn('name', $langArr);
 			}, '=', count($langArr));
 		}else{
-			$data = User::query();
+			$data = $U;
 			foreach ($skillArr as $skl) {
 				$data->whereHas('skills', function($q) use($skl, $optimal)
 				{
@@ -37,7 +38,31 @@ class UserRepositoryDb implements UserRepositoryInterface {
 			}
 		}
 
-		return $data->with('skills');
+		return $data->with('skills')->with('courses');
+	}
+
+	public function whereHasCourseMulti($langArr, $skillArr, $optimal, $users){
+		$U = $users;
+		if ($optimal == null) {
+			$data = $U->whereHas('courses', function($q) use($langArr)
+			{
+				$q->whereIn('name', $langArr);
+			}, '=', count($langArr));
+		}else{
+
+			$data = $U;
+			foreach ($skillArr as $skl) {
+				$data->whereHas('courses', function($q) use($skl, $optimal)
+				{
+					$q->where('course_id', $skl);
+					if (isset($optimal[$skl])) {
+						$q->where('mark', '>=', $optimal[$skl]);
+					}
+				});
+			}
+		}
+
+		return $data->with('skills')->with('courses');
 	}
 
 	public function whereHasSkill($table, $arg, $val, $byArg){
@@ -162,35 +187,62 @@ class UserRepositoryDb implements UserRepositoryInterface {
 		$user->delete();
 	}
 
-	public function bySkillTags($input, $skills){
-		$levels = $input['levelFil'];
-		if (!isset($input['skillFil'])) {
+	public function bySkillTags($input, $skills, $courses){
+		$users = User::where('type', '=', '1');
+
+		$levels_sk = $input['levelFil'];
+		$levels_cr = $input['cr_levelFil'];
+		$langArr_cr = [];
+		$langArr_sk = [];
+
+		if (!isset($input['skillFil']) && !isset($input['courseFil'])) {
 			$users = $this->all();
 			return 0;
 		}
-		$skill = $input['skillFil'];
-		$optional = null;
-		$skillArr = [];
-		$langArr = [];
-		foreach ($levels as $k => $v) {
-			if($v!=0){
-				$optional[$k] = $v;
+		if (isset($input['skillFil'])) {
+			$skill = $input['skillFil'];
+			$optional1 = null;
+			$skillArr = [];
+			
+			foreach ($levels_sk as $k => $v) {
+				if($v!=0){
+					$optional1[$k] = $v;
+				}
 			}
+			foreach ($skill as $id) {
+				$sk = Skill::find($id);
+				$langArr_sk[] = $sk->name;
+				$skillArr[] = $id;
+			}
+			//dd($optional);
+			$users = $this->whereHasSkillMulti($langArr_sk, $skillArr, $optional1, $users);
 		}
-		foreach ($skill as $id) {
-			$sk = Skill::find($id);
-			$langArr[] = $sk->name;
-			$skillArr[] = $id;
+		if (isset($input['courseFil'])) {
+			$course = $input['courseFil'];
+			$optional2 = null;
+			$courseArr = [];
+			
+			foreach ($levels_cr as $k => $v) {
+				if($v!=0){
+					$optional2[$k] = $v;
+				}
+			}
+			foreach ($course as $id) {
+				$sk = Course::find($id);
+				$langArr_cr[] = $sk->name;
+				$courseArr[] = $id;
+			}
+			$users = $this->whereHasCourseMulti($langArr_cr, $courseArr, $optional2, $users);
 		}
-		//dd($optional);
-		$users = $this->whereHasSkinMulti($langArr, $skillArr, $optional);
-		return ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => $langArr];
+		
+		return ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => $langArr_sk, 'courses' => $courses, 'courseTagname' => $langArr_cr];
 	}
 
 	
 
 	public function bySkill($tag, $skills){
+		$courses = Course::all();
 		$users = $this->whereHasSkill('skills', 'name', $tag, '=');
-		return ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => [$tag]];
+		return ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => [$tag], 'courses' => $courses, 'courseTagname' => []];
 	}
 }

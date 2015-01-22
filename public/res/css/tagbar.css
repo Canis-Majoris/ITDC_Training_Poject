@@ -20,6 +20,7 @@ input[type="checkbox"].checkbox1 + label {
     -moz-border-radius: 3px;
     border-radius: 3px;
     cursor: pointer;
+    display: inline;
 }
 input[type="checkbox"].checkbox1:checked + label {
     background-color: #468847;
@@ -36,19 +37,22 @@ input[type="checkbox"].checkbox1:disabled + label {
 	margin-top: 5px;
     background-color: lightgray;
     margin-bottom: 10px;
-    width: 100%;
-    max-height: 500px;
+    min-width: 330px;
+    max-width: 30%;
+    max-height: 20%;
     padding: 10px 40px 10px 20px;
     position: relative;
     border-radius: 5px;
-    transition: all .5s;
-    -webkit-transition: all .5s;
+}
+.skill_tag_bar{
+    max-width: 330px;
+}
+.course_tag_bar{
+    max-width: 330px;
 }
 .tag_header{
 	font-size: 35px;
     display: inline-block;
-    min-height: 50px;
-    max-width: 80%;
 }
 .label-info:hover{
     background-color: lightgray !important;
@@ -71,13 +75,13 @@ input[type="checkbox"].checkbox1:disabled + label {
     width: 20%;
 }
 .action1{
-    width: 7.3% ;
+    width: 9% ;
 }
 .gend1{
     width: 7%;
 }
 .skillshow{
-    width: 65%;
+    width: 64%;
 }
 .edit1{
     width: 3%;
@@ -160,19 +164,22 @@ input[type="checkbox"].checkbox1:disabled + label {
 }
 .skill_level_selector_1{
     position: absolute;
-    left:76px;
-    top:3px;
+    right:0px;
+    top:-3px;
     
 }
 .skill_tag_wrapper_1{
     display: inline-block;
-    margin-right: 10px;
+    margin:5px 70px 5px 0;
     position: relative;
 }
 .skill_level_input_1{
-    height: 20px !important;
-    width: 80px !important;
+    height: 27px !important;
+    width: 75px !important;
     padding: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-left-radius: 0 !important;
+    border: 3px solid #468847 !important;
 }
 .gend_wrap_1{
     margin-left: 10px;
@@ -321,4 +328,11 @@ input[type="checkbox"].checkbox1:disabled + label {
 }
 .form-control.glyphicon:-ms-input-placeholder:first-letter {
     font-family:"Glyphicons Halflings";
+}
+.user_control_pannel{
+    width: 68%;
+    margin-left: 10px;
+}
+.main_comtainer_admin{
+    padding: 10px 0 5px 10px !important;
 }

@@ -14,8 +14,9 @@ class UserController extends BaseController {
 	public function index() {
 		$users = $this->gateway->all();
 		$skills = Skill::all();
-		$this->layout->content  = View::make('ITDC_Project.admin.users.index')->with(['skills' => $skills, 'tagname' => []]);
-		$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => []]);
+		$courses = Course::all();
+		$this->layout->content  = View::make('ITDC_Project.admin.users.index')->with(['skills' => $skills, 'tagname' => [], 'courses' => $courses, 'courseTagname' => []]);
+		$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', ['users' => $users->paginate(80), 'skills' => $skills, 'tagname' => [], 'courses' => $courses, 'courseTagname' => []]);
 	}
 
 	public function show($id) {
@@ -65,11 +66,11 @@ class UserController extends BaseController {
 	public function filterSkills(){
 		$input = Input::all();
 		$skills = Skill::all();
-		$usr_sk = null;
-		$data = $this->gateway->bySkillTags($input, $skills);
+		$courses = Course::all();
+		$data = $this->gateway->bySkillTags($input, $skills, $courses);
 		if (is_array($data)) {
 			Input::flash();
-			$this->layout->content = View::make('ITDC_Project.admin.users.index', ['skills' => $skills, 'tagname' => $data['tagname']]);
+			$this->layout->content = View::make('ITDC_Project.admin.users.index', ['skills' => $skills, 'tagname' => $data['tagname'], 'courses' => $courses, 'courseTagname' => $data['courseTagname']]);
 			$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', $data);
 		}else{ 
 			return Redirect::to('admin/user');
@@ -78,9 +79,9 @@ class UserController extends BaseController {
 
 	public function byTag($tag){
 		$skills = Skill::all();
-		
+		$courses = Course::all();
 		$data = $this->gateway->bySkill($tag, $skills);
-		$this->layout->content = View::make('ITDC_Project.admin.users.index', ['skills' => $skills, 'tagname' => $data['tagname']]);
+		$this->layout->content = View::make('ITDC_Project.admin.users.index', ['skills' => $skills, 'tagname' => $data['tagname'], 'courses' => $courses, 'courseTagname' => []]);
 		$this->layout->content->usr_skl = View::make('ITDC_Project.admin.users.byskills_load', $data);
 	}
 

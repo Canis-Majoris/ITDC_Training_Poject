@@ -27,8 +27,8 @@ class UserGateway {
 	public function delete($id) {
 		return $this->userRepo->delete($id);
 	}
-	public function bySkillTags($input, $skills){
-		return $this->userRepo->bySkillTags($input, $skills);
+	public function bySkillTags($input, $skills, $courses){
+		return $this->userRepo->bySkillTags($input, $skills, $courses);
 	}
 	public function whereHasSkinMulti($table, $arg, $val){
 		return $this->userRepo->whereHasSkinMulti($table, $arg, $val);

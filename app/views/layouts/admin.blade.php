@@ -56,7 +56,7 @@
             <li class="active"><a href="{{ URL::to('admin/skill') }}">Skills</a></li>
           </ul>
         </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main main_comtainer_admin">
 				@yield('content')
         </div>
       </div>
