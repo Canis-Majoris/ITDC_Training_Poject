@@ -5,7 +5,7 @@ class UserTableSeeder extends Seeder {
 	public function run()
 	{
 		$faker = Faker::create();
-		foreach (range(1, 200) as $index) {
+		foreach (range(1, 20) as $index) {
 			$name = $faker->username;
 			$typeNum = $faker->numberBetween(0,3);
 			$company = -1;

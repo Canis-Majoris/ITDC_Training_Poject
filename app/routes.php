@@ -221,6 +221,11 @@ Route::group(['before' => 'auth_home'], function(){
 		'uses' => 'AccountController@getSignOut'
 	]);
 
+	Route::get('/project/create', [
+	'as' => 'project-create',
+	'uses' => 'ProjectController@create'
+	]);
+
 	/*
 	/ Account edit (GET)
 	*/
@@ -237,3 +242,4 @@ Route::get('/user/{username}', [
 	'as' => 'user-profile',
 	'uses' => 'ProfileController@user'
 ]);
+

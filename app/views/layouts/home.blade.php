@@ -36,10 +36,14 @@
 				<ul class="nav navbar-nav home_navbar">
 				@if(Auth::check())
 					<li class="user_prof_link"><a href="{{ URL::route('user-profile', Auth::user()->username) }}">{{ Auth::user()->username }}</a></li>
-					<li class=""><a href="{{ URL::route('account-sign-out') }}">Log Out</a></li>
+					@if(Auth::user()->type != 0 && Auth::user()->type != 1)
+						<li class="pull-right"><a href="{{ URL::route('project-create') }}">Create Project</a></li>
+					@endif
+					
 					@if(Auth::user()->type == 0)
 						<li class="pull-right"><a href="{{ URL::to('admin/user') }}">Administrator Panel</a></li>
 					@endif
+					<li class=""><a href="{{ URL::route('account-sign-out') }}">Log Out</a></li>
 				@endif
 				</ul>
 				@if(!Auth::check())
