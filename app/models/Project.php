@@ -1,6 +1,6 @@
 <?php
 class Project extends Eloquent {
-	protected $fillable = ['bid_price','duration','comment'];
+	protected $fillable = ['user_id','bid_price','duration','comment','name','description'];
 	public function users()
     {
         return $this->belongsToMany('User')->withPivot('bid_price','duration','comment');

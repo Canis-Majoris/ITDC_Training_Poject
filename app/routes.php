@@ -223,9 +223,12 @@ Route::group(['before' => 'auth_home'], function(){
 
 	Route::get('/project/create', [
 	'as' => 'project-create',
-	'uses' => 'ProjectController@create'
+	'uses' => 'ProjectController@getCreate'
 	]);
-
+	Route::post('project/create', [
+	'as'=> 'project-create-post',
+	'uses' => 'ProjectController@postCreate'
+	]);
 	/*
 	/ Account edit (GET)
 	*/
