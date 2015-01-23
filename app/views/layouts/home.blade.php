@@ -55,7 +55,7 @@
 							{{ $emailError }}
 						</div>
 					    <label class="sr-only" for="exampleInputEmail2">Email address</label>
-				    	{{ Form::email('email_login','', array('id' => 'login-email', 'class' => 'form-control input-sm glyphicon '.$error_border_class, 'placeholder' => '&#57352; Email')) }}
+				    	{{ Form::text('email_login','', array('id' => 'login-email', 'class' => 'form-control input-sm glyphicon '.$error_border_class, 'placeholder' => '&#57352; Username or Email')) }}
 					  </div>
 					  <div class="form-group">
 					  	<?php $passwordError =  null ; $error_border_class = null;?>

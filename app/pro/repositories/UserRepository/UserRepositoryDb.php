@@ -5,6 +5,8 @@ use Hash;
 use Skill;
 use Phone;
 use Course;
+use Mail;
+use URL;
 use Redirect;
 use DB;
 class UserRepositoryDb implements UserRepositoryInterface {
@@ -29,7 +31,7 @@ class UserRepositoryDb implements UserRepositoryInterface {
 	}
 
 	public function byIdWSkills($id) {
-		return  User::with('phones')->with('skills')->find($id);
+		return  User::with('phones')->with('skills')->with('courses')->find($id);
 	}
 	/*
 	/ retrieving user by id
@@ -151,109 +153,68 @@ class UserRepositoryDb implements UserRepositoryInterface {
 			$this->managePhones($user, $updateData['phones']);
 		}
 	}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+public function createOrUpdate($input, $user, $id) {
 
-	public function create($input) {
-	    $user = new User;
-	    //dd($user->rules);
+		if (is_null($id)) {
+			//create new user
+		    $user->fill($input);
+		    if (!empty($input['password']) && strlen($input['password']) >= 6) {
+		    	$user->password = Hash::make($input['password']);
+		    }
+		    $code = str_random(60);
+		    $user->code = $code;
+		    $user->active = 0;
+		    if($user->save()){
+				Mail::send('emails.auth.activate', ['link' => URL::route('account-activate', $code), 'username' => $input['username'], 'name' => 'Gigi'], function($message) use($user) {
+					$message->to($user->email, $user->username)->subject('ITDC Project Account Activation');
+				});
+			}
 
-	    $newrules = [
-	        'username'   => 'required',
-	        'firstname'  => 'required',
-	        'lastname'   => 'required',
-	        'email'      => 'required|email',
-	        'type'       => 'required',
-	        'password'   => 'required|min:6'
-    	];
+		}else{
+			if (!empty($input['password'])) {
+				$input['password'] = Hash::make($input['password']);
+			}else{
+				unset($input['password']);
+			}
+			$user->fill($input);
+			$user->save();
+		}
 
-	    if (isset($input['type'])&&$input['type'] == 3) {
-	    	$newrules['company_name'] = 'required';
-	    }
-	    $user->extendRules($newrules);
-	    if (isset($input['password'])) {
-	    	$input['password'] = Hash::make($input['password']);
-	    }
-	    $user->fill($input);
-		$user->save();
 		$phones = null;
-		if (isset($input['phone'])) {
+		if (array_filter($input['phone'])) {
 			$phones = $input['phone'];
 		}
 		$skills = null; $levels_sk = null;
-		if (isset($input['skill']) && isset($input['level'])) {
-			$skills = $input['skill'];
-			$levels_sk = $input['level'];
-		}
-		$courses = null; $levels_cr = null;
-		if (isset($input['course']) && isset($input['level_cr'])) {
-			$courses = $input['course'];
-			$levels_cr = $input['level_cr'];
-		}
-
-		// All data to update
-		$updateData = [
-			'phones' => $phones,
-			'skills' => $skills,
-			'levels_sk' => $levels_sk,
-			'courses' => $courses,
-			'levels_cr' => $levels_cr
-		];
-
-		$this->updateAll($user, $updateData);
-		return $user;
-	}
-
-	
-	
-	public function update($id, $input) {
-		$user = $this->byId($id);
-		if(is_null($user)) {
-			return Redirect::to('admin/user');
-		}
-
-		$newrules = [
-	        'username'   => 'required',
-	        'firstname'  => 'required',
-	        'lastname'   => 'required',
-	        'email'      => 'required|email',
-	        'type'       => 'required',
-    	];
-    	$user->extendRules($newrules);
-		$user->fill($input);
-		if($pass = $input['password']) {
-			$user->password = Hash::make($pass);
-		}
-		$user->save();
-		$phones = null;
-		if (isset($input['phone'])) {
-			$phones = $input['phone'];
-		}
-		$skills = null; $levels_sk = null;
-		if (isset($input['skill']) && isset($input['level'])) {
-			$skills = $input['skill'];
-			$levels_sk = $input['level'];
-		}
-		$courses = null; $levels_cr = null;
-		if (isset($input['course']) && isset($input['level_cr'])) {
-			$courses = $input['course'];
-			$levels_cr = $input['level_cr'];
-		}
-		// All data to update
-		$updateData = [
-			'phones' => $phones,
-			'skills' => $skills,
-			'levels_sk' => $levels_sk,
-			'courses' => $courses,
-			'levels_cr' => $levels_cr
-		];
-		$this->updateAll($user, $updateData);
-		return $user;
 		
+		if (isset($input['skill']) && array_filter($input['level'])) {
+			$skills = $input['skill'];
+			$levels_sk = $input['level'];
+		}
+		$courses = null; $levels_cr = null;
+		if (isset($input['course']) && array_filter($input['level_cr'])) {
+			$courses = $input['course'];
+			$levels_cr = $input['level_cr'];
+		}
+
+		// All data to update
+		$updateData = [
+			'phones' => $phones,
+			'skills' => $skills,
+			'levels_sk' => $levels_sk,
+			'courses' => $courses,
+			'levels_cr' => $levels_cr
+		];
+		$this->updateAll($user, $updateData);
+		return $user;
 	}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 
 	public function delete($id) {
 		$user = $this->byId($id);
 		if(is_null($user)) {
-			return Redirect::to('admin/user');
+			return Redirect::back();
 		}
 		$user->delete();
 	}

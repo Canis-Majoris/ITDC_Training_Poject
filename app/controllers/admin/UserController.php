@@ -32,7 +32,7 @@ class UserController extends BaseController {
 
 	public function store() {
 		$input = Input::all();
-		$this->gateway->create($input);
+		$this->gateway->createOrUpdate($input);
 		return Redirect::to('admin/user')
 			->with('message_type','success')
 			->with('message', 'User added successfully');
@@ -51,7 +51,7 @@ class UserController extends BaseController {
 
 	public function update($id) {
 		$input = Input::all();
-		$this->gateway->update($id, $input);
+		$this->gateway->createOrUpdate($input, $id);
 		return Redirect::to('admin/user')
 			->with('message_type','success')
 			->with('message', 'User updated successfully');
@@ -59,7 +59,7 @@ class UserController extends BaseController {
 
 	public function destroy($id) {
 		$this->gateway->delete($id);
-		return Redirect::to('admin/user')
+		return Redirect::back()
 			->with('message_type','success')
 			->with('message', 'User deleted successfully');
 	}

@@ -120,7 +120,7 @@
 			<?php $company_nameError =  $errors->first('company_name') ; $error_border_class = 'error_border';?>
 		@endif
 		{{ Form::label('company came', 'Company Name *', ['class'=>'control-label']); }}
-		{{ Form::input('text', 'company_name', Input::old('company_name'), ['class'=>'form-control '.$error_border_class, 'id'=>'comp_name_1']); }}
+		{{ Form::input('text', 'company_name', Input::old('company_name'), ['class'=>'form-control '.$error_border_class, 'id'=>'comp_name_1', 'data-inputmask' => '"mask": "(999) 999-9999"', 'data-mask']); }}
 		<div class="error_message_small"> 
 			{{ $company_nameError }}
 		</div>

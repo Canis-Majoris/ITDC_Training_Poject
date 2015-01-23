@@ -22,7 +22,7 @@ class AccountController extends BaseController {
 	public function postSignIn(){
 		$input = Input::All();
 		$validator = Validator::make($input, [
-			'email_login'    => 'required|email',
+			'email_login'    => 'required',
 			'password_login' => 'required'
 		]);
 
@@ -33,13 +33,17 @@ class AccountController extends BaseController {
 		}else{
 
 			$remember = (Input::has('remember')) ? true : false;
-
 			$cred = [
-				'email' => $input['email_login'],
+				
 				'password' => $input['password_login'],
-				'active' => 1
+				'active' => 1,
+				'status' => 1
 			];
-
+			if(filter_var($input['email_login'], FILTER_VALIDATE_EMAIL)) {
+				$cred['email'] = $input['email_login'];
+			}else{
+				$cred['username'] = $input['email_login'];
+			}
 			$auth = Auth::attempt($cred, $remember);
 
 			if ($auth) {
@@ -88,12 +92,12 @@ class AccountController extends BaseController {
 		    $code = str_random(60);
 		    $user->code = $code;
 		    $user->active = 0;
-		    
+		    $user->status = 0;
 			if($user->save()){
 
-			Mail::send('emails.auth.activate', ['link' => URL::route('account-activate', $code), 'username' => $input['username'], 'name' => 'Gigi'], function($message) use($user) {
-				$message->to($user->email, $user->username)->subject('ITDC Project Account Activation');
-			});
+				Mail::send('emails.auth.activate', ['link' => URL::route('account-activate', $code), 'username' => $input['username'], 'name' => 'Gigi'], function($message) use($user) {
+					$message->to($user->email, $user->username)->subject('ITDC Project Account Activation');
+				});
 
 				return Redirect::route('home')
 				->with('message_type','success')
@@ -106,6 +110,7 @@ class AccountController extends BaseController {
 		if ($user->count()) {
 			$user = $user->first();
 			$user->active = 1;
+			$user->status = 1;
 			$user->code = '';
 
 			if($user->save()){

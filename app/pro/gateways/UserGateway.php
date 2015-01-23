@@ -2,6 +2,9 @@
 
 namespace pro\gateways;
 use pro\repositories\UserRepository\UserRepositoryInterface;
+use User;
+use Redirect;
+use DB;
 class UserGateway {
 
 	private $userRepo;
@@ -29,6 +32,30 @@ class UserGateway {
 	}
 	public function delete($id) {
 		return $this->userRepo->delete($id);
+	}
+	public function createOrUpdate($input, $id = null){
+
+		$newrules = [
+	        'username'   => 'required|min:3|max:60',
+	        'firstname'  => 'required',
+	        'lastname'   => 'required',
+	        'email'      => 'required|email',
+	        'type'       => 'required'
+    	];
+    	if (is_null($id)){
+    		$user = new User;
+    		$newrules['password'] = 'required|min:6';
+    		if (isset($input['type'])&&$input['type'] == 3) {
+		    	$newrules['company_name'] = 'required';
+		    }
+		    $user->extendRules($newrules);
+    	}else{
+    		$user = $this->byId($id);
+    		if(is_null($user)) {
+				return Redirect::back();
+			}
+    	}
+		return $this->userRepo->createOrUpdate($input, $user, $id);
 	}
 	public function bySkillTags($input, $skills, $courses){
 		return $this->userRepo->bySkillTags($input, $skills, $courses);

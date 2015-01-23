@@ -112,6 +112,18 @@
 	</div>
 
 	<div class="form-group">
+		{{ Form::label('status', 'Status', ['class'=>'control-label']); }}
+		<div class="type_wrap_1">
+			<label class="radio-inline">
+				 {{ Form::radio('status', '1', $user->status=='1') }} აქტიური
+			</label>
+			<label class="radio-inline">
+				 {{ Form::radio('status', '0', $user->status=='0') }} დაბლოკილი
+			</label>
+		</div>
+	</div>
+
+	<div class="form-group">
 
 		<h4>Skills</h4>
 		@foreach($skills as $skill)

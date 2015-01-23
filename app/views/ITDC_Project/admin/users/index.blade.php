@@ -134,8 +134,8 @@
     $(window).scroll(function(){
        $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
         
-       if ($(window).scrollTop() > 190){
-		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -190 + "px"});
+       if ($(window).scrollTop() > 155){
+		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -155 + "px"});
 		} else {
         $(".fixedheader1").css("top", "0px");
     }

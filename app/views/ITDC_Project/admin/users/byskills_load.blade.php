@@ -1,10 +1,6 @@
 @extends('ITDC_Project.admin.users.index')
 @section('usr_skl')
 
-<div class="">
-	{{$users->appends(Input::all())->links()}}
-</div>
-
 <div class="clear"></div>
 
 <div class="fixedheader1">
