@@ -231,9 +231,21 @@ Route::group(['before' => 'auth_home'], function(){
 	'uses' => 'ProjectController@postCreate'
 	]);
 
+	Route::post('project/bid', [
+	'as'=> 'project-bid',
+	'uses' => 'ProjectController@bid'
+	]);
+
+	
+
 	Route::get('project/browse', [
 		'as'=> 'project-browse',
 		'uses' => 'ProjectController@index'
+	]);
+
+	Route::get('project/show/{id}', [
+		'as'=> 'project-show',
+		'uses' => 'ProjectController@show'
 	]);
 	/*
 	/ Account edit (GET)
