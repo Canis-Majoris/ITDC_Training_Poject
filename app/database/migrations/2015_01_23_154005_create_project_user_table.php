@@ -21,6 +21,7 @@ class CreateProjectUserTable extends Migration {
 			$table->string('duration');
 			$table->text('comment');
 			$table->timestamps();
+			$table->unique( ['user_id','project_id'] );
 		});
 	}
 
