@@ -17,7 +17,7 @@
 	@endif
 
 
-	{{ Form::open(array('route' => array('admin.user.update', $user->id), 'method' => 'PUT')) }}
+	{{ Form::open(['route' => array('admin.user.update', $user->id), 'method' => 'PUT', 'files' => true]) }}
 
 	<div class="form-group">
 		{{ Form::label('username', 'Username', ['class'=>'control-label']); }}
@@ -78,7 +78,10 @@
 
 		{{ Form::input('text', 'company_name', Input::old('company_name'), ['class'=>'form-control', 'id'=>'comp_name_1']); }}
 	</div>
-
+	<div class="form-group">
+		{{ Form::label('file', 'Choose Avatar', ['class'=>'control-label']); }}
+		{{ Form::file('file','',['id'=>'','class'=>'']) }}
+	</div>
 	<div class="phone_container" id="phonewrapper">
 		<?php  $oldPhones = $user->phones; 
 		?>

@@ -10,7 +10,7 @@
 <div class="input_wrapper_3">
 	<h1>Edit Profile</h1>
 	<hr/>
-	{{ Form::open(array('route' => array('edit-post'), 'method' => 'POST')) }}
+	{{ Form::open(['route' => array('edit-post'), 'method' => 'POST', 'files' => true]) }}
 
 
 	<div class="form-group">
@@ -111,7 +111,10 @@
 			</label>
 		</div>
 	</div>
-
+	<div class="form-group">
+		{{ Form::label('file', 'Choose Avatar', ['class'=>'control-label']); }}
+		{{ Form::file('file','',['id'=>'','class'=>'']) }}
+	</div>
 	<div class="phone_container" id="phonewrapper">
 		<?php  
 			$oldPhones = Input::old('phone'); 

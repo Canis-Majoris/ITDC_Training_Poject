@@ -20,7 +20,7 @@
 	<script src="{{ URL::asset('packages/ckeditor/ckeditor.js') }}"></script>
 </head>
 <body>
-	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<nav class="navbar navbar-inverse navbar-fixed-top main_navbar" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -35,11 +35,18 @@
 				
 				<ul class="nav navbar-nav home_navbar">
 				@if(Auth::check())
-					<li class="user_prof_link"><a href="{{ URL::route('user-profile', Auth::user()->username) }}">{{ Auth::user()->username }}</a></li>
-					@if(Auth::user()->type != 0 && Auth::user()->type != 1)
+					<li class="user_prof_link"><a href="{{ URL::route('user-profile', Auth::user()->username) }}">
+						@if(Auth::user()->avatar)
+							<div class="navbar_avatar_wrap">
+								<img src="/uploads/{{ Auth::user()->avatar }}" width="60px" height="60px" />	
+							</div>
+						@endif
+					{{ Auth::user()->username }}
+					</a></li>
+					@if(Auth::user()->type != 1)
 						<li class="pull-right"><a href="{{ URL::route('project-create') }}">Create Project</a></li>
 					@endif
-					
+					<li class="pull-right"><a href="{{ URL::route('project-browse') }}">Browse Projects</a></li>
 					@if(Auth::user()->type == 0)
 						<li class="pull-right"><a href="{{ URL::to('admin/user') }}">Administrator Panel</a></li>
 					@endif
@@ -103,8 +110,8 @@
 	$(window).scroll(function(){
        $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
         
-       if ($(window).scrollTop() > 185){
-		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -185 + "px"});
+       if ($(window).scrollTop() > 105){
+		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -105 + "px"});
 		} else {
         $(".fixedheader1").css("top", "0px");
     }

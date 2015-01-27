@@ -35,7 +35,7 @@ class RemindersController extends BaseController {
 					->with('message_type','danger');
 
 			case Password::REMINDER_SENT:
-				return Redirect::back()->with('status', Lang::get($response))
+				return Redirect::route('home')->with('status', Lang::get($response))
 					->withInput()
 					->with('message_type','success');
 		}

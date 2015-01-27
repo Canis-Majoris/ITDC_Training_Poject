@@ -93,6 +93,12 @@ class AccountController extends BaseController {
 		    $user->code = $code;
 		    $user->active = 0;
 		    $user->status = 0;
+
+		    if (Input::file('file')!=null) {
+				$avatarName=str_random(30).'.'.Input::file('file')->guessClientExtension();
+				Input::file('file')->move('./public/uploads',$avatarName);
+				$user->avatar=$avatarName;
+			}
 			if($user->save()){
 
 				Mail::send('emails.auth.activate', ['link' => URL::route('account-activate', $code), 'username' => $input['username'], 'name' => 'Gigi'], function($message) use($user) {
@@ -173,6 +179,11 @@ class AccountController extends BaseController {
 				}
 			}else{
 				$this->updateSkillsPhones($user, $input['phone']);
+				if (Input::file('file')!=null) {
+					$avatarName=str_random(30).'.'.Input::file('file')->guessClientExtension();
+					Input::file('file')->move('./public/uploads',$avatarName);
+					$user->avatar=$avatarName;
+				}
 				$user->fill($input);
 				if ($user->save()) {
 					$this->updateSkillsPhones($user, $input['phone']);

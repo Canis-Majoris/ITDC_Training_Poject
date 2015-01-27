@@ -76,6 +76,11 @@
 	</div>
 	<div>
 
+	<div class="form-group">
+		{{ Form::label('file', 'Choose Avatar', ['class'=>'control-label']); }}
+		{{ Form::file('file','',array('id'=>'','class'=>'')) }}
+	</div>
+
 	<div class="phone_container" id="phonewrapper">
 		<?php  $oldPhones = Input::old('phone'); ?>
 		<div class="form-group">

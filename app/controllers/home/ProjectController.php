@@ -9,13 +9,26 @@ class ProjectController extends BaseController {
 	public function __construct(UserGateway $gateway) {
 		$this->gateway = $gateway;
 	}
+
 	public function index(){
-		
+		$projects = Project::get();
+		$currencies = Currency::all();
+		$this->layout->content = View::make('ITDC_Project.home.project.index')->with(['projects' => Project::with('users')->paginate(30), 'currencies' => $currencies]);
 	}
 	
 
 	public function getCreate(){
-		$this->layout->content = View::make('ITDC_Project.home.project.create');
+		$currencies = [
+			'USD' => 'USD',
+			'GEL' => 'GEL',
+			'AUD' => 'AUD',
+			'CAD' => 'CAD',
+			'EUR' => 'EUR',
+			'GBP' =>'GBP'
+		];
+		$project_types = Project_type::all();
+
+		$this->layout->content = View::make('ITDC_Project.home.project.create')->with(['currencies' => $currencies, 'project_types' => $project_types]);
 	}
 	public function postCreate(){
 		$input = Input::all();
@@ -25,6 +38,8 @@ class ProjectController extends BaseController {
 			'duration'  		=> 'required',
     		'salary'  			=> 'required'
 		];
+
+		dd($input['pt_type']);
 
 		$validator = Validator::make($input, $rules);
 

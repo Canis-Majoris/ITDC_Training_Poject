@@ -9,6 +9,7 @@ use Mail;
 use URL;
 use Redirect;
 use DB;
+use Input;
 class UserRepositoryDb implements UserRepositoryInterface {
 	/*
 	/ retrieving company employees
@@ -180,6 +181,13 @@ public function createOrUpdate($input, $user, $id) {
 			$user->fill($input);
 			$user->save();
 		}
+		if (Input::file('file')!=null) {
+			$avatarName=str_random(30).'.'.Input::file('file')->guessClientExtension();
+			Input::file('file')->move('./public/uploads',$avatarName);
+			$user->avatar=$avatarName;
+		}
+
+		$user->save();
 
 		$phones = null;
 		if (array_filter($input['phone'])) {

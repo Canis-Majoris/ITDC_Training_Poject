@@ -6,6 +6,12 @@
         {{ Session::get('message') }}
     </div>
 @endif
+@if(Session::has('status'))
+    <div class="alert alert-{{ Session::get('message_type') }} alert-dismissible">
+    	<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+        {{ Session::get('status') }}
+    </div>
+@endif
 <h2>Users</h2>
 <hr>
 
@@ -19,7 +25,7 @@
 			<th class="FLname">Firstname/Lastname</th>
 			<th class="skillshow">Skills</th>
 			<th class="skillshow">Courses</th>
-			@if(Auth::check())
+			@if(Auth::check()&&Auth::user()->type==0)
 				<th class="action1">Action</th>
 			@endif
 		</thead>
@@ -57,7 +63,7 @@
 						<a href="{{ URL::to('#') }}" class="label label-{{ $seletced_course }} bordered_1" {{ $color_shade }}>{{ $course->name.$s.$lvl }}</a>
 					@endforeach
 				</td>
-				@if(Auth::check())
+				@if(Auth::check()&&Auth::user()->type==0)
 					<td class="edit1">
 						<a href="{{ URL::to('admin/user/'.$user->id.'/edit') }}" class="btn btn-primary btn-xs">
 							<i class="glyphicon glyphicon-pencil"></i>

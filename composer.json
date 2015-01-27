@@ -9,7 +9,11 @@
 		"fzaninotto/faker": "1.5.*@dev",
 		"artdarek/oauth-4-laravel": "dev-master",
 		"watson/validating": "0.10.*@dev",
-		"way/generators": "~2.0"
+		"way/generators": "~2.0",
+		"madewithlove/laravel-oauth2": "0.4.*"
+	},
+	"require-dev": {
+    	"barryvdh/laravel-debugbar": "1.8.*@dev"
 	},
 	"autoload": {
 		"classmap": [

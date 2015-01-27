@@ -5,7 +5,7 @@
 	<h1>User Registration</h1>
 	<hr>
 
-	{{ Form::open(array('route' => ['account-create-post'], 'method' => 'POST')) }}
+	{{ Form::open(['route' => ['account-create-post'], 'method' => 'POST', 'files' => true]) }}
 	<div class="form-group">
 		<?php $usernameError =  null ; $error_border_class = null;?>
 		@if($errors->has('username'))
@@ -113,6 +113,10 @@
 		<div class="error_message_small"> 
 			{{ $typeError }}
 		</div>
+	</div>
+	<div class="form-group">
+		{{ Form::label('file', 'Choose Avatar', ['class'=>'control-label']); }}
+		{{ Form::file('file','',['id'=>'','class'=>'']) }}
 	</div>
 	<div class="form-group" id="company_name_input" style="display:none">
 		<?php $company_nameError =  null ; $error_border_class = null;?>

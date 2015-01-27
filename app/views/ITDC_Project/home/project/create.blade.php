@@ -15,7 +15,7 @@
 		@endforeach
 	</ul>
 	@endif
-	{{ Form::open(array('route' => ['project-create-post'], 'method' => 'POST')) }}
+	{{ Form::open(['route' => ['project-create-post'], 'method' => 'POST', 'files' => true]) }}
 	<div class="form-group">
 		{{ Form::label('name', 'Name', ['class'=>'control-label']); }}
 		{{ Form::input('text', 'name', Input::old('name'), ['class'=>'form-control', 'id'=>'Name']) }}
@@ -33,6 +33,26 @@
 		{{ Form::input('text', 'duration', Input::old('duration'), ['class'=>'form-control', 'id'=>'Duration']) }}
 	</div>
 
+	<div class="form-group">
+		{{ Form::label('currency', 'Currency', ['class'=>'control-label']); }}
+		{{ Form::select('currency', $currencies, Input::old('currency'), ['class'=>'form-control', 'id'=>'Duration']) }}
+	</div>
+	<div class="form-group">
+		{{ Form::label('file', 'Upload Needed Files', ['class'=>'control-label']); }}
+		{{ Form::file('file','',array('id'=>'','class'=>'')) }}
+	</div>
+	<div class="pr_type_container">
+		@foreach($project_types as $pt)
+		<div class="checkbox">
+			<label>
+				{{ Form::checkbox('pt_type[]', $pt->id, '', ['class' => 'field']) }}
+				<h3>{{ strtoupper($pt->name) }}</h3>
+				{{  $pt->description }}
+			</label>
+		</div>
+		@endforeach
+	</div>
+	
 	<div class="clear"></div>
 
 	{{ Form::submit('Save', ['class'=>'btn btn-primary pull-right'])}}

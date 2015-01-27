@@ -9,6 +9,9 @@ class UserController extends BaseController {
 
 	public function __construct(UserGateway $gateway) {
 		$this->gateway = $gateway;
+		if (!Auth::check() || Auth::user()->type!=0) {
+			return Redirect::route('home');
+		}
 	}
 
 	public function index() {

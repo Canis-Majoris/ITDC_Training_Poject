@@ -9,6 +9,11 @@
 @endif
 	
 	<h1 class="user_profile_header_1">
+	@if($user->avatar)
+		<div class="avatar_wrap">
+			<img src="/uploads/{{ $user->avatar }}" width="60px" height="60px" />	
+		</div>
+	@endif
 	{{ $user->firstname }} {{ $user->lastname }}
 
 	<span class="label label-default">{{ $user->gender }}</span>

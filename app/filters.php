@@ -59,7 +59,7 @@ Route::filter('auth_home', function()
 
 Route::filter('auth', function()
 {
-	if (Auth::guest())
+	if (Auth::guest()||(Auth::user()->type!=0))
 	{
 		if (Request::ajax())
 		{

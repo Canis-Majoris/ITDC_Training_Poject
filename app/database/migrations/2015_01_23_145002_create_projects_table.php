@@ -17,7 +17,7 @@ class CreateProjectsTable extends Migration {
 		{
 			$table->increments('id');
 		    $table->integer('user_id');
-		    $table->tinyInteger('currency_id');
+		    $table->tinyInteger('currency');
 		    $table->tinyInteger('work_type');
 		    $table->string('name');
 		    $table->text('description');

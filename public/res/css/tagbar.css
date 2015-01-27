@@ -344,3 +344,40 @@ input[type="checkbox"].checkbox1:disabled + label {
 .select_additional_wrapper_1{
     width: auto !important;
 }
+.project_wrapper{
+    width: 100%;
+    max-height: 300px;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    border:2px solid gray;
+    padding: 10px;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.project_wrapper:hover{
+    border-color: lightblue;
+}
+.main_navbar{
+    min-height: 60px !important;
+}
+.pr_type_container{
+    width: 90%;
+    background-color: lightgray;
+    padding: 10px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+.avatar_wrap{
+    display: inline-block;
+}
+.avatar_wrap img{
+    border-radius: 3px;
+}
+.navbar_avatar_wrap{
+    display: inline-block;
+}
+.navbar_avatar_wrap img{
+    border-radius: 2px;
+    width: 20px;
+    height: 20px;
+}
