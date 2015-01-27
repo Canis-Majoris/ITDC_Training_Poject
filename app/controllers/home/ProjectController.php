@@ -64,8 +64,10 @@ class ProjectController extends BaseController {
 	public function bid(){
 		$user = User::find(Auth::user()->id);
 		$input = Input::all();
+		
 		$id=$input['project_id'];
 		$project = Project::find($id);
+		
 		$project_bid_count = $project->bid_count;
 		$project_avg_price = $project->avg_price;
 
