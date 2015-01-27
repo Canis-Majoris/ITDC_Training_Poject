@@ -16,22 +16,48 @@
 	{{$projects->appends(Input::all())->links()}}
 </div>
 <div class="scroll">
-	@foreach($projects as $project)
-		<div class="project_wrapper">
-			<a href="{{ URL::to('#') }}">
-				{{ $project->name}}
-			</a>
-			<p>
-				{{ $project->description}}
-			</p>
-			<div>
-				{{ $project->currency}}
-			</div>
-			<div>
-				{{ $project->user_id}}
-			</div>
-		</div>
-	@endforeach
+
+		<table class="table table-hover table-stripped table-bordered" >
+			<thead>
+				<th width="40%">Project Name</th>
+				<th width="5%">Bids</th>
+				<th width="25%">Skills</th>
+				<th width="15%">Started</th>
+				<th width="15%" align="center">Price</th>
+			</thead>
+			<tbody>
+				@foreach($projects as $project)
+				<tr>
+					<td>
+						<a href="{{ URL::route('project-show', $project->id) }}">
+							{{ $project->name}}
+						</a>
+						<p>
+							{{ $project->description}}
+						</p>
+					</td>
+					<td>
+						s
+					</td>
+					<td>
+						
+					</td>
+					<td>
+						{{ $project->created_at->diffForHumans() }}
+						<?php
+								echo $project->created_at->toFormattedDateString().' ';
+						$k = $project->created_at->diffInMinutes().' ';
+						?>
+					</td>
+					<td align="center">
+						<div>
+							{{ $project->salary}}
+						</div>
+					</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
 </div>
 
 <div class="">
