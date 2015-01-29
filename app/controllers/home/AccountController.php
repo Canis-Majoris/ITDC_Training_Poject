@@ -299,6 +299,19 @@ class AccountController extends BaseController {
 			$this->managePhones($user, $phones);
 		}
 	}
+
+
+
+
+
+
+
+///////////////////////////////
+
+	public function myProjects(){
+		$project = Project::where('user_id', '=', $id);
+		$this->layout->content = View::make('ITDC_Project.home.project.index')->with(['project' => $project]);
+	}
 }
 
 

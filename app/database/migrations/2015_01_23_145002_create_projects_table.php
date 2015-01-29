@@ -17,7 +17,7 @@ class CreateProjectsTable extends Migration {
 		{
 			$table->increments('id');
 		    $table->integer('user_id');
-		    $table->tinyInteger('currency');
+		    $table->string('currency');
 		    $table->tinyInteger('work_type');
 		    $table->string('name');
 		    $table->text('description');
@@ -26,7 +26,7 @@ class CreateProjectsTable extends Migration {
 		    $table->integer('avg_price');
 		    $table->integer('avg_price_hourly');
 		    $table->string('salary');
-		    $table->integer('bid_count');
+		    $table->integer('bid_count')->default(0);
 		    $table->tinyInteger('active');
 		    $table->timestamps();
 		});

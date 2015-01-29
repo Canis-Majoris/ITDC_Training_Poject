@@ -6,13 +6,15 @@
         {{ Session::get('message') }}
     </div>
 @endif
-
-
-<div class="fixedheader1">
-	<h3>Projects</h3>
-	<hr>
+<div>
+	<button class="btn btn-sm btn-default" id="my_projects_btn">My Projects</button>
+	<button class="btn btn-sm btn-default active" id="my_bids_btn">My Bids</button>
 </div>
-<div class="scroll">
+<div class="scroll" id="my_projects_wrapper" style="display:none;">
+		<div class="fixedheader1">
+			<h2>My Projects</h2>
+			<hr>
+		</div>
 
 		<table class="table table-hover table-stripped table-bordered projects_table" >
 			<thead>
@@ -56,6 +58,32 @@
 			</tbody>
 		</table>
 </div>
+
+<div class="scroll" id="my_bids_wrapper">
+
+	<div class="fixedheader1">
+		<h2>My Bids</h2>
+		<hr>
+	</div>
+	@foreach($bids as $bid)
+		<?php 
+			$pr = Project::find($bid->pivot->project_id);
+		?>
+		<div class="my_bids">
+			<h4>Bidded <a href="{{ URL::route('project-show', $pr->id) }}">{{ $pr->name }}</a></h4>
+			<div class="my_bid_price pull-right"><b>My Terms</b> <span>Price: {{$bid->pivot->bid_price }} {{$bid->pivot->bid_currency }}; Timeline: {{$bid->pivot->duration }}</span></div>
+			<br>
+			<p>
+				I Wrote: <span class="my_bid_comment">{{ $bid->pivot->comment }}</span>
+			</p>
+			<br>
+			<a href="{{ URL::route('project-unbid', $pr->id) }}" class="btn btn-xs btn-warning pull-right"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
+			<div class="clear"></div>
+		</div>
+	@endforeach
+
+</div>
+
 <a href="#" class="scrollToTop"></a>
 
 <script type="text/javascript">
@@ -66,5 +94,20 @@ $('.project_description').hover(function () {
     $(this).find('div').toggleClass('hide_1');
 });
 	
+$('#my_projects_btn').on('click', function(){
+	$('#my_projects_wrapper').show();
+	$('#my_bids_wrapper').hide();
+	$('#my_projects_btn').addClass('active');
+	$('#my_bids_btn').removeClass('active');
+
+
+});
+$('#my_bids_btn').on('click', function(){
+	$('#my_projects_wrapper').hide();
+	$('#my_bids_wrapper').show();
+	$('#my_projects_btn').removeClass('active');
+	$('#my_bids_btn').addClass('active');
+
+});
 </script>
 @stop

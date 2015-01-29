@@ -225,7 +225,10 @@ Route::group(['before' => 'auth_home'], function(){
 	'as' => 'project-create',
 	'uses' => 'ProjectController@getCreate'
 	]);
-
+	Route::get('/project/unbid/{id}', [
+	'as' => 'project-unbid',
+	'uses' => 'ProjectController@unbid'
+	]);
 	Route::post('project/create', [
 	'as'=> 'project-create-post',
 	'uses' => 'ProjectController@postCreate'
@@ -241,6 +244,11 @@ Route::group(['before' => 'auth_home'], function(){
 	Route::get('project/browse', [
 		'as'=> 'project-browse',
 		'uses' => 'ProjectController@index'
+	]);
+
+	Route::get('project/my_projects', [
+		'as'=> 'project-my',
+		'uses' => 'ProjectController@my_projects'
 	]);
 
 	Route::get('project/show/{id}', [

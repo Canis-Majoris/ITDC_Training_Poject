@@ -47,7 +47,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 	public function projects(){
 		
-		return $this->belongsToMany('Project')->withPivot('bid_price','duration','comment');
+		return $this->belongsToMany('Project')->withPivot('bid_price','duration','comment', 'user_id', 'project_id', 'bid_currency', 'created_at');
 	}
 	
 	public function skills()

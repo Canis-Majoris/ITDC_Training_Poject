@@ -18,6 +18,8 @@
 	<script src="{{ URL::asset('res/js/users/addphone.js') }}"></script>
 	<script src="{{ URL::asset('res/js/jscroll/jquery.jscroll.min.js') }}"></script>
 	<script src="{{ URL::asset('packages/ckeditor/ckeditor.js') }}"></script>
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+	<link href="{{ URL::asset('res/css/test_style.css') }}" rel="stylesheet">
 </head>
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top main_navbar" role="navigation">
@@ -35,22 +37,24 @@
 				
 				<ul class="nav navbar-nav home_navbar">
 				@if(Auth::check())
-					<li class="user_prof_link"><a href="{{ URL::route('user-profile', Auth::user()->username) }}">
-						@if(Auth::user()->avatar)
-							<div class="navbar_avatar_wrap">
-								<img src="/uploads/{{ Auth::user()->avatar }}" width="60px" height="60px" />	
-							</div>
-						@endif
-					{{ Auth::user()->username }}
-					</a></li>
-					@if(Auth::user()->type != 1)
-						<li class="pull-right"><a href="{{ URL::route('project-create') }}">Create Project</a></li>
-					@endif
-					<li class="pull-right"><a href="{{ URL::route('project-browse') }}">Browse Projects</a></li>
+					<li class="user_prof_link pull-left">
+						<a href="{{ URL::route('user-profile', Auth::user()->username) }}">
+							@if(Auth::user()->avatar)
+								<div class="navbar_avatar_wrap">
+									<img src="/uploads/{{ Auth::user()->avatar }}" width="60px" height="60px" />	
+								</div>
+							@endif
+							{{ Auth::user()->username }}
+						</a>
+					</li>
+					<li class="pull-left"><a href="{{ URL::route('home') }}">Users</a></li>
+					<li class="pull-left"><a href="{{ URL::route('project-create') }}">Create Project</a></li>
+					<li class="pull-left"><a href="{{ URL::route('project-browse') }}">Browse Projects</a></li>
+					<li class="pull-left"><a href="{{ URL::route('project-my') }}">My Projects</a></li>
 					@if(Auth::user()->type == 0)
-						<li class="pull-right"><a href="{{ URL::to('admin/user') }}">Administrator Panel</a></li>
+						<li class="pull-left"><a href="{{ URL::to('admin/user') }}">Administrator Panel</a></li>
 					@endif
-					<li class=""><a href="{{ URL::route('account-sign-out') }}">Log Out</a></li>
+					<li class="pull-left"><a href="{{ URL::route('account-sign-out') }}">Log Out</a></li>
 				@endif
 				</ul>
 				@if(!Auth::check())
@@ -104,7 +108,103 @@
 	<div class="container users_skills_data">
 		@yield('ragac')
 	</div><!-- /.container -->
+<!--////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+	<section class="contact" id="contact">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <div class="alert alert-success hidden" id="contactSuccess">
+                    <strong>Success!</strong> Your message has been sent to us.
+                </div>
+
+                <div class="alert alert-error hidden" id="contactError">
+                    <strong>Error!</strong> There was an error sending your message.
+                </div>
+
+                <h2 class="short"><strong>Contact</strong> Us</h2>
+
+                <form class="clearfix" accept-charset="utf-8" method="get" action="#">
+                    <div class="row">
+                        <div class="col-sm-6 form-group">
+                            <label for="name">Name</label>
+                            <input type="text" placeholder="" value="" name="name" id="name"
+                                   class="form-control input-lg">
+                        </div>
+
+                        <div class="col-sm-6 form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" placeholder="" value="" name="email" id="email"
+                                   class="form-control input-lg">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 form-group">
+                            <label for="message">Message</label>
+                            <textarea rows="4" name="message" id="message" class="form-control"></textarea>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success btn-xlg" type="submit">Send Message</button>
+                </form>
+            </div>
+            <div class="col-md-offset-1 col-md-5">
+                <br/>
+                <h4 class="pull-top">Get in <strong>touch</strong></h4>
+
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget leo at velit imperdiet
+                    varius. In eu ipsum vitae velit congue iaculis vitae at risus.</p>
+
+                <hr>
+
+                <h4>The <strong>Office</strong></h4>
+                <ul class="unstyled">
+                    <li><i class="icon-map-marker"></i> <strong>Address:</strong> 1234 Street Name, City Name, United
+                        States
+                    </li>
+                    <li><i class="icon-phone"></i> <strong>Phone:</strong> (123) 456-7890</li>
+                    <li><i class="icon-envelope"></i> <strong>Email:</strong> <a href="mailto:mail@example.com">mail@example.com</a>
+                    </li>
+                </ul>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer id="footer">
+    <div class="footer-copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <p>&copy; Copyright 2015 ITDC Project TOP SECRET CLASSIFIED DO NOT PUBLISH. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-5">
+                    <nav id="footer-menu">
+                        <ul>
+                            <li><a href="#">FAQ's</a></li>
+                            <li><a href="#">Sitemap</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
+
+
 
 <script type="text/javascript">
 	$(window).scroll(function(){

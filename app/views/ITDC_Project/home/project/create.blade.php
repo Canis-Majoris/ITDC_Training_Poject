@@ -29,13 +29,12 @@
 		{{ Form::input('number', 'salary', Input::old('salary'), ['class'=>'form-control', 'id'=>'Salary']) }}
 	</div>
 	<div class="form-group">
-		{{ Form::label('duration', 'Duration', ['class'=>'control-label']); }}
-		{{ Form::input('text', 'duration', Input::old('duration'), ['class'=>'form-control', 'id'=>'Duration']) }}
-	</div>
-
-	<div class="form-group">
 		{{ Form::label('currency', 'Currency', ['class'=>'control-label']); }}
 		{{ Form::select('currency', $currencies, Input::old('currency'), ['class'=>'form-control', 'id'=>'Duration']) }}
+	</div>
+	<div class="form-group">
+		{{ Form::label('duration', 'Duration', ['class'=>'control-label']); }}
+		{{ Form::select('duration', $timespan, Input::old('duration'), ['class'=>'form-control']) }}
 	</div>
 	<div class="form-group">
 		{{ Form::label('file', 'Upload Needed Files', ['class'=>'control-label']); }}

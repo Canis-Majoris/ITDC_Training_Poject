@@ -8,10 +8,10 @@ use DB;
 class UserGateway {
 
 	private $userRepo;
+
 	public function __construct(UserRepositoryInterface $userRepo) {
 		$this->userRepo = $userRepo;
 	}
-
 	public function all() {
 		return $this->userRepo->all();
 	}
@@ -36,25 +36,26 @@ class UserGateway {
 	public function createOrUpdate($input, $id = null){
 
 		$newrules = [
-	        'username'   => 'required|min:3|max:60',
+	        'username'   => 'required|min:3|max:60|unique:users',
 	        'firstname'  => 'required',
 	        'lastname'   => 'required',
-	        'email'      => 'required|email',
+	        'email'      => 'required|email|unique:users',
 	        'type'       => 'required'
     	];
+
     	if (is_null($id)){
     		$user = new User;
     		$newrules['password'] = 'required|min:6';
     		if (isset($input['type'])&&$input['type'] == 3) {
 		    	$newrules['company_name'] = 'required';
 		    }
-		    $user->extendRules($newrules);
     	}else{
     		$user = $this->byId($id);
     		if(is_null($user)) {
 				return Redirect::back();
 			}
     	}
+    	$user->extendRules($newrules);
 		return $this->userRepo->createOrUpdate($input, $user, $id);
 	}
 	public function bySkillTags($input, $skills, $courses){

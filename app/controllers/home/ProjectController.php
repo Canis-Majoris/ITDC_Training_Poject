@@ -1,85 +1,47 @@
 <?php
-use pro\gateways\UserGateway;
+use pro\gateways\ProjectGateway;
+
 class ProjectController extends BaseController {
 	protected $layout = 'layouts.home';
-	private $gateway; 
-	public function __construct(UserGateway $gateway) {
+	private $gateway;
+
+	public function __construct(ProjectGateway $gateway) {
 		$this->gateway = $gateway;
 	}
 	public function index(){
-		//$projects = Project::get();
-		$currencies = Currency::all();
-		$projects = Project::with('users');
-				print_r($projects);
-				die;
-		foreach ($projects as $item) {
-
-		}
-		$this->layout->content = View::make('ITDC_Project.home.project.index')->with(['projects' => Project::with('users')->paginate(30), 'currencies' => $currencies, ]);
+		$projects = $this->gateway->all();
+		$this->layout->content = View::make('ITDC_Project.home.project.index')->with(['projects' => $projects]);
 	}
 	
 	public function getCreate(){
-		$currencies = [
-			'USD' => 'USD',
-			'GEL' => 'GEL',
-			'AUD' => 'AUD',
-			'CAD' => 'CAD',
-			'EUR' => 'EUR',
-			'GBP' =>'GBP'
-		];
-		$project_types = Project_type::all();
-		$this->layout->content = View::make('ITDC_Project.home.project.create')->with(['currencies' => $currencies, 'project_types' => $project_types]);
+		$data = $this->gateway->getCreate();
+		$this->layout->content = View::make('ITDC_Project.home.project.create')
+			->with(['currencies' => $data['currencies'], 'project_types' => $data['project_types'], 'timespan' => $data['timespan']]);
 	}
 	public function postCreate(){
 		$input = Input::all();
-		$rules = [
-			'name'       		=> 'required|max:255',
-			'description'    	=> 'required',
-			'duration'  		=> 'required',
-    		'salary'  			=> 'required'
-		];
-		$validator = Validator::make($input, $rules);
-		if ($validator->fails()) {
-			return Redirect::route('project-create')
-			->withErrors($validator)
-			->withInput();
-		}else{
-		    $project = new Project;
-		    $input['user_id'] = Auth::user()->id;
-		    $project->fill($input);
-		    $project->active = 1;
-			if($project->save()){
-				return Redirect::route('home')
-				->with('message_type','success')
-				->with('message', 'Project Posted');
-			}
-		}
+		$this->gateway->create($input);
+		 return Redirect::route('home')
+			->with('message_type','success')
+			->with('message', 'Project Posted');
 	}
-
 	public function show($id){
-		$project = Project::find($id);
-		$this->layout->content = View::make('ITDC_Project.home.project.show')->with(['project' => $project]);
+		$data = $this->gateway->show($id);
+		$this->layout->content = View::make('ITDC_Project.home.project.show')
+		->with(['project' => $data['project'], 'bidders' => $data['bidders'], 'currencies' => $data['currencies'],
+				'timespan' => $data['timespan'], 'creator' => $data['creator'], 'currUser' => $data['currUser']]);
 	}
-
 	public function bid(){
-		$user = User::find(Auth::user()->id);
 		$input = Input::all();
-		
-		$id=$input['project_id'];
-		$project = Project::find($id);
-		
-		$project_bid_count = $project->bid_count;
-		$project_avg_price = $project->avg_price;
-
-		$project_avg_price = ($project_avg_price * $project_bid_count + $input['price'])*($project_bid_count+1);
-		$project_bid_count++;
-		$project->save();
-		$sth = array('user_id'=>Auth::user()->id,'project_id'=>$id, 'bid_price'=>$input['price'], 'comment'=>$input['description'], 'duration'=>$input['duration']);
-		$project->users()->attach($id, $sth);
-
-
+		$data = $this->gateway->bid($input);
+		return $data;
 	}
-
-
-	
+	public function my_projects(){
+		$data = $this->gateway->my();
+		$this->layout->content = View::make('ITDC_Project.home.project.my_projects')->with(['projects' => $data['projects'], 'bids' => $data['bids']]);
+	}
+	public function unbid($id){
+		$this->gateway->unbid($id);
+		return Redirect::back();
+	}
 }

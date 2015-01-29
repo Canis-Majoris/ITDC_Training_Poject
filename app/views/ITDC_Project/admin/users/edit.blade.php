@@ -169,7 +169,7 @@
 	<div class="clear"></div>
 
 	{{ Form::submit('Save', ['class'=>'btn btn-primary pull-right'])}}
-
+	<div class="clear"></div>
 	{{ Form::close(); }}
 </div>
 <script type="text/javascript">

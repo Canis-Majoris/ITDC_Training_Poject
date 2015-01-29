@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProjectUserTable extends Migration {
+class CreateCommentsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,17 +12,15 @@ class CreateProjectUserTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('project_user', function(Blueprint $table)
+		Schema::create('comments', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('user_id');
+			$table->integer('comment_id');
+			$table->string('comment_type');
 			$table->integer('project_id');
-			$table->float('bid_price');
-			$table->string('bid_currency');
-			$table->string('duration');
-			$table->text('comment');
+			$table->string('body');
+
 			$table->timestamps();
-			$table->unique( ['user_id','project_id'] );
 		});
 	}
 
@@ -33,7 +31,7 @@ class CreateProjectUserTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('project_user');
+		Schema::drop('comments');
 	}
 
 }
