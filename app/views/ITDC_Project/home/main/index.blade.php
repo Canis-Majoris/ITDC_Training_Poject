@@ -14,11 +14,6 @@
 @endif
 <h2>Users</h2>
 <hr>
-
-<div class="">
-	{{$users->appends(Input::all())->links()}}
-</div>
-
 <div class="fixedheader1">
 	<table class="table table-bordered table-hover table-striped">
 		<thead>

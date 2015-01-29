@@ -84,8 +84,11 @@
  						{{ $currBid->bid_price }} {{ $currBid->bid_currency }}
  						<br>
  						{{ $currBid->duration }}
+ 						@if($currUser->id === $bidder->id)
+ 							<br><br>
+							<a href="{{ URL::route('project-unbid', $project->id) }}" class="btn btn-xs btn-warning pull-right unbid"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
+ 						@endif
 					</td>
-					
 					
 				</tr>
 			@endforeach
@@ -104,6 +107,11 @@
 			<span class="glyphicon glyphicon-remove"></span>
 		</button>
 		<br>
+
+		@foreach($errors->all() as $error)
+		 	<li><h4>{{ $error }}</h4></li>
+		@endforeach
+		
 		{{ Form::open(['route' => ['project-bid'], 'method' => 'POST', 'files' => true]) }}
 			{{ Form::hidden('project_id', $project->id) }}
 			<div class="form-group">
@@ -126,7 +134,13 @@
 </div>
 <script>
 
-	
+	$('.unbid').on("click", function(e){
+		if(confirm("Do you really want to Unbid?")){
+
+		}else{
+			e.preventDefault();
+		}	
+	});
 
 	$('.bid_here').on('click',function(){
 		$('#show-bid-form').show();

@@ -42,11 +42,7 @@
 						
 					</td>
 					<td>
-						{{ $project->created_at->diffForHumans() }}
-						<?php
-								echo $project->created_at->toFormattedDateString().' ';
-						$k = $project->created_at->diffInMinutes().' ';
-						?>
+						{{ $project->created_at->diffForHumans() }}; {{ $project->created_at->toFormattedDateString() }}
 					</td>
 					<td>
 						{{ $project->salary}} {{ $project->currency}}

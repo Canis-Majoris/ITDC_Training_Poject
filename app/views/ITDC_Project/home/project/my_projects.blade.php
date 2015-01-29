@@ -6,6 +6,9 @@
         {{ Session::get('message') }}
     </div>
 @endif
+<head>
+	<title>My Staff</title>
+</head>
 <div>
 	<button class="btn btn-sm btn-default" id="my_projects_btn">My Projects</button>
 	<button class="btn btn-sm btn-default active" id="my_bids_btn">My Bids</button>
@@ -77,7 +80,7 @@
 				I Wrote: <span class="my_bid_comment">{{ $bid->pivot->comment }}</span>
 			</p>
 			<br>
-			<a href="{{ URL::route('project-unbid', $pr->id) }}" class="btn btn-xs btn-warning pull-right"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
+			<a href="{{ URL::route('project-unbid', $pr->id) }}" class="btn btn-xs btn-warning pull-right unbid"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
 			<div class="clear"></div>
 		</div>
 	@endforeach
@@ -89,6 +92,14 @@
 <script type="text/javascript">
 
 /////// pagination wrap
+
+$('.unbid').on("click", function(e){
+	if(confirm("Do you really want to Unbid?")){
+
+	}else{
+		e.preventDefault();
+	}	
+});
 
 $('.project_description').hover(function () {
     $(this).find('div').toggleClass('hide_1');

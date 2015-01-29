@@ -126,15 +126,15 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 
 			$this->exchange = new RuntimeExchange;
 
+			$this->exchange->add('GEL', 2.05);
 			$this->exchange->add('USD', 1.0);
 			$this->exchange->add('EUR', 0.89);
-			$this->exchange->add('GEL', 2.05);
 			$this->exchange->add('AUD', 1.28);
 			$this->exchange->add('GBP', 0.66);
 			$this->exchange->add('CAD', 1.25);
 
 			$currency = new Currency($this->exchange, new RuntimeFormat);
-			$convertedPrice = $currency->convert($input['price'])->from($input['bid_currency'])->to('USD')->fifty()->value();
+			$convertedPrice = $currency->convert($input['price'])->from($input['bid_currency'])->to($project->currency)->fifty()->value();
 			$project_bid_count = $project->bid_count;
 			$project_avg_price = $project->avg_price;
 
@@ -196,12 +196,12 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 		$project = $this->byId($id);
 
 		$currency = new Currency($this->exchange, new RuntimeFormat);
-		$convertedPrice = $currency->convert($bid->bid_price)->from($bid->bid_currency)->to('USD')->fifty()->value();
+		$convertedPrice = $currency->convert($bid->bid_price)->from($bid->bid_currency)->to($project->currency)->fifty()->value();
 
 		$project_bid_count = $project->bid_count;
 		
-		if ($project_bid_count <2 ) {
-			$project->avg_price = $convertedPrice;
+		if ($project_bid_count == 1) {
+			$project->avg_price = 0;
 		}else{
 			$project->avg_price = ($project->avg_price * $project_bid_count - $convertedPrice)/($project_bid_count - 1);
 		}

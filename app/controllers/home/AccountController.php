@@ -1,12 +1,13 @@
 <?php
 use pro\gateways\UserGateway;
+use pro\gateways\AccountGateway;
 
 class AccountController extends BaseController {
 
 	protected $layout = 'layouts.home';
 	private $gateway; 
 
-	public function __construct(UserGateway $gateway) {
+	public function __construct(AccountGateway $gateway) {
 		$this->gateway = $gateway;
 	}
 

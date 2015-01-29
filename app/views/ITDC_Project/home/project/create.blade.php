@@ -41,6 +41,8 @@
 		{{ Form::file('file','',array('id'=>'','class'=>'')) }}
 	</div>
 	<div class="pr_type_container">
+		<h2>Project Type</h2>
+		<hr>
 		@foreach($project_types as $pt)
 		<div class="checkbox">
 			<label>

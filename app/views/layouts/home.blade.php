@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="icon" href="../../favicon.ico">
-	<title>Students</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<link href="{{ URL::asset('res/css/tagbar.css') }}" rel="stylesheet">
 	<link href="{{ URL::asset('res/css/bootstrap.css') }}" rel="stylesheet">
