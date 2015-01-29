@@ -182,7 +182,7 @@ public function createOrUpdate($input, $user, $id) {
 			$user->save();
 		}
 		if (Input::file('file')!=null) {
-			$avatarName=str_random(30).'.'.Input::file('file')->guessClientExtension();
+			$avatarName = str_random(40).'.'.Input::file('file')->guessClientExtension();
 			Input::file('file')->move('./public/uploads',$avatarName);
 			$user->avatar=$avatarName;
 		}
