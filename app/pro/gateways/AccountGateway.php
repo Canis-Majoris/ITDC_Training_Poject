@@ -6,6 +6,7 @@ use User;
 use Redirect;
 use DB;
 use Account;
+use Validator;
 class AccountGateway {
 
 	private $accountRepo;
@@ -34,30 +35,77 @@ class AccountGateway {
 	public function delete($id) {
 		return $this->accountRepo->delete($id);
 	}
+	public function signIn($input) {
+
+		$validator = Validator::make($input, [
+			'email_login'    => 'required',
+			'password_login' => 'required'
+		]);
+
+		if ($validator->fails()) {
+			return Redirect::back()
+				->withErrors($validator)
+				->withInput();
+		}else{
+			return $this->accountRepo->signIn($input);
+		}
+	}
+
 	public function createOrUpdate($input, $id = null){
 
-		$newrules = [
-	        'username'   => 'required|min:3|max:60|unique:users',
-	        'firstname'  => 'required',
-	        'lastname'   => 'required',
-	        'email'      => 'required|email|unique:users',
-	        'type'       => 'required'
-    	];
+		$rules = [
+			'firstname'  		=> 'required',
+    		'lastname'  		=> 'required',
+		];
+		$newRules = [];
 
     	if (is_null($id)){
+  			//creating new user
     		$user = new User;
-    		$newrules['password'] = 'required|min:6';
-    		if (isset($input['type'])&&$input['type'] == 3) {
-		    	$newrules['company_name'] = 'required';
-		    }
+    		$newRules = [
+				'username'   => 'required|max:30|min:3|unique:users',
+				'password'   => 'required|min:6|confirmed',
+				'type' 		 => 'required',
+				'email'		 => 'required|max:70|email|unique:users'
+			];
+
+    		if ($input['type'] == 3) {
+				$newRules['company_name'] = 'required';
+			}
     	}else{
+    		//updating user
     		$user = $this->byId($id);
     		if(is_null($user)) {
 				return Redirect::back();
 			}
+
+			$emailRule = 'required|max:70|email';
+
+			if ($input['email'] !== $user->email) {
+				$emailRule .= '|unique:users';
+			}
+
+			$newRules['email'] = $emailRule;
+
+			//updating passowrd
+			if (isset($input['pass_change'])) {
+				$newRules['old_password'] = 'required|min:6';
+				$newRules['password'] = 'required|min:6|confirmed';
+			}
     	}
-    	$user->extendRules($newrules);
+    	//form validation
+		$rules = array_merge($rules, $newRules);
+		$validator = Validator::make($input, $rules);
+    	if ($validator->fails()) {
+			return Redirect::back()
+			->withErrors($validator)
+			->withInput();
+		}
+
 		return $this->accountRepo->createOrUpdate($input, $user, $id);
+	}
+	public function activate($code){
+		return $this->accountRepo->activate($code);
 	}
 	public function bySkillTags($input, $skills, $courses){
 		return $this->accountRepo->bySkillTags($input, $skills, $courses);

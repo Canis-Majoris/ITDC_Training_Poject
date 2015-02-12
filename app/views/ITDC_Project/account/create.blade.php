@@ -67,11 +67,11 @@
 
 	<div class="form-group">
 		<?php $confirm_passwordError =  null ; $error_border_class = null;?>
-		@if($errors->has('confirm_password'))
-			<?php $confirm_passwordError =  $errors->first('confirm_password') ; $error_border_class = 'error_border';?>
+		@if($errors->has('password_confirmation'))
+			<?php $confirm_passwordError =  $errors->first('password_confirmation') ; $error_border_class = 'error_border';?>
 		@endif
-		{{ Form::label('confirm_password', 'Confirm Password *', ['class'=>'control-label']); }}
-		{{ Form::input('password', 'confirm_password', '', ['class'=>'form-control '.$error_border_class, 'id'=>'confirm_password']) }}
+		{{ Form::label('password_confirmation', 'Confirm Password *', ['class'=>'control-label']); }}
+		{{ Form::input('password', 'password_confirmation', '', ['class'=>'form-control '.$error_border_class, 'id'=>'password_confirmation']) }}
 		<div class="error_message_small"> 
 			{{ $confirm_passwordError }}
 		</div>

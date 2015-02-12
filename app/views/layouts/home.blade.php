@@ -49,7 +49,7 @@
 					<li class="pull-left"><a href="{{ URL::route('home') }}">Users</a></li>
 					<li class="pull-left"><a href="{{ URL::route('project-create') }}">Create Project</a></li>
 					<li class="pull-left"><a href="{{ URL::route('project-browse') }}">Browse Projects</a></li>
-					<li class="pull-left"><a href="{{ URL::route('project-my') }}">My Projects</a></li>
+					<li class="pull-left"><a href="{{ URL::route('project-my') }}">My Staff</a></li>
 					@if(Auth::user()->type == 0)
 						<li class="pull-left"><a href="{{ URL::to('admin/user') }}">Administrator Panel</a></li>
 					@endif

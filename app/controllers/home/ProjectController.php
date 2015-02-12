@@ -9,8 +9,8 @@ class ProjectController extends BaseController {
 		$this->gateway = $gateway;
 	}
 	public function index(){
-		$projects = $this->gateway->all();
-		$this->layout->content = View::make('ITDC_Project.home.project.index')->with(['projects' => $projects]);
+		//$projects = $this->gateway->all();
+		$this->layout->content = View::make('ITDC_Project.home.project.index');
 	}
 	
 	public function getCreate(){
@@ -27,9 +27,15 @@ class ProjectController extends BaseController {
 	}
 	public function show($id){
 		$data = $this->gateway->show($id);
+		$types = $data['project']->project_type_id;
+		$typeArr = explode('|', rtrim($types, '|'));
+		$typeDesc = Config::get('projects.type');
+		$currencyArr = Config::get('projects.currency');
 		$this->layout->content = View::make('ITDC_Project.home.project.show')
 		->with(['project' => $data['project'], 'bidders' => $data['bidders'], 'currencies' => $data['currencies'],
-				'timespan' => $data['timespan'], 'creator' => $data['creator'], 'currUser' => $data['currUser']]);
+				'timespan' => $data['timespan'], 'creator' => $data['creator'], 'currUser' => $data['currUser'],
+				'types' => $typeArr, 'typeDesc' => $typeDesc, 'currencyArr' => $currencyArr
+		]);
 	}
 	public function bid(){
 		$input = Input::all();
@@ -43,5 +49,14 @@ class ProjectController extends BaseController {
 	public function unbid($id){
 		$this->gateway->unbid($id);
 		return Redirect::back();
+	}
+
+	public function showSorted() {
+	   if(Request::ajax()) {
+	   		
+	   }else{
+	   		$input = Input::all();
+			return $this->gateway->sort($input);
+	   }
 	}
 }

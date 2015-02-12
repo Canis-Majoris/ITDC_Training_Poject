@@ -56,6 +56,9 @@ class ProjectGateway {
 			return $this->projectRepo->bid($input);
 		}
 	}
+	public function sort($input){
+		return $this->projectRepo->sort($input);
+	}
 	public function my(){
 		return $this->projectRepo->my();
 	}

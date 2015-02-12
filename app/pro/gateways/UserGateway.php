@@ -35,7 +35,7 @@ class UserGateway {
 	}
 	public function createOrUpdate($input, $id = null){
 
-		$newrules = [
+		$newRules = [
 	        'username'   => 'required|min:3|max:60|unique:users',
 	        'firstname'  => 'required',
 	        'lastname'   => 'required',
@@ -45,9 +45,9 @@ class UserGateway {
 
     	if (is_null($id)){
     		$user = new User;
-    		$newrules['password'] = 'required|min:6';
+    		$newRules['password'] = 'required|min:6';
     		if (isset($input['type'])&&$input['type'] == 3) {
-		    	$newrules['company_name'] = 'required';
+		    	$newRules['company_name'] = 'required';
 		    }
     	}else{
     		$user = $this->byId($id);
@@ -55,7 +55,7 @@ class UserGateway {
 				return Redirect::back();
 			}
     	}
-    	$user->extendRules($newrules);
+    	$user->extendRules($newRules);
 		return $this->userRepo->createOrUpdate($input, $user, $id);
 	}
 	public function bySkillTags($input, $skills, $courses){

@@ -234,6 +234,12 @@ Route::group(['before' => 'auth_home'], function(){
 	'uses' => 'ProjectController@postCreate'
 	]);
 
+
+	Route::any('project/sort', [
+	'as'=> 'project-sort',
+	'uses' => 'ProjectController@showSorted'
+	]);
+
 	Route::post('project/bid', [
 	'as'=> 'project-bid',
 	'uses' => 'ProjectController@bid'

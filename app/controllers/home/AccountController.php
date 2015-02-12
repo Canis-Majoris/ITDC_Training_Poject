@@ -12,7 +12,7 @@ class AccountController extends BaseController {
 	}
 
 	public function getSignIn(){
-
+		#############
 	}
 
 	public function getSignOut(){
@@ -22,115 +22,18 @@ class AccountController extends BaseController {
 
 	public function postSignIn(){
 		$input = Input::All();
-		$validator = Validator::make($input, [
-			'email_login'    => 'required',
-			'password_login' => 'required'
-		]);
-
-		if ($validator->fails()) {
-			return Redirect::back()
-				->withErrors($validator)
-				->withInput();
-		}else{
-
-			$remember = (Input::has('remember')) ? true : false;
-			$cred = [
-				
-				'password' => $input['password_login'],
-				'active' => 1,
-				'status' => 1
-			];
-			if(filter_var($input['email_login'], FILTER_VALIDATE_EMAIL)) {
-				$cred['email'] = $input['email_login'];
-			}else{
-				$cred['username'] = $input['email_login'];
-			}
-			$auth = Auth::attempt($cred, $remember);
-
-			if ($auth) {
-				return Redirect::back();
-			}
-		}
-
-		return Redirect::back()
-			->with('message_type','danger')
-			->with('message', 'Oops... your Email/Password is wrong, or you have not activated your account yet.')
-			->withInput();
+		return $this->gateway->signIn($input);
 	}
-
 	public function getCreate(){
 		$this->layout->content = View::make('ITDC_Project.account.create');
 	}
+
 	public function postCreate(){
 		$input = Input::all();
-		$rules = [
-			'email'       		=> 'required|max:70|email|unique:users',
-			'username'    		=> 'required|max:30|min:3|unique:users',
-			'firstname'  		=> 'required',
-    		'lastname'  		=> 'required',
-    		'type'       		=> 'required',
-			'password'    		=> 'required|min:6',
-			'confirm_password'  => 'required|same:password'
-		];
-
-		if ($input['type'] == 3) {
-			$rules['company_name'] = 'required';
-		}
-
-		$validator = Validator::make($input, $rules);
-
-		if ($validator->fails()) {
-			return Redirect::route('account-create')
-			->withErrors($validator)
-			->withInput();
-		}else{
-			if (isset($input['password'])) {
-	    		$input['password'] = Hash::make($input['password']);
-		    }
-		    $user = new User;
-		    $user->fill($input);
-
-		    $code = str_random(60);
-		    $user->code = $code;
-		    $user->active = 0;
-		    $user->status = 0;
-
-		    if (Input::file('file')!=null) {
-				$avatarName = str_random(40).'.'.Input::file('file')->guessClientExtension();
-				Input::file('file')->move('./public/uploads',$avatarName);
-				$user->avatar=$avatarName;
-			}
-			if($user->save()){
-
-				Mail::send('emails.auth.activate', ['link' => URL::route('account-activate', $code), 'username' => $input['username'], 'name' => 'Gigi'], function($message) use($user) {
-					$message->to($user->email, $user->username)->subject('ITDC Project Account Activation');
-				});
-
-				return Redirect::route('home')
-				->with('message_type','success')
-				->with('message', 'User added successfully, check yout Email to confirm registration.');
-			}
-		}
+		return $this->gateway->createOrUpdate($input);
 	}
 	public function getActivate($code){
-		$user = User::where('code', '=', $code)->where('active', '=', 0);
-		if ($user->count()) {
-			$user = $user->first();
-			$user->active = 1;
-			$user->status = 1;
-			$user->code = '';
-
-			if($user->save()){
-				return Redirect::route('home')
-					->with('message_type','success')
-					->with('message', 'Activated! you can now sign in.');
-
-			}
-		}
-
-		return Redirect::route('home')
-			->with('message_type','danger')
-			->with('message', 'Oops... We could not activate your account. Please try again later.');
+		return $this->gateway->activate($code);
 	}
 	
 
@@ -142,63 +45,8 @@ class AccountController extends BaseController {
 
 	public function postEdit(){
 		$input = Input::all();
-		$cred = [
-			'firstname'        => 'required',
-			'lastname'         => 'required',
-			'email'            => 'required'
-		];
-		if (isset($input['pass_change'])) {
-			$cred['old_password'] = 'required';
-			$cred['password'] = 'required|min:6';
-			$cred['confirm_password'] = 'required|same:password';
-		}
-		//dd($input['description']);
-		$validator = Validator::make($input, $cred);
-		if ($validator->fails()) {
-			return Redirect::back()
-			    ->withErrors($validator)
-			 	->withInput();
-		}else{
-			$user = User::find(Auth::user()->id);
-			if (isset($input['pass_change'])) {
-				$old_password = $input['old_password'];
-				$password = $input['password'];
-				if (Hash::check($old_password, $user->getAuthPassword())) {
-					$user->fill($input);
-					$user->password = Hash::make($password);
-					if ($user->save()) {
-						$this->updateSkillsPhones($user, $input['phone']);
-						return Redirect::route('home')
-							->with('message_type','success')
-							->with('message', 'Your account has been successfully edited!');
-					}
-				}else{
-					return Redirect::back()
-						->withInput()
-					 	->with('message_type','danger')
-						->with('message', 'Yout old password is incorrect.');
-				}
-			}else{
-				$this->updateSkillsPhones($user, $input['phone']);
-				if (Input::file('file')!=null) {
-					$avatarName=str_random(30).'.'.Input::file('file')->guessClientExtension();
-					Input::file('file')->move('./public/uploads',$avatarName);
-					$user->avatar=$avatarName;
-				}
-				$user->fill($input);
-				if ($user->save()) {
-					$this->updateSkillsPhones($user, $input['phone']);
-					return Redirect::route('home')
-						->with('message_type','success')
-						->with('message', 'Your account has been successfully edited!');
-				}
-			}
-		}
-		return Redirect::back()
-			->withInput()
-		 	->with('message_type','danger')
-			->with('message', 'Aaghhh... We could not edit yout profile...');
-
+		$id = Auth::user()->id;
+		return $this->gateway->createOrUpdate($input, $id);
 	 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	 /*
@@ -266,54 +114,9 @@ class AccountController extends BaseController {
 */
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
 /////////////////////////////////////////////////////////
 
-	public function managePhones($user, $phones){
-			$allPhones = [];
-			foreach ($phones as $k => $v) {
-				if ($v!=null) {
-					$allPhones[] = new Phone(['phone' => $v]);
-				}
-			}
-			$user->phones()->delete();
-			$user->phones()->saveMany($allPhones);
-	}
-
-	public function manageSkills($user, $skills, $levels){
-		$sl = [];
-		foreach ($skills as $skill) {
-			if (!empty($levels[$skill])) {
-				$sl[$skill] = ['level' => $levels[$skill]];
-			}
-			$user->skills()->sync($sl);
-		}
-	}
-
-	public function updateSkillsPhones($user, $phones=null, $skills=null, $levels=null){
-		if (isset($skills) && isset($levels)) {
-			$this->manageSkills($user, $skills, $levels);
-		}
-		if (isset($phones)) {
-			$this->managePhones($user, $phones);
-		}
-	}
-
-
-
-
-
-
-
 ///////////////////////////////
-
-	public function myProjects(){
-		$project = Project::where('user_id', '=', $id);
-		$this->layout->content = View::make('ITDC_Project.home.project.index')->with(['project' => $project]);
-	}
 }
 
 
-?>

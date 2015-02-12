@@ -88,11 +88,11 @@
 
 		<div class="form-group">
 			<?php $confirm_passwordError =  null ; $error_border_class = null;?>
-			@if($errors->has('confirm_password'))
-				<?php $confirm_passwordError =  $errors->first('confirm_password') ; $error_border_class = 'error_border';?>
+			@if($errors->has('password_confirmation'))
+				<?php $confirm_passwordError =  $errors->first('password_confirmation') ; $error_border_class = 'error_border';?>
 			@endif
 			{{ Form::label('password', 'Confirm Password', ['class'=>'control-label']); }}
-			{{ Form::input('password', 'confirm_password', '', ['class'=>'form-control disp_pas_change '.$error_border_class, 'id'=>'password', 'placeholder' => 'Confirm new password']) }}
+			{{ Form::input('password', 'password_confirmation', '', ['class'=>'form-control disp_pas_change '.$error_border_class, 'id'=>'password', 'placeholder' => 'Confirm new password']) }}
 			<div class="error_message_small"> 
 				{{ $confirm_passwordError }}
 			</div>

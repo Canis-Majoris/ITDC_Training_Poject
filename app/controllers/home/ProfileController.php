@@ -10,10 +10,11 @@ class ProfileController extends BaseController {
 		$this->gateway = $gateway;
 	}
 	public function user($username){
-		$user = User::where('username', '=', $username)->with('skills')->with('phones');
+		$user = User::where('username', '=', $username)->with('skills')->with('phones')->with('projects');
+		$currencies = Config::get('projects.currency');
 		if ($user->count()) {
 			$user = $user->first();
-			$this->layout->content = View::make('ITDC_Project.home.profile.user')->with(['user' => $user]);
+			$this->layout->content = View::make('ITDC_Project.home.profile.user')->with(['user' => $user, 'currencies' => $currencies]);
 		}
 		
 	}

@@ -6,6 +6,36 @@
         {{ Session::get('message') }}
     </div>
 @endif
+<script type="text/javascript">
+	///send request/receive response w/o page reload
+	function sortBy(btn){
+		var a = btn.split(".");
+		var b = "";
+		(a[1] == "ASC") ? b = "DESC" : b = "ASC";
+		var c = a[0]+"."+b;
+		//$(btn)[0].attr('id', c);
+		document.getElementById(btn).id = c;
+		var hr = new XMLHttpRequest();
+		var url = "{{ URL::route('project-sort') }}";
+		hr.open("POST", url, true);
+		hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		hr.onreadystatechange = function(){
+			if (hr.readyState == 4 && hr.status == 200) {
+				var result = JSON.parse(hr.responseText);
+				//$('#loadWait').html('');
+				stateChanged("load_projects_tbody", result);
+			}else{
+				//$('#loadWait').html('Please Wait...');
+			}
+
+		}
+		hr.send("sorter="+btn);
+	}
+///populate table with response
+	function stateChanged(id,text){
+	    document.getElementById(id).innerHTML = text; 
+	}
+</script>
 
 
 <div class="fixedheader1">
@@ -13,54 +43,39 @@
 	<hr>
 </div>
 <div class="scroll">
-
-		<table class="table table-hover table-stripped table-bordered projects_table" >
-			<thead>
-				<th width="40%">Project Name</th>
-				<th width="5%">Bids</th>
-				<th width="25%">Skills</th>
-				<th width="15%">Started</th>
-				<th width="15%" align="center">Price</th>
-			</thead>
-			<tbody>
-				@foreach($projects as $project)
-				<tr id="show_project_inline_{{ $project->id }}" class="project_description">
-					<td>
-						<a href="{{ URL::route('project-show', $project->id) }}">
-							{{ $project->name}}
-						</a>
-						<div class="hide_1 hover_show_description">
-							{{ $project->description}}
-						</div>
-					</td>
-
-					
-					<td>
-						{{ $project->bid_count}}
-					</td>
-					<td>
-						
-					</td>
-					<td>
-						{{ $project->created_at->diffForHumans() }}; {{ $project->created_at->toFormattedDateString() }}
-					</td>
-					<td>
-						{{ $project->salary}} {{ $project->currency}}
-					</td>
-				</tr>
-				@endforeach
-			</tbody>
-		</table>
+	<div id="loadWait"></div>
+	<table class="table table-hover table-stripped table-bordered projects_table" >
+		<thead>
+			<th width="40%"><a class="sortbtn1", id="name.ASC" onClick="sortBy(this.id)">Project Name <span class="glyphicon glyphicon-sort project_sort_gly"></span></a></th>
+			<th width="5%"><a class="sortbtn1", id="bid_count.ASC" onClick="sortBy(this.id)">Bids <span class="glyphicon glyphicon-sort project_sort_gly"></span></a></th>
+			<th width="25%"><div class="sortbtn1">Skills</div></th>
+			<th width="17%"><a class="sortbtn1", id="created_at.DESC" onClick="sortBy(this.id)">Started <span class="glyphicon glyphicon-sort project_sort_gly"></span></a></th>
+			<th width="13%" align="center"><a class="sortbtn1", id="salary.ASC" onClick="sortBy(this.id)">Price <span class="glyphicon glyphicon-sort project_sort_gly"></span></a></th>
+		</thead>
+		<tbody id="load_projects_tbody">
+			<!-- load conten here -->
+		</tvody>
+</table>
+		
 </div>
 <a href="#" class="scrollToTop"></a>
 
 <script type="text/javascript">
 
-/////// pagination wrap
-
-$('.project_description').hover(function () {
-    $(this).find('div').toggleClass('hide_1');
-});
+/// initial sorting by cretaion time (desc)
+	window.onload = function(){
+		var jump = 'created_at.DESC';
+		sortBy(jump);
+	}
+/// show description on hover
+	$('#load_projects_tbody').on({
+		mouseenter: function () {
+		    $(this).find('div').removeClass('hide_1');
+		},
+		mouseleave: function () {
+		    $(this).find('div').addClass('hide_1');
+		}
+	}, '[id^=show_project_inline_]');
 	
 </script>
 @stop

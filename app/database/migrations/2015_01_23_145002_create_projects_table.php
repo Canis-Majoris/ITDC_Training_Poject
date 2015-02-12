@@ -28,6 +28,7 @@ class CreateProjectsTable extends Migration {
 		    $table->string('salary');
 		    $table->integer('bid_count')->default(0);
 		    $table->tinyInteger('active');
+		    $table->text('files');
 		    $table->timestamps();
 		});
 	}

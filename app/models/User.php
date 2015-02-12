@@ -8,7 +8,7 @@ use Watson\Validating\ValidatingTrait;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
-	use UserTrait, RemindableTrait, ValidatingTrait;
+	use UserTrait, RemindableTrait; //ValidatingTrait;
 
 	/**
 	 * The database table used by the model.
@@ -22,13 +22,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @var array
 	 */
-	protected $hidden = array('password', 'remember_token');
+	protected $hidden = array('remember_token');
 	protected $fillable = array(
 		'firstname',
 		'lastname',
 		'username',
 		'password', 
-		'password_temp', 
+		'password_temp',
 		'code', 
 		'active',
 		'status',
@@ -39,7 +39,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'avatar',
 		'description'
 	);
-	protected $throwValidationExceptions = true;
+//	protected $throwValidationExceptions = true;
 	protected $rules = [];
 
 	public function phones(){

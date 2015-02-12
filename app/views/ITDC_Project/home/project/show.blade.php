@@ -1,7 +1,7 @@
 @extends('layouts.home')
 @section('ragac')
 @if(Session::has('message'))
-    <div class="alert alert-{{ Session::get('message_type') }} alert-dismissible" style="z-index:2000; position:relative;">
+    <div class="alert alert-{{ Session::get('message_type') }} alert-dismissible">
     	<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
         {{ Session::get('message') }}
     </div>
@@ -10,32 +10,45 @@
 <style>
 	
 </style>
-<div class="jemaliko">
+<div class="show-project">
 	<div class="jumbotron">
-		<h2>{{ $project->name }}</h2>
-		
+		<h2 class="project_tytle pull-left">{{ $project->name }}</h2>
+		<small class="pull-right project_author_ref"> Created {{ $project->created_at->diffForHumans() }} by <a href="{{ URL::route('user-profile', $creator->username) }}">{{ $creator->username }}</a></small>
+		<div class="clear"></div>
 		<hr/>
-		<small class="pull-right"> created {{ $project->created_at->diffForHumans() }} by <a href="{{ URL::route('user-profile', $creator->username) }}">{{ $creator->username }}</a></small>
-		<p>
+		<div>
 			{{ $project->description }}
-		</p>
-		<div>
-			<span>Duration:</span> <span>{{ $project->duration }}</span>
 		</div>
-		<div>
-			<span>Average Price:</span> <span>{{ $project->avg_price }} {{ $project->currency }}</span>
+		@if($project->files)
+			<div class="project_attach_wrap">
+				<img src="/uploads/projects/{{ $project->files }}" width="60px" height="60px" />	
+			</div>
+		@endif
+		<div class="project_baseinfo_wrap pull-left">
+			<span>Duration:</span> <span class="salay_wrap">{{ $project->duration }}</span>
+			<br/>
+			<span>Average Price:</span> <span class="salay_wrap">{{ $currencyArr[$project->currency] }}{{ $project->avg_price }}</span>
+			<br/>
+			<span>Salary:</span> <span class="salay_wrap">{{ $currencyArr[$project->currency] }}{{ $project->salary }}</span>
+			<div class="project_types">
+				@if(!empty($types[0]))
+					@foreach($types as $type)
+						<span class="project_type_wrap" id="project_type_wrap_{{ $type }}">{{ $typeDesc[$type] }}</span>
+					@endforeach
+				@endif
+			</div>
 		</div>
-		<div>
-			<span>Salary:</span> <span>{{ $project->salary }} {{ $project->currency }}</span>
+		<div class="project_skills_wrap pull-left">
+			<h5>Skills Required:</h5>
+			<div>
+				
+			</div>
 		</div>
-		<div>
-			<span>Project Types:</span> <span>{{ $project->project_type_id }}</span>
-		</div>
-		<br>
+		<div class="clear"></div>
 		@if(!isset($project->users()->where('user_id', '=', $currUser->id)->first()->pivot))
-		<div>
-			<button class="btn btn-lg btn-primary bid_here"><span class="glyphicon glyphicon-certificate"></span> Bid on This Project</button>
-		</div>
+			<div>
+				<button class="btn btn-lg btn-primary bid_here"><span class="glyphicon glyphicon-certificate"></span> Bid on This Project</button>
+			</div>
 		@else
 		</div>
 		<hr/>
@@ -96,36 +109,47 @@
 	</div>
 	<hr>
 </div>
-
-<div class="layer">
-	<?php $show_bid_fill = 'none';?>
-	@if($errors->has())
-		<?php $show_bid_fill = 'block';?>
-	@endif
-	<div id="show-bid-form" style="display:{{ $show_bid_fill }};" class="container">
+<div id="overlay-back"></div>
+<?php $show_bid_fill = 'none';?>
+@if($errors->has())
+	<?php $show_bid_fill = 'block';?>
+@endif
+<div class="layer" style="display:{{ $show_bid_fill }};">
+	
+	<div id="show-bid-form" class="container">
 		<button id="closeBid" title="Close" class="btn btn-xs btn-danger">
 			<span class="glyphicon glyphicon-remove"></span>
 		</button>
 		<br>
-
-		@foreach($errors->all() as $error)
-		 	<li><h4>{{ $error }}</h4></li>
-		@endforeach
-		
 		{{ Form::open(['route' => ['project-bid'], 'method' => 'POST', 'files' => true]) }}
 			{{ Form::hidden('project_id', $project->id) }}
 			<div class="form-group">
+				<?php $priceError =  null ; $error_border_class = null;?>
+				@if($errors->has('price'))
+					<?php $priceError =  $errors->first('price') ; $error_border_class = 'error_border';?>
+				@endif
 				{{ Form::label('price', 'Pice', ['class'=>'control-label']); }}
-				{{ Form::input('number', 'price', Input::old('price'), ['class'=>'form-control', 'id'=>'Pice']) }}
+				{{ Form::input('number', 'price', Input::old('price'), ['class'=>'form-control '.$error_border_class, 'id'=>'Pice']) }}
+				<div class="error_message_small">
+					{{ $priceError }}
+				</div>
 				{{ Form::select('bid_currency', $currencies, Input::old('bid_currency'), ['class'=>'form-control']) }}
 			</div>
 			<div class="form-group">
+
 				{{ Form::label('duration', 'Duration', ['class'=>'control-label']); }}
 				{{ Form::select('duration', $timespan, Input::old('duration'), ['class'=>'form-control']) }}
 			</div>
-				<div class="form-group">
-					{{ Form::label('about_project', 'About Project Terms', ['class'=>'control-label']); }}
-					{{ Form::textarea('description', Input::old('description'), ['class' => 'field form-control', 'size' => '30x10', 'id' => 'about_project_1']) }}
+			<div class="form-group">
+				<?php $descriptionError =  null ; $error_border_class = null;?>
+				@if($errors->has('description'))
+					<?php $descriptionError =  $errors->first('description') ; $error_border_class = 'error_border';?>
+				@endif
+				{{ Form::label('about_project', 'About Project Terms', ['class'=>'control-label']); }}
+				{{ Form::textarea('description', Input::old('description'), ['class' => 'field form-control '.$error_border_class, 'size' => '30x15', 'id' => 'about_project_1']) }}
+				<div class="error_message_small">
+					{{ $descriptionError }}
+				</div>
 			</div>
 			{{ Form::submit('Send', ['class'=>'btn btn-primary pull-right'])}}
 
@@ -142,18 +166,38 @@
 		}	
 	});
 
-	$('.bid_here').on('click',function(){
+	/*$('.bid_here').on('click',function(){
 		$('#show-bid-form').show();
 		$('.layer').css({'z-index':'1000','background':'rgba(0,0,0,.4)'});
+	});*/
+
+	function getDocHeight() {
+          var doc = document;
+          return Math.max(
+              Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight),
+              Math.max(doc.body.offsetHeight, doc.documentElement.offsetHeight),
+              Math.max(doc.body.clientHeight, doc.documentElement.clientHeight)
+          );
+     }
+
+	$('.bid_here').on('click', function () {
+		$('.layer, #overlay-back').height(getDocHeight());
+	    $('.layer, #overlay-back').fadeIn(200);
+		$('#show-bid-form').show();
+
 	});
 
 	$('#closeBid').click(function(){
 		//event.preventDefault();
-		$('#show-bid-form').hide();
-		$('.layer').css({'z-index':'10','background':'#fff'});
+		$('.layer, #overlay-back').fadeOut(50);
+		//$('#show-bid-form').hide();
+		//$('.layer').css({'z-index':'10','background':'#fff'});
 	});
 	if($('#show-bid-form').is(':visible')){
-		$('.layer').css({'z-index':'1000','background':'rgba(0,0,0,.4)'});
+		//$('.layer').css({'z-index':'1000','background':'rgba(0,0,0,.4)'});
+		$('.layer, #overlay-back').height(getDocHeight());
+		$('.layer, #overlay-back').fadeIn(500);
+		$('#show-bid-form').show();
 	}
 
 	CKEDITOR.replace('about_youtself_1', {

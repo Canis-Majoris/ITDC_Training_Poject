@@ -12,6 +12,9 @@ use Project_type;
 use Validator;
 use Auth;
 use User;
+use Input;
+use Response;
+use View;
 
 class ProjectRepositoryDb implements ProjectRepositoryInterface {
 
@@ -35,7 +38,7 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 	];
 
 	public function all() {
-		return Project::orderBy('created_at', 'asc')->with('users')->get();
+		return Project::orderBy('created_at', 'desc')->with('users')->get();
 	}
 
 	public function byId($id) {
@@ -69,7 +72,14 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 			    $project->active = 1;
 				$project->save();
 			}
+
+			if (Input::file('file')!=null) {
+				$projectAttachmentName = str_random(40).'.'.Input::file('file')->guessClientExtension();
+				Input::file('file')->move('./public/uploads/projects',$projectAttachmentName);
+				$project->files = $projectAttachmentName;
+			}
 		}
+		$project->save();
 
 		return $project;
 	}
@@ -210,7 +220,15 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 		$project->save();
 		$user->projects()->detach($id);
 	}
-
+	public function sort($input){
+		if (isset($input['sorter'])) {
+			$sorter = $input['sorter'];
+			$arr = explode('.', $sorter);
+			$projects = Project::orderBy($arr[0], $arr[1])->get();
+			$view = View::make('ITDC_Project.home.project.load_projects')->with(['projects' => $projects])->render();
+			return Response::json($view);
+		}
+	}
 
 	//////////////////////////////////////
 }

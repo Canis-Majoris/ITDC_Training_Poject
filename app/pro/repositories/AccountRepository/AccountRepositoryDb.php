@@ -9,6 +9,7 @@ use Mail;
 use URL;
 use Redirect;
 use DB;
+use Auth;
 use Account;
 use Input;
 class AccountRepositoryDb implements AccountRepositoryInterface {
@@ -31,6 +32,32 @@ class AccountRepositoryDb implements AccountRepositoryInterface {
             });
 		//return User::all();
 	}
+	public function signIn($input) {
+
+		$remember = (isset($input['remember'])) ? true : false;
+		$cred = [
+			'password' => $input['password_login'],
+			'active' => 1,
+			'status' => 1
+		];
+
+		if(filter_var($input['email_login'], FILTER_VALIDATE_EMAIL)) {
+			$cred['email'] = $input['email_login'];
+		}else{
+			$cred['username'] = $input['email_login'];
+		}
+		$auth = Auth::attempt($cred, $remember);
+
+		if ($auth) {
+			return Redirect::back();
+		}
+
+		return Redirect::back()
+			->with('message_type','danger')
+			->with('message', 'Oops... your Email/Password is wrong, or you have not activated your account yet.')
+			->withInput();
+	}
+
 
 	public function byIdWSkills($id) {
 		return  User::with('phones')->with('skills')->with('courses')->find($id);
@@ -158,6 +185,9 @@ class AccountRepositoryDb implements AccountRepositoryInterface {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public function createOrUpdate($input, $user, $id) {
 
+		$created = false;
+		$updated = false;
+		$message = null;
 		if (is_null($id)) {
 			//create new user
 		    $user->fill($input);
@@ -171,25 +201,48 @@ public function createOrUpdate($input, $user, $id) {
 				Mail::send('emails.auth.activate', ['link' => URL::route('account-activate', $code), 'username' => $input['username'], 'name' => 'Gigi'], function($message) use($user) {
 					$message->to($user->email, $user->username)->subject('ITDC Project Account Activation');
 				});
+				$created = true;
+				$message = 'Welcome! check yout Email to confirm registration.';
 			}
 
 		}else{
-			if (!empty($input['password'])) {
-				$input['password'] = Hash::make($input['password']);
+			//update user
+			$message = 'Your account has been successfully edited!';
+
+			if (isset($input['pass_change'])) {
+				$old_password = $input['old_password'];
+				$password = $input['password'];
+				if (Hash::check($old_password, $user->getAuthPassword())) {
+					$user->fill($input);
+					$user->password = Hash::make($password);
+					if ($user->save()) {
+						$updated = true;
+					}
+				}else{
+					$message = 'Your Old Password is Incorrect.';
+				}
 			}else{
-				unset($input['password']);
+
+				$user->fill($input);
+				if ($user->save()) {
+					$updated = true;
+				}
 			}
-			$user->fill($input);
-			$user->save();
 		}
+
+		//change/add avatar
 		if (Input::file('file')!=null) {
 			$avatarName = str_random(40).'.'.Input::file('file')->guessClientExtension();
 			Input::file('file')->move('./public/uploads',$avatarName);
 			$user->avatar=$avatarName;
 		}
 
-		$user->save();
+		//in any case...
+		if (!$user->save()) {
+			$message = 'Aaghhh... Something Went Wrong...';
+		}
 
+		//update edditional data
 		$phones = null;
 		if (array_filter($input['phone'])) {
 			$phones = $input['phone'];
@@ -206,7 +259,7 @@ public function createOrUpdate($input, $user, $id) {
 			$levels_cr = $input['level_cr'];
 		}
 
-		// All data to update
+		//all data to update
 		$updateData = [
 			'phones' => $phones,
 			'skills' => $skills,
@@ -214,8 +267,45 @@ public function createOrUpdate($input, $user, $id) {
 			'courses' => $courses,
 			'levels_cr' => $levels_cr
 		];
+
 		$this->updateAll($user, $updateData);
-		return $user;
+
+		//return messages
+		if ($created) {
+			return Redirect::route('home')
+				->with('message_type','success')
+				->with('message', $message);
+		}elseif($updated) {
+			return Redirect::route('home')
+				->with('message_type','success')
+				->with('message', $message);
+		}else{
+			return Redirect::back()
+			->withInput()
+		 	->with('message_type','danger')
+			->with('message', $message);
+		}
+		//return $user;
+	}
+
+	public function activate($code){
+		$user = User::where('code', '=', $code)->where('active', '=', 0);
+		if ($user->count()) {
+			$user = $user->first();
+			$user->active = 1;
+			$user->status = 1;
+			$user->code = '';
+
+			if($user->save()){
+				return Redirect::route('home')
+					->with('message_type','success')
+					->with('message', 'Activated! you can now sign in.');
+			}
+		}
+
+		return Redirect::route('home')
+			->with('message_type','danger')
+			->with('message', 'Oops... We could not activate your account. Please try again later.');
 	}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

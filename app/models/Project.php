@@ -11,6 +11,9 @@ class Project extends Eloquent {
 	public function users(){
         return $this->belongsToMany('User')->withPivot('bid_price','duration','comment', 'user_id', 'project_id', 'bid_currency', 'created_at');
     }
+    public function skills(){
+        return $this->belongsToMany('Skill')->withPivot('level');
+    }
     public function currencies(){
 		return $this->hasMany('Currency');
 	}
@@ -19,8 +22,5 @@ class Project extends Eloquent {
 	}
 	public function extendRules($newRules){
     	$this->rules = array_merge($newRules, $this->rules);
-    }
-    public function skills(){
-        return $this->belongsToMany('Skill')->withPivot('bid_price','duration','comment', 'user_id', 'project_id', 'bid_currency', 'created_at');
     }
 }
