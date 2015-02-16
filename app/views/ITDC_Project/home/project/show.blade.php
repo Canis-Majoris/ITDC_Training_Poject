@@ -24,31 +24,41 @@
 				<img src="/uploads/projects/{{ $project->files }}" width="60px" height="60px" />	
 			</div>
 		@endif
-		<div class="project_baseinfo_wrap pull-left">
-			<span>Duration:</span> <span class="salay_wrap">{{ $project->duration }}</span>
-			<br/>
-			<span>Average Price:</span> <span class="salay_wrap">{{ $currencyArr[$project->currency] }}{{ $project->avg_price }}</span>
-			<br/>
-			<span>Salary:</span> <span class="salay_wrap">{{ $currencyArr[$project->currency] }}{{ $project->salary }}</span>
-			<div class="project_types">
-				@if(!empty($types[0]))
-					@foreach($types as $type)
-						<span class="project_type_wrap" id="project_type_wrap_{{ $type }}">{{ $typeDesc[$type] }}</span>
-					@endforeach
-				@endif
+		<div class="project_sub_info_wrap">
+			<div class="project_baseinfo_wrap pull-left">
+				<span>Duration:</span> <span class="salay_wrap">{{ $project->duration }}</span>
+				<br/>
+				<span>Average Price:</span> <span class="salay_wrap">{{ $currencyArr[$project->currency] }}{{ $project->avg_price }}</span>
+				<br/>
+				<span>Salary:</span> <span class="salay_wrap">{{ $currencyArr[$project->currency] }}{{ $project->salary }}</span>
+				<div class="project_types">
+					@if(!empty($types[0]))
+						@foreach($types as $type)
+							<span class="project_type_wrap" data-toggle="popover" title="Description:" data-content="<p>{{ $typeDesc->find($type)->description }}</p>" id="project_type_wrap_{{ $type }}">
+								{{ $typeDesc->find($type)->name }}
+							</span>
+						@endforeach
+					@endif
+				</div>
 			</div>
-		</div>
-		<div class="project_skills_wrap pull-left">
-			<h5>Skills Required:</h5>
-			<div>
-				
+			<div class=" pull-right">
+				<h5>Skills Required:</h5>
+				<div class="project_skill_names_wrap">
+				@foreach($skills as $skill)
+					<span class="label label-default skill_level_tooltip" data-toggle="tooltip" title="minimum LVL <span>{{ $skill->pivot->level }}</span>">{{ $skill->name }}</span>
+				@endforeach
+				</div>
 			</div>
+			<div class="clear"></div>
 		</div>
-		<div class="clear"></div>
+		
 		@if(!isset($project->users()->where('user_id', '=', $currUser->id)->first()->pivot))
 			<div>
-				<button class="btn btn-lg btn-primary bid_here"><span class="glyphicon glyphicon-certificate"></span> Bid on This Project</button>
+			<button type="button" class="btn btn-primary btn-lg bid_here round pull-right" data-toggle="modal" data-target="#myModal">
+			 	<span class="glyphicon glyphicon-certificate"></span> Bid on This Project
+			</button>
 			</div>
+			<div class="clear"></div>
 		@else
 		</div>
 		<hr/>
@@ -65,7 +75,7 @@
 		<table class="table table-striped">
 			<thead>
 				<th width="70%">
-					Freelancers Bidding <span>({{$bidders->count()}})</span>
+					Freelancers Bidding <span class="badge">{{$bidders->count()}}</span>
 				</th>
 				<th width="15%"> 
 					Reputation
@@ -80,7 +90,7 @@
 					<td>
 						<div class="avatar_wrap_2">
 							@if($bidder->avatar)
-								<img src="/uploads/{{ $bidder->avatar }}" />
+								<img src="/uploads/{{ $bidder->avatar }}" class="img-rounded"/>
 							@else
 								<img src="http://www.miyokids.com/catalog/view/theme/ULTIMATUM/image/no_avatar.jpg" />
 							@endif
@@ -109,36 +119,37 @@
 	</div>
 	<hr>
 </div>
-<div id="overlay-back"></div>
-<?php $show_bid_fill = 'none';?>
-@if($errors->has())
-	<?php $show_bid_fill = 'block';?>
-@endif
-<div class="layer" style="display:{{ $show_bid_fill }};">
-	
-	<div id="show-bid-form" class="container">
-		<button id="closeBid" title="Close" class="btn btn-xs btn-danger">
-			<span class="glyphicon glyphicon-remove"></span>
-		</button>
+
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Bid</h4>
+      </div>
+      <div class="modal-body">
 		<br>
 		{{ Form::open(['route' => ['project-bid'], 'method' => 'POST', 'files' => true]) }}
 			{{ Form::hidden('project_id', $project->id) }}
-			<div class="form-group">
+
+			{{ Form::label('price', 'Price', ['class'=>'control-label']); }}
+			<div class="input-group" id="unified-inputs">
 				<?php $priceError =  null ; $error_border_class = null;?>
 				@if($errors->has('price'))
 					<?php $priceError =  $errors->first('price') ; $error_border_class = 'error_border';?>
 				@endif
-				{{ Form::label('price', 'Pice', ['class'=>'control-label']); }}
-				{{ Form::input('number', 'price', Input::old('price'), ['class'=>'form-control '.$error_border_class, 'id'=>'Pice']) }}
+				{{ Form::input('number', 'price', Input::old('price'), ['class'=>'form-control '.$error_border_class, 'id'=>'price']) }}
 				<div class="error_message_small">
 					{{ $priceError }}
 				</div>
 				{{ Form::select('bid_currency', $currencies, Input::old('bid_currency'), ['class'=>'form-control']) }}
+				
 			</div>
 			<div class="form-group">
 
 				{{ Form::label('duration', 'Duration', ['class'=>'control-label']); }}
-				{{ Form::select('duration', $timespan, Input::old('duration'), ['class'=>'form-control']) }}
+				{{ Form::select('duration', $timespan, Input::old('duration'), ['class'=>'form-control', 'id'=>'duration']) }}
 			</div>
 			<div class="form-group">
 				<?php $descriptionError =  null ; $error_border_class = null;?>
@@ -151,12 +162,49 @@
 					{{ $descriptionError }}
 				</div>
 			</div>
-			{{ Form::submit('Send', ['class'=>'btn btn-primary pull-right'])}}
+			<button type="submit" id="sendBid" data-loading-text="Sending..." class="btn btn-primary pull-right" autocomplete="off">
+			  Send
+			</button>
 
 		{{ Form::close(); }}
-	</div>
+
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
 </div>
+
+@include('ITDC_Project.home.comments.index', ['comments' => $comments, 'user' => $currUser, 'project' => $project])
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 <script>
+
+	@if($errors->has())
+		$('#myModal').modal('show');
+	@endif
+
+	CKEDITOR.replace('about_project_1', {
+		uiColor: '#E6E6E6',
+		language: 'ka'
+	});
+	$(document).ready(function(){
+		$('#sendBid').on('click', function () {
+		    var $btn = $(this).button('loading');
+		});
+	});
+	$(function () {
+	  $('.skill_level_tooltip').tooltip({placement: 'bottom', html: true, trigger: 'hover focus'})
+	});
+	$(function () {
+	  $('.delete_comment').tooltip({placement: 'bottom', html: true, trigger: 'hover focus'})
+	});
+	$(function () {
+	  $('.project_type_wrap').popover({placement: 'bottom', html: true, trigger: 'click'})
+	});
 
 	$('.unbid').on("click", function(e){
 		if(confirm("Do you really want to Unbid?")){
@@ -166,11 +214,6 @@
 		}	
 	});
 
-	/*$('.bid_here').on('click',function(){
-		$('#show-bid-form').show();
-		$('.layer').css({'z-index':'1000','background':'rgba(0,0,0,.4)'});
-	});*/
-
 	function getDocHeight() {
           var doc = document;
           return Math.max(
@@ -179,30 +222,5 @@
               Math.max(doc.body.clientHeight, doc.documentElement.clientHeight)
           );
      }
-
-	$('.bid_here').on('click', function () {
-		$('.layer, #overlay-back').height(getDocHeight());
-	    $('.layer, #overlay-back').fadeIn(200);
-		$('#show-bid-form').show();
-
-	});
-
-	$('#closeBid').click(function(){
-		//event.preventDefault();
-		$('.layer, #overlay-back').fadeOut(50);
-		//$('#show-bid-form').hide();
-		//$('.layer').css({'z-index':'10','background':'#fff'});
-	});
-	if($('#show-bid-form').is(':visible')){
-		//$('.layer').css({'z-index':'1000','background':'rgba(0,0,0,.4)'});
-		$('.layer, #overlay-back').height(getDocHeight());
-		$('.layer, #overlay-back').fadeIn(500);
-		$('#show-bid-form').show();
-	}
-
-	CKEDITOR.replace('about_youtself_1', {
-		uiColor: '#E6E6E6',
-		language: 'ka'
-	});
 </script>
 @stop

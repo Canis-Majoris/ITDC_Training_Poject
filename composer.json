@@ -11,7 +11,8 @@
 		"watson/validating": "0.10.*@dev",
 		"way/generators": "~2.0",
 		"madewithlove/laravel-oauth2": "0.4.*",
-		"moltin/currency": "1.0.*@dev"
+		"moltin/currency": "1.0.*@dev",
+		"fbf/laravel-comments": "0.3.1"
 	},
 	"require-dev": {
     	"barryvdh/laravel-debugbar": "1.8.*@dev",

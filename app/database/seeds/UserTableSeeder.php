@@ -22,6 +22,7 @@ class UserTableSeeder extends Seeder {
 				'gender' => $faker->numberBetween(0,1),
 				'type' => $typeNum,
 				'status' => 1,
+				'online' => $faker->numberBetween(0,1),
 				'company_name' => $company,
 				'description' => $faker->text,
 				'company_name' => $company

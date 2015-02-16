@@ -16,6 +16,8 @@ class AccountController extends BaseController {
 	}
 
 	public function getSignOut(){
+		Auth::user()->online = 0;
+		Auth::user()->save();
 		Auth::logout();
 		return Redirect::back();
 	}
@@ -35,7 +37,6 @@ class AccountController extends BaseController {
 	public function getActivate($code){
 		return $this->gateway->activate($code);
 	}
-	
 
 	public function getEdit(){
 
@@ -47,7 +48,8 @@ class AccountController extends BaseController {
 		$input = Input::all();
 		$id = Auth::user()->id;
 		return $this->gateway->createOrUpdate($input, $id);
-	 }
+	}
+	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	 /*
 	 / Custom Password Recovery
@@ -117,6 +119,7 @@ class AccountController extends BaseController {
 /////////////////////////////////////////////////////////
 
 ///////////////////////////////
+
 }
 
 

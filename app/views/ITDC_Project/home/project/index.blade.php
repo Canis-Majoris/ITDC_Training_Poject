@@ -19,15 +19,15 @@
 		var url = "{{ URL::route('project-sort') }}";
 		hr.open("POST", url, true);
 		hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		$('#loadWait').html('<img src="/loading/Preloader_4.gif" class="loading_project_image"/>');
+		$('#loadWait').addClass('showWait');
 		hr.onreadystatechange = function(){
 			if (hr.readyState == 4 && hr.status == 200) {
 				var result = JSON.parse(hr.responseText);
-				//$('#loadWait').html('');
+				$('#loadWait').html('');
+				$('#loadWait').removeClass('showWait');
 				stateChanged("load_projects_tbody", result);
-			}else{
-				//$('#loadWait').html('Please Wait...');
 			}
-
 		}
 		hr.send("sorter="+btn);
 	}
@@ -44,6 +44,7 @@
 </div>
 <div class="scroll">
 	<div id="loadWait"></div>
+
 	<table class="table table-hover table-stripped table-bordered projects_table" >
 		<thead>
 			<th width="40%"><a class="sortbtn1", id="name.ASC" onClick="sortBy(this.id)">Project Name <span class="glyphicon glyphicon-sort project_sort_gly"></span></a></th>

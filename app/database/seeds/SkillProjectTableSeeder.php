@@ -7,7 +7,7 @@ class SkillProjectTableSeeder extends Seeder {
 		$faker = Faker::create();
 		$projects = Project::all();
 		$skill_num = Skill::all()->count();
-		DB::table('skill_project')->truncate();
+		DB::table('project_skill')->truncate();
 		foreach($projects as $project) {
 			
 			$num = $faker->numberBetween(0, $skill_num);

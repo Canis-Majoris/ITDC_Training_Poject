@@ -60,6 +60,8 @@
 				@endforeach
 			</tbody>
 		</table>
+
+		
 </div>
 
 <div class="scroll" id="my_bids_wrapper">

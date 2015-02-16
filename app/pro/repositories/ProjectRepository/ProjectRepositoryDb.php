@@ -12,9 +12,11 @@ use Project_type;
 use Validator;
 use Auth;
 use User;
+use Skill;
 use Input;
 use Response;
 use View;
+use Config;
 
 class ProjectRepositoryDb implements ProjectRepositoryInterface {
 
@@ -38,7 +40,7 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 	];
 
 	public function all() {
-		return Project::orderBy('created_at', 'desc')->with('users')->get();
+		return Project::orderBy('created_at', 'desc')->with('users')->paginate(10);
 	}
 
 	public function byId($id) {
@@ -79,17 +81,34 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 				$project->files = $projectAttachmentName;
 			}
 		}
+
+		$skills = null; $levels_sk = null;
+		if (isset($input['skill']) && array_filter($input['level'])) {
+			$skills = $input['skill'];
+			$levels_sk = $input['level'];
+		}
+
+		// All data to update
+		$updateData = [
+			'skills' => $skills,
+			'levels_sk' => $levels_sk
+		];
+		$this->updateAll($project, $updateData);
+
 		$project->save();
+
 
 		return $project;
 	}
 
 	public function getCreate(){
 		$project_types = Project_type::all();
+		$skills = Skill::all();
 		$data = [
 			'project_types' => $project_types,
 			'currencies'    => $this->currencies,
-			'timespan'      => $this->timespan
+			'timespan'      => $this->timespan,
+			'skills'        => $skills
 		];
 		return $data;
 	}
@@ -111,7 +130,8 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 			'bidders'   	=> $bidders,
 			'currUser'  	=> $currUser,
 			'timespan'  	=> $this->timespan,
-			'currencies'	=> $this->currencies 
+			'currencies'	=> $this->currencies,
+			'skills'        => $project->skills
 		];
 
 		return $data;
@@ -178,8 +198,7 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 			->with('message', 'Ooops.... Something went wrong...');
 	}
 	
-	public function my(){
-		$user = $this->user();
+	public function my($user){
 		$projects = Project::where('user_id', '=', $user->id)->get();
 		$bids = $user->projects()->get();
 		$data = [
@@ -230,5 +249,21 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 		}
 	}
 
+
+	public function updateAll($project, $updateData){
+		if (isset($updateData['skills']) && isset($updateData['levels_sk'])) {
+			$this->manageSkills($project, $updateData['skills'], $updateData['levels_sk']);
+		}
+	}
+
+	public function manageSkills($project, $skills, $levels){
+		$sl = [];
+		foreach ($skills as $skill) {
+			if (!empty($levels[$skill])) {
+				$sl[$skill] = ['level' => $levels[$skill]];
+			}
+			$project->skills()->sync($sl);
+		}
+	}
 	//////////////////////////////////////
 }

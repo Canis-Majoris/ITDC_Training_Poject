@@ -7,21 +7,30 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="icon" href="../../favicon.ico">
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<link href="{{ URL::asset('res/css/tagbar.css') }}" rel="stylesheet">
-	<link href="{{ URL::asset('res/css/bootstrap.css') }}" rel="stylesheet">
-	<link href="{{ URL::asset('res/css/bootstrap-theme.css') }}" rel="stylesheet">
-	<script type="text/javascript" src="{{ URL::asset('res/js/jquery.js') }}"></script>
-	<script src="{{ URL::asset('res/js/bootstrap.min.js') }}"></script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.min.js"></script> <!-- load angular -->
+
+	<script src="{{ URL::asset('res/js/bootstrap.js') }}"></script>
 	<script src="{{ URL::asset('res/js/backtotop.js') }}"></script>
 	<script src="{{ URL::asset('res/js/users/addphone.js') }}"></script>
 	<script src="{{ URL::asset('res/js/jscroll/jquery.jscroll.min.js') }}"></script>
 	<script src="{{ URL::asset('packages/ckeditor/ckeditor.js') }}"></script>
-	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+	<link href="{{ URL::asset('res/css/tagbar.css') }}" rel="stylesheet">
+	<link href="{{ URL::asset('res/css/bootstrap.css') }}" rel="stylesheet">
+	<link href="{{ URL::asset('res/css/bootstrap-theme.css') }}" rel="stylesheet">
 	<link href="{{ URL::asset('res/css/test_style.css') }}" rel="stylesheet">
+
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+	<script src="{{ URL::asset('res/angular/controllers/mainCtrl.js') }}"></script> <!-- load our controller -->
+	<script src="{{ URL::asset('res/angular/services/commentService.js') }}"></script> <!-- load our controller -->
+	<script src="{{ URL::asset('res/angular/app.js') }}"></script> <!-- load our controller -->
+
 </head>
-<body>
-	<nav class="navbar navbar-inverse navbar-fixed-top main_navbar" role="navigation">
+<body data-spy="scroll" data-target="#topnav">
+	<nav class="navbar navbar-default navbar-fixed-top main_navbar" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -46,7 +55,7 @@
 							{{ Auth::user()->username }}
 						</a>
 					</li>
-					<li class="pull-left"><a href="{{ URL::route('home') }}">Users</a></li>
+					<li class="pull-left"><a href="{{ URL::route('users-show') }}">Users</a></li>
 					<li class="pull-left"><a href="{{ URL::route('project-create') }}">Create Project</a></li>
 					<li class="pull-left"><a href="{{ URL::route('project-browse') }}">Browse Projects</a></li>
 					<li class="pull-left"><a href="{{ URL::route('project-my') }}">My Staff</a></li>
@@ -54,6 +63,9 @@
 						<li class="pull-left"><a href="{{ URL::to('admin/user') }}">Administrator Panel</a></li>
 					@endif
 					<li class="pull-left"><a href="{{ URL::route('account-sign-out') }}">Log Out</a></li>
+					<li class="pull-left">@include('ITDC_Project.home.comments.showmy', ['user' => Auth::user()])</li>
+
+
 				@endif
 				</ul>
 				@if(!Auth::check())
@@ -104,9 +116,13 @@
 		</div>
 	</nav>
 
+
 	<div class="container users_skills_data">
 		@yield('ragac')
 	</div><!-- /.container -->
+	<div>
+		@yield('home')
+	</div>
 <!--////////////////////////////////////////////////////////////////////////////////////// -->
 
 
@@ -223,5 +239,21 @@
 			e.preventDefault();
 		}	
 	});
+
+  var url = window.location;
+// Will only work if string in href matches with location
+	$('ul.nav a[href="'+ url +'"]').parent().addClass('active');
+
+	// Will also work for relative and absolute hrefs
+	$('ul.nav a').filter(function() {
+	    return this.href == url;
+	}).parent().addClass('active');
+	
+	$(function () {
+	  $('[data-toggle="popover"]').popover()
+	})
+
+
 </script>
+
 </html>

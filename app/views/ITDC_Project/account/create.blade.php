@@ -163,9 +163,7 @@
 		{{ Form::label('about_youtself', 'About Yourself', ['class'=>'control-label']); }}
 		{{ Form::textarea('description', '', ['class' => 'field form-control', 'size' => '30x5', 'id' => 'about_youtself_1']) }}
 	</div>
-
-	{{ Form::submit('Save', ['class'=>'btn btn-primary pull-right'])}}
-
+	{{ Form::Button('Save', ['class'=>'btn btn-primary pull-right', 'id' => 'sendCreate', 'data-loading-text' => 'Saving...', 'autocomplete' => 'off', 'type' => 'submit'])}}
 	{{ Form::close(); }}
 </div>
 
@@ -176,7 +174,13 @@
 		uiColor: '#E6E6E6',
 		language: 'ka'
 	});
-	
+
+	$(document).ready(function(){
+		$('#sendCreate').on('click', function () {
+		    var $btn = $(this).button('loading');
+		});
+	});
+
 	var counter = 2;
 	//var appendform = '';
 

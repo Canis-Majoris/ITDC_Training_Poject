@@ -8,9 +8,5 @@
 			//return 'contact';
 			$this->layout->content = 'contact post method';
 		}
-/*
-		public function getTest(){
-			return 'test';
-		}*/
 	}
 ?>

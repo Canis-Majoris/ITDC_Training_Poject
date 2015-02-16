@@ -210,7 +210,7 @@ fieldset[disabled] .btn-primary.active {
 }
 
 .jumbotron{
-    background: url(http://www.skyhdwallpaper.com/wp-content/uploads/2014/10/fancy-keyboard-4.jpg);
+    background: url(/fixedBackgrounds/Dark-cubes.jpg);
     color: #ffffff;
     background-attachment: fixed;
 }
@@ -552,4 +552,10 @@ footer *{
 }
 .title span{
     font-weight: 900;
+}
+#topnav{
+    top: 60px !important;
+}
+.subnavbar{
+    margin: 0 auto !important;
 }

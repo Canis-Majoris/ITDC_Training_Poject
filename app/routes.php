@@ -94,7 +94,9 @@ Route::group(['prefix' => 'admin', 'before' => 'auth'], function()
 /*
 /	homepage route
 */
+Route::get('/users', ['as' => 'users-show', 'uses' => 'HomeController@users']);
 Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+
 Route::group(['before' => 'guest', 'prefix' => '/'], function(){
 
 	/*
@@ -277,4 +279,27 @@ Route::get('/user/{username}', [
 	'as' => 'user-profile',
 	'uses' => 'ProfileController@user'
 ]);
+	// since we will be using this just for CRUD, we won't need create and edit
+	// Angular will handle both of those forms
+	// this ensures that a user can't access api/create or api/edit when there's nothing there
+Route::get('/comments/all', [
+	'as' => 'allcomments',
+	'uses' => 'CommentController@getAll'
+]);
 
+Route::post('/comments/post', [
+	'as' => 'postcomment',
+	'uses' => 'CommentController@store'
+]);
+Route::any('/comments/delete/{id}', [
+	'as' => 'comment-delete',
+	'uses' => 'CommentController@destroy'
+]);
+Route::any('/comments/edit/{id}', [
+	'as' => 'comment-edit',
+	'uses' => 'CommentController@edit'
+]);
+Route::any('/comments/show/{id}', [
+	'as' => 'comment-delete',
+	'uses' => 'CommentController@destroy'
+]);

@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="action_wrapper_1">
+<div class="col-md-4">
 	<h1>
 	@if($user->avatar)
 		<div class="avatar_wrap">
@@ -19,11 +19,15 @@
 		<h3 class="stud_contact_info_header">ტელეფონ(ებ)ი</h3>
 		<ul class="list-group">
 			@foreach($user->phones as $phone)
-			<li class="list-group-item">{{ $phone->phone }}</li>
+			<li class="list-group-item"><p class="phones">{{ $phone->phone }}</p></li>
 			@endforeach
 		</ul>
 	</div>
 </div>
 
-
+<script type="text/javascript">
+	$('.phones').text(function(i, text) {
+	    $('.phones').text.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+	});
+</script>
 @stop

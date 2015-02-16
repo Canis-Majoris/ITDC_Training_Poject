@@ -151,8 +151,7 @@
 		{{ Form::label('about_youtself', 'About Yourself', ['class'=>'control-label']); }}
 		{{ Form::textarea('description', $user->description, ['class' => 'field form-control', 'size' => '30x5', 'id' => 'about_youtself_1']) }}
 	</div>
-	{{ Form::submit('Save', ['class'=>'btn btn-primary pull-right'])}}
-
+	{{ Form::Button('Save', ['class'=>'btn btn-primary pull-right', 'id' => 'sendEdit', 'data-loading-text' => 'Saving...', 'autocomplete' => 'off', 'type' => 'submit'])}}
 	{{ Form::close(); }}
 </div>
 <script type="text/javascript">
@@ -160,6 +159,12 @@
 	CKEDITOR.replace('about_youtself_1', {
 		uiColor: '#E6E6E6',
 		language: 'ka'
+	});
+
+	$(document).ready(function(){
+		$('#sendEdit').on('click', function () {
+		    var $btn = $(this).button('loading');
+		});
 	});
 
 	var counter = 2;

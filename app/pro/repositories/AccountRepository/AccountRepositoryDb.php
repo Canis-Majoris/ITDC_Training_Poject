@@ -49,6 +49,8 @@ class AccountRepositoryDb implements AccountRepositoryInterface {
 		$auth = Auth::attempt($cred, $remember);
 
 		if ($auth) {
+			Auth::user()->online = 1;
+			Auth::user()->save();
 			return Redirect::back();
 		}
 
@@ -184,7 +186,6 @@ class AccountRepositoryDb implements AccountRepositoryInterface {
 	}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public function createOrUpdate($input, $user, $id) {
-
 		$created = false;
 		$updated = false;
 		$message = null;

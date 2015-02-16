@@ -1,5 +1,6 @@
+
 <?php
-// Composer: "fzaninotto/faker": "v1.3.0"
+ Composer: "fzaninotto/faker": "v1.3.0"
 use Faker\Factory as Faker;
 class SkillTableSeeder extends Seeder {
 	public function run()
@@ -16,4 +17,5 @@ class SkillTableSeeder extends Seeder {
 		Skill::create(['name'=>'C++']);
 		Skill::create(['name'=>'NodeJS']);
 	}
+}
 }

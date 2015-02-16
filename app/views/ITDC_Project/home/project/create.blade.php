@@ -40,15 +40,30 @@
 		{{ Form::label('file', 'Upload Needed Files', ['class'=>'control-label']); }}
 		{{ Form::file('file','',array('id'=>'','class'=>'')) }}
 	</div>
+	<div>
+		<h4>Skills</h4>
+		@foreach($skills as $skill)
+			<?php $checked = false; $lvl = null;?>
+			<div class="col-md-4 select_additional_wrapper_1">
+				{{ Form::label($skill->id,$skill->name , ['class'=>'control-label pad_sk']) }}	
+				{{ Form::checkbox('skill[]',$skill->id, $checked, ['class' => 'check_1 pad_sk']  ) }}
+				<div class="lvl_inp">
+					{{ Form::input('text', 'level['.$skill->id.']', $lvl, ['class'=>'form-control', 'placeholder' => 'Skill level'] ) }}
+				</div>
+			</div>
+		@endforeach
+	</div>
+	<div class="clear"></div>
 	<div class="pr_type_container">
 		<h2>Project Type</h2>
 		<hr>
 		@foreach($project_types as $pt)
-		<div class="checkbox">
-			<label>
-				{{ Form::checkbox('pt_type[]', $pt->id, '', ['class' => 'field']) }}
+		<?php $checked1 = false; $active1 = 'active';?>
+		<div class="checkbox btn-group" data-toggle="buttons">
+			<label class="btn btn-primary {{ $checked1 == true ? 'active' : '' }} btn-lg outline">
+				{{ Form::checkbox('pt_type[]', $pt->id, $checked1, ['class' => 'field']) }}
 				<h3>{{ strtoupper($pt->name) }}</h3>
-				{{  $pt->description }}
+				<p>{{  $pt->description }}</p>
 			</label>
 		</div>
 		@endforeach

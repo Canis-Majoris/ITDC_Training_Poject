@@ -15,8 +15,11 @@ class ProjectController extends BaseController {
 	
 	public function getCreate(){
 		$data = $this->gateway->getCreate();
+
 		$this->layout->content = View::make('ITDC_Project.home.project.create')
-			->with(['currencies' => $data['currencies'], 'project_types' => $data['project_types'], 'timespan' => $data['timespan']]);
+			->with(['currencies' => $data['currencies'], 'project_types' => $data['project_types'],
+			 'timespan' => $data['timespan'], 'skills' => $data['skills']
+		]);
 	}
 	public function postCreate(){
 		$input = Input::all();
@@ -26,15 +29,28 @@ class ProjectController extends BaseController {
 			->with('message', 'Project Posted');
 	}
 	public function show($id){
+
 		$data = $this->gateway->show($id);
+		$comments = Comment::where('project_id', '=', $id)->get();
+		
 		$types = $data['project']->project_type_id;
 		$typeArr = explode('|', rtrim($types, '|'));
-		$typeDesc = Config::get('projects.type');
+
+		$allTypes = Project_type::all();
 		$currencyArr = Config::get('projects.currency');
 		$this->layout->content = View::make('ITDC_Project.home.project.show')
-		->with(['project' => $data['project'], 'bidders' => $data['bidders'], 'currencies' => $data['currencies'],
-				'timespan' => $data['timespan'], 'creator' => $data['creator'], 'currUser' => $data['currUser'],
-				'types' => $typeArr, 'typeDesc' => $typeDesc, 'currencyArr' => $currencyArr
+		->with([
+			'project'	 	=> $data['project'],
+			'bidders' 		=> $data['bidders'],
+			'currencies' 	=> $data['currencies'],
+			'timespan' 		=> $data['timespan'], 
+			'creator' 		=> $data['creator'], 
+			'currUser' 		=> $data['currUser'],
+			'types' 		=> $typeArr, 
+			'typeDesc' 		=> $allTypes, 
+			'currencyArr'	=> $currencyArr, 
+			'skills' 		=> $data['skills'],
+			'comments' 		=> $comments
 		]);
 	}
 	public function bid(){
@@ -43,7 +59,8 @@ class ProjectController extends BaseController {
 		return $data;
 	}
 	public function my_projects(){
-		$data = $this->gateway->my();
+		$user = Auth::user();
+		$data = $this->gateway->my($user);
 		$this->layout->content = View::make('ITDC_Project.home.project.my_projects')->with(['projects' => $data['projects'], 'bids' => $data['bids']]);
 	}
 	public function unbid($id){

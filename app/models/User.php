@@ -8,7 +8,7 @@ use Watson\Validating\ValidatingTrait;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
-	use UserTrait, RemindableTrait; //ValidatingTrait;
+	use UserTrait, RemindableTrait, ValidatingTrait;
 
 	/**
 	 * The database table used by the model.
@@ -39,7 +39,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'avatar',
 		'description'
 	);
-//	protected $throwValidationExceptions = true;
+	protected $throwValidationExceptions = true;
 	protected $rules = [];
 
 	public function phones(){
@@ -49,7 +49,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		
 		return $this->belongsToMany('Project')->withPivot('bid_price','duration','comment', 'user_id', 'project_id', 'bid_currency', 'created_at');
 	}
-	
+	 public function comments()
+    {
+        return $this->hasMany('Comment');
+    }
 	public function skills()
     {
         return $this->belongsToMany('Skill')->withPivot('level');
@@ -74,8 +77,33 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     	return 'female';
     }
 
-    public function getAuthPassword(){
-	    return $this->password;
+	/**
+	 * Get the unique identifier for the user.
+	 *
+	 * @return mixed
+	 */
+	public function getAuthIdentifier()
+	{
+		return $this->getKey();
 	}
 
+	/**
+	 * Get the password for the user.
+	 *
+	 * @return string
+	 */
+	public function getAuthPassword()
+	{
+		return $this->password;
+	}
+
+	/**
+	 * Get the e-mail address where password reminders are sent.
+	 *
+	 * @return string
+	 */
+	public function getReminderEmail()
+	{
+		return $this->email;
+	}
 }
