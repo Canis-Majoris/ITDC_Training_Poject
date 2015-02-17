@@ -145,7 +145,10 @@ input[type="checkbox"].checkbox1:disabled + label {
     margin: 10px 5px;
     background-color: rgb(242, 242, 242);
     border-radius: 10px;
-    padding: 50px;
+    padding: 20px;
+}
+.user_joined_info{
+    margin-left: 15%;
 }
 .stud_contact_info_header{
     color: #464646;
@@ -305,6 +308,7 @@ input[type="checkbox"].checkbox1:disabled + label {
 .input_wrapper_3{
     max-width: 60%;
     margin: 0 auto;
+    margin-bottom: 40px;
 }
 .phone_container{
     margin-bottom: 10px;
@@ -497,7 +501,7 @@ input[type="checkbox"].checkbox1:disabled + label {
 .project_description > td{
     padding: 15px 8px !important;
 }
-.users_skills_data{
+.all{
 }
 .projects_table{
     -webkit-transition: all 0.1s linear;
@@ -568,23 +572,23 @@ input[type="checkbox"].checkbox1:disabled + label {
 .user_data_wrapper{
     width: 70%;
 }
-.activity_project_wrapper{
+.user_comments_wrapper{
     padding: 7px;
     border-radius: 7px;
     display: block;
     text-decoration: none !important;
     color: #2E2E2E;
 }
-.activity_project_wrapper:hover{
+.user_comments_wrapper:hover{
     background-color: #F2F2F2;
     color: #1F5C99;
 }
-.activity_project_wrapper span{
+.user_comments_wrapper span{
     color: green;
     font-weight: bold;
 }
-.activity_project_wrapper p{
-    font-style: italic;
+.user_comments_wrapper p{
+    font-style: italic ;
 }
 .project_types{
     margin-top: 10px;
@@ -1012,6 +1016,21 @@ input[type="checkbox"].checkbox1:disabled + label {
 .online_indicator{
     font-size: 10px;
     top:5px !important;
+}
+
+.user_activity_container{
+    width: 65%;
+}
+
+.activity_head_wrapper{
+    width: 65%;
+    position: relative;
+}
+#rating_wrapper{
+    margin-right: 7%;
+}
+.star-rating .caption{
+    width: 30px;
 }
 /**********************************************/
 

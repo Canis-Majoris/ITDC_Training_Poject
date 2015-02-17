@@ -13,17 +13,25 @@
 <div class="show-project">
 	<div class="jumbotron">
 		<h2 class="project_tytle pull-left">{{ $project->name }}</h2>
-		<small class="pull-right project_author_ref"> Created {{ $project->created_at->diffForHumans() }} by <a href="{{ URL::route('user-profile', $creator->username) }}">{{ $creator->username }}</a></small>
+
+		<small class="pull-right project_author_ref"> 
+			Created {{ $project->created_at->diffForHumans() }} by 
+			<a href="{{ URL::route('user-profile', $creator->username) }}">{{ $creator->username }}</a>
+		</small>
+
 		<div class="clear"></div>
 		<hr/>
+
 		<div>
 			{{ $project->description }}
 		</div>
+
 		@if($project->files)
 			<div class="project_attach_wrap">
 				<img src="/uploads/projects/{{ $project->files }}" width="60px" height="60px" />	
 			</div>
 		@endif
+
 		<div class="project_sub_info_wrap">
 			<div class="project_baseinfo_wrap pull-left">
 				<span>Duration:</span> <span class="salay_wrap">{{ $project->duration }}</span>
@@ -41,6 +49,7 @@
 					@endif
 				</div>
 			</div>
+
 			<div class=" pull-right">
 				<h5>Skills Required:</h5>
 				<div class="project_skill_names_wrap">
@@ -49,6 +58,7 @@
 				@endforeach
 				</div>
 			</div>
+
 			<div class="clear"></div>
 		</div>
 		
@@ -60,7 +70,8 @@
 			</div>
 			<div class="clear"></div>
 		@else
-		</div>
+		<!--- -> > ^ -->
+	</div>
 		<hr/>
 			<div class="already_bidded">
 				<h1 class="">You Have Already Bidded This Project.</h1>	
@@ -69,52 +80,57 @@
 		@endif
 	</div>
 
-	
-
 	<div class="bidders_list">
 		<table class="table table-striped">
 			<thead>
-				<th width="70%">
+				<th width="50%">
 					Freelancers Bidding <span class="badge">{{$bidders->count()}}</span>
 				</th>
-				<th width="15%"> 
+				<th width="30%"> 
 					Reputation
 				</th>
-				<th width="15%"> 
+				<th width="20%"> 
 					Bid
 				</th>
 			</thead>
-			@foreach($bidders as $bidder)
-				<?php $currBid = $bidder->projects()->where('project_id', '=', $project->id)->first()->pivot; ?>
-				<tr class="bidder_wrap">
-					<td>
-						<div class="avatar_wrap_2">
-							@if($bidder->avatar)
-								<img src="/uploads/{{ $bidder->avatar }}" class="img-rounded"/>
-							@else
-								<img src="http://www.miyokids.com/catalog/view/theme/ULTIMATUM/image/no_avatar.jpg" />
-							@endif
-						</div>
-						<a href="{{ URL::route('user-profile', $bidder->username) }}">
-							{{ $bidder->username }}
-						</a>
-						<small>Bidded {{ $currBid->created_at->diffForHumans() }}</small>
-					</td>
-					<td>
+			<tbody>
+				@foreach($bidders as $bidder)
+					<?php $currBid = $bidder->projects()->where('project_id', '=', $project->id)->first()->pivot; ?>
+					<tr class="bidder_wrap">
+
+						<td>
+							<div class="avatar_wrap_2">
+								@if($bidder->avatar)
+									<img src="/uploads/{{ $bidder->avatar }}" class="img-rounded"/>
+								@else
+									<img src="http://www.miyokids.com/catalog/view/theme/ULTIMATUM/image/no_avatar.jpg" />
+								@endif
+							</div>
+
+							<a href="{{ URL::route('user-profile', $bidder->username) }}">
+								{{ $bidder->username }}
+							</a>
+							<small>Bidded {{ $currBid->created_at->diffForHumans() }}</small>
+						</td>
+
+						<td>
+							<input id="rating" type="number" class="rating" data-min="0" data-max="5" data-step="0.1" data-stars=5 
+	    						data-glyphicon="false" data-size="xs" action="{{ URL::route('rating-change') }}" value="{{ round($bidder->reputation, 1) }}">
+						</td>
+
+						<td>
+	 						{{ $currBid->bid_price }} {{ $currBid->bid_currency }}
+	 						<br>
+	 						{{ $currBid->duration }}
+	 						@if($currUser->id === $bidder->id)
+	 							<br><br>
+								<a href="{{ URL::route('project-unbid', $project->id) }}" class="btn btn-xs btn-warning pull-right unbid"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
+	 						@endif
+						</td>
 						
-					</td>
-					<td>
- 						{{ $currBid->bid_price }} {{ $currBid->bid_currency }}
- 						<br>
- 						{{ $currBid->duration }}
- 						@if($currUser->id === $bidder->id)
- 							<br><br>
-							<a href="{{ URL::route('project-unbid', $project->id) }}" class="btn btn-xs btn-warning pull-right unbid"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
- 						@endif
-					</td>
-					
-				</tr>
-			@endforeach
+					</tr>
+				@endforeach
+			</tbody>
 		</table>
 	</div>
 	<hr>
@@ -175,13 +191,15 @@
   </div>
 </div>
 
+<!-- /////////////////////////////////////////// Comments ///////////////////////////////////////////////// -->
+
 @include('ITDC_Project.home.comments.index', ['comments' => $comments, 'user' => $currUser, 'project' => $project])
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-<!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-
 <script>
+
+	$("#rating").rating("refresh", {disabled: true, showClear: false});
 
 	@if($errors->has())
 		$('#myModal').modal('show');
@@ -214,13 +232,6 @@
 		}	
 	});
 
-	function getDocHeight() {
-          var doc = document;
-          return Math.max(
-              Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight),
-              Math.max(doc.body.offsetHeight, doc.documentElement.offsetHeight),
-              Math.max(doc.body.clientHeight, doc.documentElement.clientHeight)
-          );
-     }
 </script>
+
 @stop

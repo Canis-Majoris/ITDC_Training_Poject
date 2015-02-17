@@ -37,13 +37,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'type', 
 		'company_name', 
 		'avatar',
-		'description'
+		'description',
+		'reputation',
+		'online'
 	);
 	protected $throwValidationExceptions = true;
 	protected $rules = [];
 
 	public function phones(){
 		return $this->hasMany('Phone');
+	}
+	public function rating(){
+		return $this->hasMany('Rating', 'user_id');
 	}
 	public function projects(){
 		

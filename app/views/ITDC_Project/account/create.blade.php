@@ -165,6 +165,7 @@
 	</div>
 	{{ Form::Button('Save', ['class'=>'btn btn-primary pull-right', 'id' => 'sendCreate', 'data-loading-text' => 'Saving...', 'autocomplete' => 'off', 'type' => 'submit'])}}
 	{{ Form::close(); }}
+	<div class="clear"></div>
 </div>
 
 
@@ -207,7 +208,6 @@
 		console.log(localStorage.getItem("countPhones"));
 	})
 	
-
 	$(".type_wrap_1 input[name='type']").click(function(){
 	    if($('input:radio[name=type]:checked').val() == "3"){
 	        $('#company_name_input').show();

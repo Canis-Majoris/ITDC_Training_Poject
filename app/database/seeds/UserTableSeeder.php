@@ -24,6 +24,7 @@ class UserTableSeeder extends Seeder {
 				'status' => 1,
 				'online' => $faker->numberBetween(0,1),
 				'company_name' => $company,
+				'reputation' => $faker->randomFloat(4,0),
 				'description' => $faker->text,
 				'company_name' => $company
 

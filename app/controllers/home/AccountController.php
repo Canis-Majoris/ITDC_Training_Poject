@@ -49,7 +49,44 @@ class AccountController extends BaseController {
 		$id = Auth::user()->id;
 		return $this->gateway->createOrUpdate($input, $id);
 	}
-	
+	public function changeRating(){
+		$currUser = Auth::user();
+		$input = Input::only(['rating', 'id']);
+		$user = User::find($input['id']);
+		$permission = 0;
+		$data = [];
+		if($user->rating()->where('rater_id', '=', $currUser->id)->count() == 0){
+			$permission = 1;
+			$rating = new Rating;
+			$rating->rater_id = $currUser->id;
+			$rating->user_id = $user->id;
+
+			$value = 0;
+			foreach ($user->rating as $score) {
+				$value += $score->value;
+			}
+			$value += $input['rating'];
+			$value /= ($user->rating->count() + 1);
+
+			$rating->value = $value;
+			$rating->type = 0;
+			$rating->save();
+			$data = [
+				'count'  => $user->rating->count(),
+				'rating' => round($value, 1),
+				'permission' => 1
+			];
+			$user->reputation = $value;
+			$user->save();
+		}
+		$data = [
+			'permission' => 0
+		];
+
+		 if(Request::ajax()) {
+			return Response::json($data);
+		}
+	}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	 /*
 	 / Custom Password Recovery

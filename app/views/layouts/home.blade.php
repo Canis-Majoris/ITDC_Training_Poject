@@ -10,7 +10,7 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.min.js"></script> <!-- load angular -->
 
 	<script src="{{ URL::asset('res/js/bootstrap.js') }}"></script>
@@ -18,6 +18,8 @@
 	<script src="{{ URL::asset('res/js/users/addphone.js') }}"></script>
 	<script src="{{ URL::asset('res/js/jscroll/jquery.jscroll.min.js') }}"></script>
 	<script src="{{ URL::asset('packages/ckeditor/ckeditor.js') }}"></script>
+	<link href="{{ URL::asset('res/css/rating/star-rating.min.css') }}" media="all" rel="stylesheet" type="text/css" />
+	<script src="{{ URL::asset('res/js/rating/star-rating.min.js') }}" type="text/javascript"></script>
 	<link href="{{ URL::asset('res/css/tagbar.css') }}" rel="stylesheet">
 	<link href="{{ URL::asset('res/css/bootstrap.css') }}" rel="stylesheet">
 	<link href="{{ URL::asset('res/css/bootstrap-theme.css') }}" rel="stylesheet">
@@ -72,41 +74,52 @@
 				<div class="login_inline_form pull-right">
 				
 					{{ Form::open(array('route' => 'account-sign-in-post', 'id' => 'inline-loginform', 'class' => 'form-inline', 'role' => 'form')) }}
-					  <div class="form-group">
-					  	<?php $emailError =  null ; $error_border_class = null;?>
-						@if($errors->has('email_login'))
-							<?php $emailError =  $errors->first('email_login') ; $error_border_class = 'error_border';?>
-						@endif
-						<div class="home-error_message_small">
-							{{ $emailError }}
-						</div>
-					    <label class="sr-only" for="exampleInputEmail2">Email address</label>
-				    	{{ Form::text('email_login','', array('id' => 'login-email', 'class' => 'form-control input-sm glyphicon '.$error_border_class, 'placeholder' => '&#57352; Username or Email')) }}
-					  </div>
-					  <div class="form-group">
-					  	<?php $passwordError =  null ; $error_border_class = null;?>
-						@if($errors->has('password_login'))
-							<?php $passwordError =  $errors->first('password_login') ; $error_border_class = 'error_border';?>
-						@endif
-						<div class="home-error_message_small">
-							{{ $passwordError }}
-						</div>
-						
-					    <label class="sr-only" for="exampleInputPassword2">Password</label>
-					    {{ Form::password('password_login', array('id' => 'login-password exampleInputPassword2', 'class' => 'form-control input-sm glyphicon '.$error_border_class, 'placeholder' => '&#57395; Password')) }}
-						<div class="forgot_password_small">
-							<a href="{{ URL::route('recover-password') }}">Forgot password?</a>
-						</div>
-					  </div>
-					  <div class="checkbox">
-					    <div class="checkbox">
-	                        <label>
-	                          {{ Form::checkbox('remember', 0, 0, ['id' => 'login-remember', ]) }} <p class="rememberMe_label">Remember me</p>
-	                        </label>
-                     	</div>
-					  </div>
-					  <button type="submit" class="btn btn-sm btn-default">Sign in</button>
+
+						  <div class="form-group">
+
+							  	<?php $emailError =  null ; $error_border_class = null;?>
+								@if($errors->has('email_login'))
+									<?php $emailError =  $errors->first('email_login') ; $error_border_class = 'error_border';?>
+								@endif
+
+								<div class="home-error_message_small">
+									{{ $emailError }}
+								</div>
+
+							    <label class="sr-only" for="exampleInputEmail2">Email address</label>
+						    	{{ Form::text('email_login','', array('id' => 'login-email', 'class' => 'form-control input-sm glyphicon '.$error_border_class, 'placeholder' => '&#57352; Username or Email')) }}
+
+						  </div>
+
+						  <div class="form-group">
+
+						  	<?php $passwordError =  null ; $error_border_class = null;?>
+							@if($errors->has('password_login'))
+								<?php $passwordError =  $errors->first('password_login') ; $error_border_class = 'error_border';?>
+							@endif
+
+							<div class="home-error_message_small">
+								{{ $passwordError }}
+							</div>
+							
+						    <label class="sr-only" for="exampleInputPassword2">Password</label>
+
+						    {{ Form::password('password_login', array('id' => 'login-password exampleInputPassword2', 'class' => 'form-control input-sm glyphicon '.$error_border_class, 'placeholder' => '&#57395; Password')) }}
+							<div class="forgot_password_small">
+								<a href="{{ URL::route('recover-password') }}">Forgot password?</a>
+							</div>
+
+						  </div>
+
+						  <div class="checkbox">
+		                       <label>
+		                          {{ Form::checkbox('remember', 0, 0, ['id' => 'login-remember', ]) }} <p class="rememberMe_label">Remember me</p>
+		                       </label>
+	                      </div>
+
+					<button type="submit" class="btn btn-sm btn-default">Sign in</button>
 					{{Form::close()}} 
+
 					<a href="{{ URL::route('account-create') }}" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-certificate"></span> Register</a>
 					
 				</div>
@@ -117,12 +130,13 @@
 	</nav>
 
 
-	<div class="container users_skills_data">
+	<div class="container all">
 		@yield('ragac')
 	</div><!-- /.container -->
 	<div>
 		@yield('home')
 	</div>
+
 <!--////////////////////////////////////////////////////////////////////////////////////// -->
 
 
@@ -218,42 +232,38 @@
     </div>
 </footer>
 </body>
-
-
-
-<script type="text/javascript">
-	$(window).scroll(function(){
-       $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
-        
-       if ($(window).scrollTop() > 105){
-		    $(".fixedheader1").css({"top": ($(window).scrollTop()) -105 + "px"});
-		} else {
-        $(".fixedheader1").css("top", "0px");
-    }
-    });
-
-    $('.users_skills_data').on("click", "form.delete_user", function(e){
-		if(confirm("Do you really want to delete user?")){
-
-		}else{
-			e.preventDefault();
-		}	
-	});
-
-  var url = window.location;
-// Will only work if string in href matches with location
-	$('ul.nav a[href="'+ url +'"]').parent().addClass('active');
-
-	// Will also work for relative and absolute hrefs
-	$('ul.nav a').filter(function() {
-	    return this.href == url;
-	}).parent().addClass('active');
+	<script type="text/javascript">
 	
-	$(function () {
-	  $('[data-toggle="popover"]').popover()
-	})
+		$(window).scroll(function(){
+	       $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
+	        
+	       if ($(window).scrollTop() > 105){
+			    $(".fixedheader1").css({"top": ($(window).scrollTop()) -105 + "px"});
+			} else {
+	        $(".fixedheader1").css("top", "0px");
+	    }
+	    });
 
+	    $('.users_skills_data').on("click", "form.delete_user", function(e){
+			if(confirm("Do you really want to delete user?")){
 
-</script>
+			}else{
+				e.preventDefault();
+			}	
+		});
 
+	  	var url = window.location;
+		// Will only work if string in href matches with location
+		$('ul.nav a[href="'+ url +'"]').parent().addClass('active');
+
+		// Will also work for relative and absolute hrefs
+		$('ul.nav a').filter(function() {
+		    return this.href == url;
+		}).parent().addClass('active');
+		
+		$(function () {
+		  $('[data-toggle="popover"]').popover()
+		});
+
+	</script>
 </html>

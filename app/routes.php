@@ -271,6 +271,10 @@ Route::group(['before' => 'auth_home'], function(){
 		'as' => 'edit',
 		'uses' => 'AccountController@getEdit'
 	]);
+	Route::post('/rating/change', [
+		'as' => 'rating-change',
+		'uses' => 'AccountController@changeRating'
+	]);
 });
 
 ///User Profile

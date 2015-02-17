@@ -153,6 +153,7 @@
 	</div>
 	{{ Form::Button('Save', ['class'=>'btn btn-primary pull-right', 'id' => 'sendEdit', 'data-loading-text' => 'Saving...', 'autocomplete' => 'off', 'type' => 'submit'])}}
 	{{ Form::close(); }}
+	<div class="clear"></div>
 </div>
 <script type="text/javascript">
 
@@ -189,7 +190,6 @@
 	});
 	//$('#phonewrapper').append(localStorage.getItem("countPhones"));
 
-
 	//Password Change Click Function //////////////////////////
 	$('#buttonShowPassChange').on('click', function(e){
 		
@@ -205,11 +205,11 @@
 	});
 
 	if ($('.change_password').css('display') == 'none') {
-       		$('.disp_pas_change').prop('disabled', true);
-	    }
-	    if ($('.change_password').css('display') == 'block') {
-	        $('.disp_pas_change').removeAttr('disabled');
-	    }   
+       	$('.disp_pas_change').prop('disabled', true);
+    }
+    if ($('.change_password').css('display') == 'block') {
+        $('.disp_pas_change').removeAttr('disabled');
+    }   
 
 
     /*if( $('.change_password').is(':visible') ) {
@@ -217,6 +217,7 @@
 	}else{
 		 $(".disp_pas_change").prop('disabled', treu);
 	}*/
+
 	$(document).ready(function () {
     	$('#checkbox1').change(function () {
 	        if (!this.checked){

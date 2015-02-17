@@ -199,6 +199,7 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 	}
 	
 	public function my($user){
+		$user = $user->first();
 		$projects = Project::where('user_id', '=', $user->id)->get();
 		$bids = $user->projects()->get();
 		$data = [

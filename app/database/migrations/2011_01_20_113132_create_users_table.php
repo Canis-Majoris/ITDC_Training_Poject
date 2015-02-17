@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration {
 		    $table->tinyInteger('type');
 		    $table->tinyInteger('status');
 		    $table->tinyInteger('online');
+		    $table->double('reputation');
 		    $table->string('avatar');
 		    $table->string('remember_token');
 		    $table->timestamps();
