@@ -17,27 +17,22 @@ use Input;
 use Response;
 use View;
 use Config;
+use Paginator;
+use Comment;
+use Carbon\Carbon;
 
 class ProjectRepositoryDb implements ProjectRepositoryInterface {
 
 	protected $exchange;
+	protected $timespan;
+	protected $currencies;
 
-	protected $timespan = [
-		'Lesst than 1 week',
-		'1 week - 4 weeks',
-		'1 month - 3 months',
-		'3 months - 6 months',
-		'Over 6 months/Ongoing',
-		'Not sure'
-	];
-	protected $currencies = [
-		'USD' => 'USD',
-		'GEL' => 'GEL',
-		'AUD' => 'AUD',
-		'CAD' => 'CAD',
-		'EUR' => 'EUR',
-		'GBP' => 'GBP'
-	];
+	public function __construct(){
+		$this->timespan = Config::get('projects.timespan');
+		$this->currencies =  Config::get('projects.currency_sign');
+		$this->currency_spec = Config::get('projects.currency');
+
+	}
 
 	public function all() {
 		return Project::orderBy('created_at', 'desc')->with('users')->paginate(10);
@@ -46,8 +41,11 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 	public function byId($id) {
 		return Project::find($id);
 	}
-	public function user() {
-		return Auth::user();
+	public function user($user_id = null) {
+		if ($user_id) {
+			return User::find($user_id);
+		}
+		else return Auth::user();
 	}
 	public function createOrUpdate($input, $project, $id) {
 		if ($input) {
@@ -115,34 +113,82 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 
 	public function show($id) {
 		$project = $this->byId($id);
-		$creator = User::find($project->user_id);
-		$currUser = $this->user();
+		$data = null;
+		if (isset($project)) {
+			$creator = User::find($project->user_id);
+			$comments = Comment::where('project_id', '=', $id)->get();
+			
+			$typeData = $this->getTypes($project);
 
-		///get all bidders
-		$bidders = User::whereHas('projects', function($q) use($id) {
-			$q->where('project_id', '=', $id);
-			##############
-		})->with('projects')->get();
+			$currencyArr = $this->currency_spec;
+			$currUser = $this->user();
 
-		$data = [
-			'project'   	=> $project,
-			'creator'   	=> $creator,
-			'bidders'   	=> $bidders,
-			'currUser'  	=> $currUser,
-			'timespan'  	=> $this->timespan,
-			'currencies'	=> $this->currencies,
-			'skills'        => $project->skills
-		];
+			///get all bidders
+			$bidders = User::whereHas('projects', function($q) use($id) {
+				$q->where('project_id', '=', $id);
+				##############
+			})->with('projects')->get();
 
+			$data = [
+				'project'   	=> $project,
+				'creator'   	=> $creator,
+				'bidders'   	=> $bidders,
+				'currUser'  	=> $currUser,
+				'timespan'  	=> $this->timespan,
+				'currencies'	=> $this->currencies,
+				'skills'        => $project->skills,
+				'currencyArr'	=> $currencyArr,
+				'comments'		=> $comments,
+				'typeArr'		=> $typeData['typeArr'],
+				'allTypes' 		=> $typeData['allTypes']
+			];
+		}
 		return $data;
 	}
 
-	public function delete($id) {
+	public function getTypes($project){
+		$types = $project->project_type_id;
+		$typeArr = explode('|', rtrim($types, '|'));
+		$allTypes = Project_type::all();
+
+		$data = [
+			'typeArr'  => $typeArr,
+			'allTypes' => $allTypes
+		];
+		return $data;
+	}
+
+	public function showBid($user_id, $id){
+		$currUser = Auth::user();
+		$user = $this->user($user_id);
+		$project = $this->byId($id);
+		//dd($currUser->id.' '.$project->user_id);
+		$bid = null;
+		if (isset($user) && isset($project)){
+			$tempBid = $user->projects()->where('project_id', '=', $id)->first()->pivot;
+			if($currUser->id == $project->user_id || $currUser->id == $tempBid->user_id || $currUser->type == 0) {
+				$bid = $tempBid;
+			}
+		}
+		return $bid;
+	}
+
+	public function deactivate($id) {
 		$project = $this->byId($id);
 		if(is_null($project)) {
-			return Redirect::back();
+			return false;
 		}
-		$project->delete();
+		//$project->delete();
+		$otherBids = $project->users;
+		foreach ($otherBids as $otherBid) {
+			if ($otherBid->pivot->status != 1) {
+				$otherBid->pivot->status = 2;
+				$otherBid->pivot->save();
+			}
+		}
+		$project->active = 0;
+		$project->save();
+		return true;
 	}
 
 	public function bid($input) {
@@ -172,10 +218,11 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 			$project->bid_count = ++$project_bid_count;
 
 			$project->save();
-
+			$creator = User::find($project->user_id);
 			$sth = [
 				'user_id' 		=> $this->user()->id,
 				'project_id' 	=> $id,
+				'creator_id'    => $creator->id,
 				'bid_price'		=> $input['price'], 
 				'comment'		=> $input['description'], 
 				'duration'		=> $this->timespan[$input['duration']],
@@ -198,15 +245,47 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 			->with('message', 'Ooops.... Something went wrong...');
 	}
 	
-	public function my($user){
+	public function my($user, $param){
+		if ($param == 'projects') {
+			Paginator::setPageName('page_a');
+			$data = Project::where('user_id', '=', $user->id)->orderBy('created_at', 'DESC')->paginate(25);
+		}elseif ($param == 'bids') {
+			Paginator::setPageName('page_b');
+			$data = $user->projects()->orderBy('created_at', 'DESC')->paginate(15);
+		}elseif ($param == 'comments') {
+			Paginator::setPageName('page_c');
+			$data = $user->comments()->orderBy('created_at', 'DESC')->paginate(25);
+		}elseif($param == 'suggested'){
+			Paginator::setPageName('page_d');
+			$data = $this->getSuggestedProjects($user);
+		}elseif ($param == 'offers') {
+			//Paginator::setPageName('page_d');
+			//$data = $user->offers()->paginate(3);
+			/*foreach ($skillArr as $skl) {
+				$data->whereHas('skills', function($q) use($skl)
+				{
+					$q->where('skill_id', $skl);
+				});
+			}*/
+			Paginator::setPageName('page_e');
+			$data = $user->offers()->orderBy('created_at', 'DESC')->paginate(10);
+		}else{
+			$data = null;
+		}
+		return $data;
+	}
+
+	public function staff($user){
 		$user = $user->first();
-		$projects = Project::where('user_id', '=', $user->id)->get();
-		$bids = $user->projects()->get();
+		$projects = Project::where('user_id', '=', $user->id)->orderBy('created_at', 'DESC')->paginate(10);
+		$bids = $user->projects()->orderBy('created_at', 'DESC')->take(7)->get();
+		$comments = $user->comments()->orderBy('created_at', 'DESC')->take(10)->get();
+
 		$data = [
 			'projects' => $projects,
-			'bids' => $bids
+			'bids' => $bids,
+			'comments' => $comments
 		];
-
 		return $data;
 	}
 
@@ -222,8 +301,13 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 		$this->exchange->add('CAD', 1.25);
 
 		$user = $this->user();
-		$bid = $user->projects()->where('project_id', '=', $id)->first()->pivot;
 		$project = $this->byId($id);
+		if (isset($project)) {
+			if (isset($user->projects()->where('project_id', '=', $id)->first()->pivot)) {
+				$bid = $user->projects()->where('project_id', '=', $id)->first()->pivot;
+			}else return false;
+			
+		}else return false;
 
 		$currency = new Currency($this->exchange, new RuntimeFormat);
 		$convertedPrice = $currency->convert($bid->bid_price)->from($bid->bid_currency)->to($project->currency)->fifty()->value();
@@ -235,21 +319,49 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 		}else{
 			$project->avg_price = ($project->avg_price * $project_bid_count - $convertedPrice)/($project_bid_count - 1);
 		}
-
+		if ($bid->status == 1) {
+			$otherBids = $project->users;
+			foreach ($otherBids as $otherBid) {
+				$otherBid->pivot->status = 0;
+				$otherBid->pivot->save();
+			}
+			$project->active = 1;
+		}
 		$project->bid_count = --$project_bid_count;
 		$project->save();
-		$user->projects()->detach($id);
+		if ($user->projects()->detach($id)) {
+			return true;
+		}
+		return false;
 	}
 	public function sort($input){
-		if (isset($input['sorter'])) {
+		$sorter = null;
+		$projects = Project::orderBy('created_at', 'DESC')->paginate(20);
+		if ($input['sorter'] != null) {
 			$sorter = $input['sorter'];
 			$arr = explode('.', $sorter);
-			$projects = Project::orderBy($arr[0], $arr[1])->get();
-			$view = View::make('ITDC_Project.home.project.load_projects')->with(['projects' => $projects])->render();
-			return Response::json($view);
+			if ($arr[0] == 's') {
+				$projects = Project::where('duration', '=', $arr[1])->orderBy('created_at', 'DESC')->paginate(20);
+			}elseif($arr[0] == 'btn'){
+				$projects = Project::orderBy($arr[1], $arr[2])->paginate(20);
+			}
 		}
+		$skills = [];
+		foreach ($projects as $project) {
+			if ($this->isExpired($project->id)) {
+				$project->active = 0;
+				$project->save();
+			}
+			$skills[$project->id] = $project->skills;
+		}
+		return Response::json([
+			'status'   => 'success',
+			'projects' => $projects->toJson(),
+			'sorter'   => $sorter,
+			'skills'   => $skills,
+			'timespan' => $this->timespan
+		]);
 	}
-
 
 	public function updateAll($project, $updateData){
 		if (isset($updateData['skills']) && isset($updateData['levels_sk'])) {
@@ -266,5 +378,42 @@ class ProjectRepositoryDb implements ProjectRepositoryInterface {
 			$project->skills()->sync($sl);
 		}
 	}
+
+	public function getSuggestedProjects($user, $optimal = null){
+		$projects = null;
+		$skills = $user->skills()->get();
+		$langArr = [];
+		foreach ($skills as $skill) {
+			$langArr[] = $skill->name;
+		}
+		$projects = Project::/*has('skills', '<', 1)->or*/whereHas('skills', function($q) use($langArr)
+		{
+			$q->whereIn('name', $langArr);
+		})->orderBy('created_at', 'DESC')->paginate(9);
+
+		$types = [];
+		$skills = [];
+		foreach ($projects as $project) {
+			$types[$project->id] = $this->getTypes($project);
+			$skills[$project->id] = $project->skills;
+		}
+
+		$data = [
+			'projects'  	=> $projects,
+			'types' 		=> $types,
+			'skills'		=> $skills,
+			'currencyArr' 	=> $this->currency_spec
+		];
+		return $data;
+	}
+
+	public function isExpired($id){
+		$project = Project::find($id);
+		$created = new Carbon($project->created_at);
+		$now = Carbon::now();
+		$expired = ($created->diff($now)->days > 60) ? true : false;
+		return $expired;
+	}
+
 	//////////////////////////////////////
 }

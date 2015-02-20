@@ -19,7 +19,7 @@
 			<!-- COMMENT TEXT -->
 			<div class="form-group">
 				<input type="text" class="form-control input-lg mycomment subinput pill-left" name="body" placeholder="Say what you have to say">
-				<button type="submit" class="btn btn-primary btn-lg commentSubmit pull-right"><span class="glyphicon glyphicon-arrow-right send_comment"></span></button>
+				<button type="submit" class="btn btn-primary btn-lg commentSubmit pull-right"><span class="glyphicon glyphicon-send send_comment"></span></button>
 				<div class="clear"></div>
 			</div>
 		</div>

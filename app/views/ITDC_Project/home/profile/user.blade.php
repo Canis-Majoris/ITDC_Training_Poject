@@ -35,7 +35,7 @@
 
 			<div class="">
 				<h3 class="stud_contact_info_header">ელ. ფოსტა</h3>
-				<div class="well well-sm">{{ $user->email }}</div>
+				<div class="well well-sm"><span class="glyphicon glyphicon-user"></span> {{ $user->email }}</div>
 				<h3 class="stud_contact_info_header">ტელეფონ(ებ)ი</h3>
 				<ul class="list-group">
 					@foreach($user->phones as $phone)
@@ -69,115 +69,152 @@
 		</div>
 	</div>
 	
-<h4>Recent Activity</h4>
+<h3>Recent Activity</h3>
 <div class="pull-right activity_head_wrapper">
 	<ul class="nav nav-tabs pull-left">
 		 <li role="presentation"><a class="btn btn-xs btn-default active" id="my_projects_btn">Projects</a></li>
-		 <li role="presentation"><a class="btn btn-xs btn-default" id="my_bids_btn">Bids</a></li>
+		 @if($user->id == Auth::user()->id)
+		 	<li role="presentation"><a class="btn btn-xs btn-default" id="my_bids_btn">Bids</a></li>
+		 @endif
 		 <li role="presentation"><a class="btn btn-xs btn-default" id="my_comments_btn">Comments</a></li>
 	</ul>
-
+	@if(Auth::check())
 	<span data-toggle="tooltip" data-placement="top" id="rating_wrapper" class="pull-right">
 		<input id="rating" type="number" class="rating" data-min="0" data-max="5" data-step="0.1" data-stars=5 
 			data-glyphicon="false" data-size="xs" action="{{ URL::route('rating-change') }}" value="{{ round($rating, 1) }}">
 	</span>
-
+	@endif
     <div class="clear"></div>
+   	 <hr>
 </div>
+
 
 <div class="pull-left user_activity_container">
 	<div class="scroll" id="my_projects_wrapper">
-		<div class="fixedheader1">
-			<hr>
-		</div>
-
-		<table class="table table-hover table-stripped table-bordered projects_table" >
-			<thead>
-				<th width="40%">Project Name</th>
-				<th width="5%">Bids</th>
-				<th width="25%">Skills</th>
-				<th width="15%">Started</th>
-				<th width="15%" align="center">Price</th>
-			</thead>
-			<tbody>
-				@foreach($projects as $project)
-				<tr id="show_project_inline_{{ $project->id }}" class="project_description">
-					<td>
-						<a href="{{ URL::route('project-show', $project->id) }}">
-							{{ $project->name}}
-						</a>
-						<div class="hide_1 hover_show_description">
-							{{ $project->description}}
-						</div>
-					</td>
-
-					
-					<td>
-						{{ $project->bid_count}}
-					</td>
-					<td>
+		@if($projects->count() < 1)
+			<h4 class="center">No Projects</h4>
+		@else
+			<?php echo $projects->links(); ?>
+			<table class="table table-hover table-stripped table-bordered projects_table" >
+				<thead>
+					<th width="40%">Project Name</th>
+					<th width="5%">Bids</th>
+					<th width="25%">Skills</th>
+					<th width="15%">Started</th>
+					<th width="15%" align="center">Price</th>
+				</thead>
+				<tbody>
+					@foreach($projects as $project)
+					<tr id="show_project_inline_{{ $project->id }}" class="project_description">
+						<td>
+							<a href="{{ URL::route('project-show', $project->id) }}">
+								{{ $project->name}}
+							</a>
+							<div class="hide_1 hover_show_description">
+								{{ $project->description}}
+							</div>
+						</td>
 						
-					</td>
-					<td>
-						{{ $project->created_at->diffForHumans() }}
-						<?php
-								echo $project->created_at->toFormattedDateString().' ';
-						$k = $project->created_at->diffInMinutes().' ';
-						?>
-					</td>
-					<td>
-						{{ $project->salary}} {{ $project->currency}}
-					</td>
-				</tr>
+						<td>
+							{{ $project->bid_count}}
+						</td>
+						<td>
+							
+						</td>
+						<td>
+							{{ $project->created_at->diffForHumans() }}
+							<?php
+									echo $project->created_at->toFormattedDateString().' ';
+							?>
+							<br/>
+							@if($project->active == 1)
+								<p class="good">Active</p>
+							@elseif($project->active == 0)
+								<p class="bad">Expired or Removed</p>
+							@elseif($project->active == 2)
+								<p class="violet">Taken</p>
+							@endif
+						</td>
+						<td>
+							{{ $project->salary}} {{ $project->currency}}
+						</td>
+					</tr>
+					@endforeach
+				</tbody>
+			</table>
+		@endif
+	</div>
+	@if(Auth::check() && $user->id === Auth::user()->id)
+		<div class="scroll" id="my_bids_wrapper" style="display:none;">
+			@if($bids->count() < 1)
+				<h4 class="center">No Bids</h4>
+			@else
+				@foreach($bids as $bid)
+					<?php 
+						$pr = Project::find($bid->pivot->project_id);
+						$bidder = User::find($bid->pivot->user_id);
+						$status = 0; $bordeColor = null;
+						if($bid->pivot->status == 1){
+							$status = 1; 
+							$bordeColor = 'green_border';
+						}elseif ($bid->pivot->status == 2) {
+							$status = 2; 
+							$bordeColor = 'orange_border';
+						}
+					?>
+					<div class="my_bids {{ $bordeColor }}">
+						<h4>Bidded <a href="{{ URL::route('project-show', $pr->id) }}">{{ $pr->name }}</a></h4>
+						<small><span class="glyphicon glyphicon-time"></span> {{$bid->pivot->created_at->diffForHumans() }}</small>
+						<div class="my_bid_price pull-right"><b>My Terms</b>
+							 <span>Price: {{$bid->pivot->bid_price }} {{$bid->pivot->bid_currency }}; Timeline: {{$bid->pivot->duration }}</span>
+						</div>
+
+						<br>
+
+						<p>
+							I Wrote: <span class="my_bid_comment">{{ $bid->pivot->comment }}</span>
+						</p>
+
+						<br>
+						<a href="{{ URL::route('bid-show', [$bidder->id, $bid->pivot->project_id]) }}" class="pull-left"><span class="glyphicon glyphicon-eye-open"></span> Show Bid</a>
+						@if($status == 0)
+							<a href="{{ URL::route('project-unbid', $pr->id) }}" class="btn btn-xs btn-warning pull-right unbid edge_btn"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
+						@elseif($status == 1)
+							<span class="glyphicon glyphicon-star pull-right" style="font-size:24px; color:green;"></span>
+							<a href="{{ URL::route('project-unbid', $pr->id) }}" class="btn btn-xs btn-default pull-right decline edge_btn"><span class="glyphicon glyphicon-remove-sign"></span> Decline</a>
+						@elseif($status == 2)
+							<span class="glyphicon glyphicon-remove-sign pull-right your_bid_declined" style="font-size:24px; color:orange;"></span>
+							<a href="{{ URL::route('project-unbid', $pr->id) }}" class="btn btn-xs btn-danger pull-right decline edge_btn"><span class="glyphicon glyphicon-remove-sign"></span> Remove</a>
+						@endif
+						<div class="clear"></div>
+					</div>
 				@endforeach
-			</tbody>
-		</table>
-	</div>
-
-	<div class="scroll" id="my_bids_wrapper" style="display:none;">
-		<div class="fixedheader1">
-			<hr>
+				@if($bids->count() > 15)
+					<a href="{{ URL::route('staff-my', 'bids') }}" class="btn btn-block btn-sm btn-default">Show More Bids <span class="glyphicon glyphicon-comment"></span></a>
+				@endif
+			@endif
 		</div>
-		@foreach($bids as $bid)
-			<?php 
-				$pr = Project::find($bid->pivot->project_id);
-			?>
-			<div class="my_bids">
-				<h4>Bidded <a href="{{ URL::route('project-show', $pr->id) }}">{{ $pr->name }}</a></h4>
-				<div class="my_bid_price pull-right"><b>My Terms</b>
-					 <span>Price: {{$bid->pivot->bid_price }} {{$bid->pivot->bid_currency }}; Timeline: {{$bid->pivot->duration }}</span>
-				</div>
-
-				<br>
-
-				<p>
-					I Wrote: <span class="my_bid_comment">{{ $bid->pivot->comment }}</span>
-				</p>
-
-				<br>
-
-				<a href="{{ URL::route('project-unbid', $pr->id) }}" class="btn btn-xs btn-warning pull-right unbid">
-					<span class="glyphicon glyphicon-remove-sign"></span> Unbid
-				</a>
-				<div class="clear"></div>
-			</div>
-		@endforeach
-	</div>
+		@endif
 
 	<div class="scroll" id="my_comments_wrapper" style="display:none;">
-		<div class="fixedheader1">
-			<hr>
-		</div>
-		
-		@foreach($user->comments as $comment)
-			<a href="{{ URL::route('project-show', $comment->project_id) }}" class="user_comments_wrapper">
-				<h3>Posted on {{ Project::find($comment->project_id)->name }}</h3>
-				<p><span class="glyphicon glyphicon-comment"></span> {{ $comment->body }}</p>
-				<br/>
-				<div class="clear"></div>
-			</a>
-			<hr>
-		@endforeach
+		@if($comments->count() < 1)
+			<h4 class="center">No Comments</h4>
+		@else
+			@foreach($comments as $comment)
+				<a href="{{ URL::route('project-show', $comment->project_id) }}" class="user_comments_wrapper pull-left">
+					<h3>Posted on {{ Project::find($comment->project_id)->name }}</h3>
+					<p><span class="glyphicon glyphicon-comment"></span> {{ $comment->body }}</p>
+					<br/>
+					<div class="clear"></div>
+				</a>
+			@endforeach
+			<div class="clear"></div>
+			@if($comments->count() > 15)
+				@if(Auth::check() && Auth::user()->id == $user->id)
+					<a href="{{ URL::route('staff-my', 'comments') }}" class="btn btn-block btn-sm btn-default">Show More Comments <span class="glyphicon glyphicon-comment"></span></a>
+				@endif
+			@endif
+		@endif
 	</div>
 </div>
 <div class="clear"></div>
@@ -185,6 +222,12 @@
 <script type="text/javascript">
 	$(function () {
 	  $('#rating_wrapper').tooltip(/*{'title':'Rate This User'}*/)
+	});
+	$(function () {
+	  $('.glyphicon-star').tooltip({'title':'Bid Accepted!', 'placement':'left'})
+	});
+	$(function () {
+	  $('.your_bid_declined').tooltip({'title':'Bid Declined, or Project Removed', 'placement':'left'})
 	})
 
 	$("#rating").rating({

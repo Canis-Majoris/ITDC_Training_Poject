@@ -9,7 +9,7 @@ class Project extends Eloquent {
 	//protected $table = 'projects';
 	protected $fillable = ['user_id','bid_price', 'bid_currency', 'duration','comment','name','description', 'currency', 'salary'];
 	public function users(){
-        return $this->belongsToMany('User')->withPivot('bid_price','duration','comment', 'user_id', 'project_id', 'bid_currency', 'created_at');
+        return $this->belongsToMany('User')->withPivot('bid_price','duration','comment', 'user_id', 'project_id', 'bid_currency', 'created_at', 'id', 'status');
     }
     public function skills(){
         return $this->belongsToMany('Skill')->withPivot('level');

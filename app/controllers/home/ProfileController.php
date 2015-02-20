@@ -15,7 +15,7 @@ class ProfileController extends BaseController {
 		$currUser = Auth::user();
 		$user = User::where('username', '=', $username)->with('skills')->with('phones')->with('comments');
 		$currencies = Config::get('projects.currency');
-		$data = $this->projectGateway->my($user);
+		$data = $this->projectGateway->staff($user);
 		if ($user->count()) {
 			$user = $user->first();
 			$permission = 0;
@@ -27,15 +27,14 @@ class ProfileController extends BaseController {
 			
 			$this->layout->content = View::make('ITDC_Project.home.profile.user')
 				->with([
-						'user' => $user, 
-						'currencies' => $currencies ,
-						'projects' => $data['projects'], 
-						'bids' => $data['bids'],
-						'rating' => $user->reputation,
-						'permission' => $permission
+					'user' 			=> $user, 
+					'currencies'	=> $currencies ,
+					'projects' 		=> $data['projects'], 
+					'bids' 			=> $data['bids'],
+					'comments'		=> $data['comments'],
+					'rating'		=> $user->reputation,
+					'permission' 	=> $permission,
 				]);
-
-
 		}
 		
 	}

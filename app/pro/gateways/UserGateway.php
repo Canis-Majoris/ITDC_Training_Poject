@@ -39,13 +39,13 @@ class UserGateway {
 	        'username'   => 'required|min:3|max:60|unique:users',
 	        'firstname'  => 'required',
 	        'lastname'   => 'required',
-	        'email'      => 'required|email|unique:users',
 	        'type'       => 'required'
     	];
 
     	if (is_null($id)){
     		$user = new User;
     		$newRules['password'] = 'required|min:6';
+    		$newRules['email'] = 'required|email|unique:users';
     		if (isset($input['type'])&&$input['type'] == 3) {
 		    	$newRules['company_name'] = 'required';
 		    }
@@ -54,6 +54,7 @@ class UserGateway {
     		if(is_null($user)) {
 				return Redirect::back();
 			}
+			$newRules['email'] = 'required|email';
     	}
     	$user->extendRules($newRules);
 		return $this->userRepo->createOrUpdate($input, $user, $id);

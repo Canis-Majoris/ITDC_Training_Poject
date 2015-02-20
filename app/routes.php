@@ -231,11 +231,24 @@ Route::group(['before' => 'auth_home'], function(){
 	'as' => 'project-unbid',
 	'uses' => 'ProjectController@unbid'
 	]);
+	Route::get('/bid/accept/{bidder_id}/{project_id}', [
+	'as' => 'bid-accept',
+	'uses' => 'ProjectController@bidAccept'
+	]);
 	Route::post('project/create', [
 	'as'=> 'project-create-post',
 	'uses' => 'ProjectController@postCreate'
 	]);
 
+	Route::get('project/deactivate/{id}', [
+	'as'=> 'project-deactivate',
+	'uses' => 'ProjectController@deactivate'
+	]);
+
+	Route::get('bid/show/{user_id}/{id}', [
+		'as' => 'bid-show',
+		'uses' => 'BidController@show'
+	]);
 
 	Route::any('project/sort', [
 	'as'=> 'project-sort',
@@ -254,9 +267,9 @@ Route::group(['before' => 'auth_home'], function(){
 		'uses' => 'ProjectController@index'
 	]);
 
-	Route::get('project/my_projects', [
-		'as'=> 'project-my',
-		'uses' => 'ProjectController@my_projects'
+	Route::get('project/user_staff/{param}', [
+		'as'=> 'staff-my',
+		'uses' => 'ProjectController@my_staff'
 	]);
 
 	Route::get('project/show/{id}', [
@@ -275,35 +288,34 @@ Route::group(['before' => 'auth_home'], function(){
 		'as' => 'rating-change',
 		'uses' => 'AccountController@changeRating'
 	]);
+
+	Route::get('/user/{username}', [
+	'as' => 'user-profile',
+	'uses' => 'ProfileController@user'
+	]);
+
+	Route::get('/comments/all', [
+		'as' => 'allcomments',
+		'uses' => 'CommentController@getAll'
+	]);
+
+	Route::post('/comments/post', [
+		'as' => 'postcomment',
+		'uses' => 'CommentController@store'
+	]);
+	Route::any('/comments/delete/{id}', [
+		'as' => 'comment-delete',
+		'uses' => 'CommentController@destroy'
+	]);
+	Route::any('/comments/edit/{id}', [
+		'as' => 'comment-edit',
+		'uses' => 'CommentController@edit'
+	]);
+	Route::any('/comments/show/{id}', [
+		'as' => 'comment-delete',
+		'uses' => 'CommentController@destroy'
+	]);
 });
 
 ///User Profile
 
-Route::get('/user/{username}', [
-	'as' => 'user-profile',
-	'uses' => 'ProfileController@user'
-]);
-	// since we will be using this just for CRUD, we won't need create and edit
-	// Angular will handle both of those forms
-	// this ensures that a user can't access api/create or api/edit when there's nothing there
-Route::get('/comments/all', [
-	'as' => 'allcomments',
-	'uses' => 'CommentController@getAll'
-]);
-
-Route::post('/comments/post', [
-	'as' => 'postcomment',
-	'uses' => 'CommentController@store'
-]);
-Route::any('/comments/delete/{id}', [
-	'as' => 'comment-delete',
-	'uses' => 'CommentController@destroy'
-]);
-Route::any('/comments/edit/{id}', [
-	'as' => 'comment-edit',
-	'uses' => 'CommentController@edit'
-]);
-Route::any('/comments/show/{id}', [
-	'as' => 'comment-delete',
-	'uses' => 'CommentController@destroy'
-]);

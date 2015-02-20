@@ -12,6 +12,11 @@
 </style>
 <div class="show-project">
 	<div class="jumbotron">
+		@if($currUser->id === $creator->id && $project->active != 0)
+			<a href="{{ URL::route('project-deactivate', $project->id) }}" class="btn btn-xs btn-default pull-right deactivate">
+				<span class="glyphicon glyphicon-remove-sign"></span> Deactivate This Project
+			</a>
+		@endif
 		<h2 class="project_tytle pull-left">{{ $project->name }}</h2>
 
 		<small class="pull-right project_author_ref"> 
@@ -61,24 +66,43 @@
 
 			<div class="clear"></div>
 		</div>
-		
-		@if(!isset($project->users()->where('user_id', '=', $currUser->id)->first()->pivot))
-			<div>
-			<button type="button" class="btn btn-primary btn-lg bid_here round pull-right" data-toggle="modal" data-target="#myModal">
-			 	<span class="glyphicon glyphicon-certificate"></span> Bid on This Project
-			</button>
-			</div>
-			<div class="clear"></div>
-		@else
-		<!--- -> > ^ -->
-	</div>
-		<hr/>
-			<div class="already_bidded">
-				<h1 class="">You Have Already Bidded This Project.</h1>	
-			</div>
-		<hr/>
+		@if($project->active == 1)
+			@if(!isset($project->users()->where('user_id', '=', $currUser->id)->first()->pivot))
+				<div>
+					<button type="button" class="btn btn-primary btn-lg bid_here round pull-right" data-toggle="modal" data-target="#myModal">
+					 	<span class="glyphicon glyphicon-certificate"></span> Bid on This Project
+					</button>
+				</div>
+				<div class="clear"></div>
+			@else
+			<!--- -> > ^ -->
+		</div>
+			<hr/>
+				<div class="good center">
+					<h1 class="">You Have Already Bidded This Project.</h1>	
+				</div>
+			<hr/>
+			@endif
+		@elseif($project->active == 2)
+		</div>
+			<hr/>
+				<div class="orange center">
+					<h1 class="">Project Already Taken</h1>	
+				</div>
+			<hr/>
+		@elseif($project->active == 0)
+		</div>
+			<hr/>
+				<div class="bad center">
+					<h1 class="">Project Expired or Removed</h1>	
+				</div>
+			<hr/>
 		@endif
+		
+
 	</div>
+
+
 
 	<div class="bidders_list">
 		<table class="table table-striped">
@@ -122,9 +146,13 @@
 	 						{{ $currBid->bid_price }} {{ $currBid->bid_currency }}
 	 						<br>
 	 						{{ $currBid->duration }}
-	 						@if($currUser->id === $bidder->id)
-	 							<br><br>
+	 						@if($currUser->id === $bidder->id || $currUser->type == 0)
+	 							<br>
 								<a href="{{ URL::route('project-unbid', $project->id) }}" class="btn btn-xs btn-warning pull-right unbid"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
+	 						@endif
+	 						@if($currUser->id === $project->user_id || $currUser->type == 0)
+	 							<br>
+								<a href="{{ URL::route('bid-show', [$bidder->id, $project->id]) }}" class="pull-right show_bid"><span class="glyphicon glyphicon-eye-open"></span> Show Bid</a>
 	 						@endif
 						</td>
 						
@@ -142,7 +170,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Bid</h4>
+        <h4 class="modal-title" id="myModalLabel">Place Your Bid</h4>
       </div>
       <div class="modal-body">
 		<br>
@@ -190,16 +218,17 @@
     </div>
   </div>
 </div>
-
 <!-- /////////////////////////////////////////// Comments ///////////////////////////////////////////////// -->
-
-@include('ITDC_Project.home.comments.index', ['comments' => $comments, 'user' => $currUser, 'project' => $project])
+@if($project->active == 1)
+	@include('ITDC_Project.home.comments.index', ['comments' => $comments, 'user' => $currUser, 'project' => $project])
+@endif
 
 <!-- ////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<hr/>
 
 <script>
 
-	$("#rating").rating("refresh", {disabled: true, showClear: false});
+	$(".rating").rating("refresh", {disabled: true, showClear: false});
 
 	@if($errors->has())
 		$('#myModal').modal('show');
@@ -218,6 +247,10 @@
 	  $('.skill_level_tooltip').tooltip({placement: 'bottom', html: true, trigger: 'hover focus'})
 	});
 	$(function () {
+	  $('.deactivate').tooltip({placement: 'bottom', html: true, trigger: 'hover focus',
+	  	 title: '<span class="bad">Deactivate This Project <br><span class="glyphicon glyphicon-exclamation-sign"></span> <p>You Will Not Be Able To Reactivate After This Action</p></span>'})
+	});
+	$(function () {
 	  $('.delete_comment').tooltip({placement: 'bottom', html: true, trigger: 'hover focus'})
 	});
 	$(function () {
@@ -226,6 +259,13 @@
 
 	$('.unbid').on("click", function(e){
 		if(confirm("Do you really want to Unbid?")){
+
+		}else{
+			e.preventDefault();
+		}	
+	});
+	$('.deactivate').on("click", function(e){
+		if(confirm("Are You Sure You Want To Deactivate This Project? Remember, There Is No Going Back!")){
 
 		}else{
 			e.preventDefault();

@@ -15,7 +15,7 @@
 
             <div class="media-body">
                 <div class="col-md-11">
-                    <h1 class="title">Template <span>Eden</span></h1>
+                    <h1 class="title">ITDC <span>Freelancer</span></h1>
 
                     <p>Template Eden is a marketplace for all kind of template. If you need a fresh looking, valid and
                         highly optimized template for your site this is the right place to fill your need in best

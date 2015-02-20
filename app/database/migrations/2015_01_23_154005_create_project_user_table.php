@@ -17,6 +17,8 @@ class CreateProjectUserTable extends Migration {
 			$table->increments('id');
 			$table->integer('user_id');
 			$table->integer('project_id');
+			$table->integer('creator_id');
+			$table->tinyInteger('status');
 			$table->float('bid_price');
 			$table->string('bid_currency');
 			$table->string('duration');

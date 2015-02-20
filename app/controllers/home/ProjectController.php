@@ -31,49 +31,86 @@ class ProjectController extends BaseController {
 	public function show($id){
 
 		$data = $this->gateway->show($id);
-		$comments = Comment::where('project_id', '=', $id)->get();
+		if ($data) {
+			$this->layout->content = View::make('ITDC_Project.home.project.show')
+			->with([
+				'project'	 	=> $data['project'],
+				'bidders' 		=> $data['bidders'],
+				'currencies' 	=> $data['currencies'],
+				'timespan' 		=> $data['timespan'], 
+				'creator' 		=> $data['creator'], 
+				'currUser' 		=> $data['currUser'],
+				'types' 		=> $data['typeArr'], 
+				'typeDesc' 		=> $data['allTypes'], 
+				'currencyArr'	=> $data['currencyArr'], 
+				'skills' 		=> $data['skills'],
+				'comments' 		=> $data['comments']
+			]);
+		} else return Redirect::route('home')
+			->with('message_type','danger')
+			->with('message', 'Oops... Something Went Wrong...');
 		
-		$types = $data['project']->project_type_id;
-		$typeArr = explode('|', rtrim($types, '|'));
-
-		$allTypes = Project_type::all();
-		$currencyArr = Config::get('projects.currency');
-		$this->layout->content = View::make('ITDC_Project.home.project.show')
-		->with([
-			'project'	 	=> $data['project'],
-			'bidders' 		=> $data['bidders'],
-			'currencies' 	=> $data['currencies'],
-			'timespan' 		=> $data['timespan'], 
-			'creator' 		=> $data['creator'], 
-			'currUser' 		=> $data['currUser'],
-			'types' 		=> $typeArr, 
-			'typeDesc' 		=> $allTypes, 
-			'currencyArr'	=> $currencyArr, 
-			'skills' 		=> $data['skills'],
-			'comments' 		=> $comments
-		]);
 	}
 	public function bid(){
 		$input = Input::all();
 		$data = $this->gateway->bid($input);
 		return $data;
 	}
-	public function my_projects(){
+	
+	public function my_staff($param){
 		$user = Auth::user();
-		$data = $this->gateway->my($user);
-		$this->layout->content = View::make('ITDC_Project.home.project.my_projects')->with(['projects' => $data['projects'], 'bids' => $data['bids']]);
+		$data = $this->gateway->my($user, $param);
+		if ($param == 'projects' || $param == 'bids' || $param == 'comments' || $param == 'offers' || $param == 'suggested') {
+			$this->layout->content = View::make('ITDC_Project.home.project.my_staff.my_staff')->with([$param => $data]);
+		}else return Redirect::route('staff-my', 'projects');
 	}
+
 	public function unbid($id){
-		$this->gateway->unbid($id);
-		return Redirect::back();
+		if ($this->gateway->unbid($id)) {
+			return Redirect::back()
+				->with('message_type','success')
+				->with('message', 'Project Unbidded');
+		}else 
+			return Redirect::back()
+				->with('message_type','danger')
+				->with('message', 'Oops... Something Went Wrong...');
 	}
 
 	public function showSorted() {
 	   if(Request::ajax()) {
-	   		
-	   }else{
 	   		$input = Input::all();
 			return $this->gateway->sort($input);
-	   }
+		}
+	}
+
+	public function bidAccept($bidder_id, $project_id){
+		$user = User::find($bidder_id);
+		$project = Project::find($project_id);
+		$otherBids = $project->users()->where('user_id', '!=', $bidder_id)->get();
+		foreach ($otherBids as $otherBid) {
+			$otherBid->pivot->status = 2;
+			$otherBid->pivot->save();
+		}
+		$bid = $user->projects()->where('project_id', '=', $project_id)->first()->pivot;
+		$bid->status = 1;
+		$bid->save();
+
+		$project->active = 2;
+		$project->save();
+
+		return Redirect::back()
+			->with('message_type','success')
+			->with('message', 'Bid Accepted!');
+	}
+
+	public function deactivate($id){
+		if($this->gateway->deactivate($id)){
+			return Redirect::back()
+				->with('message_type','warning')
+				->with('message', 'Project Deactivated');
+		}else 
+			return Redirect::back()
+				->with('message_type','danger')
+				->with('message', 'Oops... Something Went Wrong...');
 	}
 }

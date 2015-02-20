@@ -76,6 +76,7 @@ class CommentRepositoryDb implements CommentRepositoryInterface {
 	public function render_node($rendered, $comment, $data, $level = 0)
 	{
 		$otheruser =  User::find($comment->user_id);
+		$authUser = Auth::user();
 		$avatar = $otheruser->avatar;
 		$activeIndicator = '';
 	    $rendered 		.= '<div class="comment_container"><div class="avatar_wrap_3">';
@@ -103,8 +104,8 @@ class CommentRepositoryDb implements CommentRepositoryInterface {
 			</div>
 			<div class="clear"></div>
 		</div>';
-
-		if($comment->user_id == $data['user']->id){
+		$project = Project::find($comment->project_id);
+		if($otheruser->id == $data['user']->id || $project->user_id == $authUser->id || $authUser->type == 0){
 			$rendered 	.= '<a href="'.URL::route('comment-delete', $comment->id).'"><span class="glyphicon glyphicon-remove-circle bad delete_comment" data-toggle="tooltip" 
 			title="Delete Comment"><span></a>';
 		}
@@ -124,7 +125,8 @@ class CommentRepositoryDb implements CommentRepositoryInterface {
 	    if ($comment->children->count() > 0)
 	    {
 	    	$ordererComments = $comment->children()->orderBy('created_at', 'DESC')->get();
-			$rendered 	.= '<a class="show_discussion"><span class="glyphicon glyphicon-chevron-down"></span></a><div style="width:95%;" class="pull-right replays">';
+			$rendered 	.= '<a class="show_discussion"><span class="glyphicon glyphicon-chevron-down"> 
+				</span> <span class="badge" style="font-size:8px; background:#3E84C2;">'.$comment->children->count().'</span></a><div style="width:95%;" class="pull-right replays">';
 	        foreach($ordererComments as $k)
 	        {	
 	           $rendered = $this->render_node($rendered, $k, $data, $level+1);

@@ -33,11 +33,14 @@ class ProjectGateway {
 	public function update($input, $id){
 		return $this->projectRepo->createOrUpdate($input, $id);
 	}
-	public function delete($id){
-		return $this->projectRepo->delete($id);
+	public function deactivate($id){
+		return $this->projectRepo->deactivate($id);
 	}
 	public function show($id){
 		return $this->projectRepo->show($id);
+	}
+	public function showBid($user_id, $id){
+		return $this->projectRepo->showBid($user_id, $id);
 	}
 	public function bid($input){
 		$rules = [
@@ -59,8 +62,11 @@ class ProjectGateway {
 	public function sort($input){
 		return $this->projectRepo->sort($input);
 	}
-	public function my($user){
-		return $this->projectRepo->my($user);
+	public function my($user, $param){
+		return $this->projectRepo->my($user, $param);
+	}
+	public function staff($user){
+		return $this->projectRepo->staff($user);
 	}
 	public function unbid($id){
 		return $this->projectRepo->unbid($id);

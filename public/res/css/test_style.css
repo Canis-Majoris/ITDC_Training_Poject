@@ -24,6 +24,7 @@
 .navbar-default .navbar-nav > li > a:focus,
 .navbar-inverse .navbar-nav > li > a:focus {
     border-bottom-color: #3E84C2;
+    color: #0A0A0A;
 }
 
 .navbar-default .navbar-nav > .active > a,
@@ -33,6 +34,7 @@
 .navbar-default .navbar-nav > .active > a:focus,
 .navbar-inverse .navbar-nav > .active > a:focus {
     border-bottom-color: #3E84C2;
+    color: #0A0A0A;
 }
 
 .navbar-inverse .dropdown-menu > li > a:hover,
@@ -213,6 +215,7 @@ fieldset[disabled] .btn-primary.active {
     background: url(/fixedBackgrounds/Dark-cubes.jpg);
     color: #ffffff;
     background-attachment: fixed;
+    position: relative;
 }
 
 .jumbotron p{
