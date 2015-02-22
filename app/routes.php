@@ -334,6 +334,12 @@ Route::group(['before' => 'auth_home'], function(){
 	]);
 });
 
+Route::any('contacts/get',[
+	'as' => 'contacts-get',
+	'uses' => 'HomeController@contactUs'
+
+	]);
+
 
 
 ///User Profile

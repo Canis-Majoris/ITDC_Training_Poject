@@ -1,5 +1,4 @@
 <?php
-// Composer: "fzaninotto/faker": "v1.3.0"
 class CurrencyTableSeeder extends Seeder {
 	public function run()
 	{

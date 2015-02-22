@@ -24,4 +24,20 @@ class HomeController extends BaseController {
 		$this->layout->content = View::make('ITDC_Project.home.main.firstpage');
 
 	}
+
+	public function contactUs(){
+		$input = Input::all();
+		$data = [
+			'name' => $input['name'],
+			'message_u' => $input['message'],
+			'email' => $input['email']
+		];
+
+
+		Mail::send('emails.message', ['email' => $data['email'], 'name' => $data['name'], 'message_u'=>$data['message_u']],function($message) use($data) {
+					$message->to('giorgi855007@gmail.com', $data['name'])->subject('Contact Form');
+				});
+
+		return Redirect::route('home');
+	}
 }

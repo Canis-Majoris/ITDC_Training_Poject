@@ -58,15 +58,6 @@
 						</li>
 					@endif
 						<li class="pull-left"><a href="{{ URL::route('users-show') }}">Users</a></li>
-						<li class="pull-left"><a href='https://github.com/login/oauth/authorize?client_id=09696cd9626f7270e967' type="button" class="btn btn-success col-xs-5  pull-right">
-							  Add Github
-							</a>
-						</li>
-						<li class="pull-left">
-							<a href="{{ URL::route('github-detach') }}" type="button" class="btn btn-danger col-xs-5  pull-right">
-							  Remove Github
-							</a>
-						</li>
 					@if(Auth::check())
 						<li class="pull-left"><a href="{{ URL::route('project-create') }}">Create Project</a></li>
 						<li class="pull-left"><a href="{{ URL::route('project-browse') }}">Browse Projects</a></li>
@@ -99,6 +90,15 @@
 
 
 					@endif
+						<li class="pull-left"><a href='https://github.com/login/oauth/authorize?client_id=09696cd9626f7270e967' type="button" class="btn btn-success btn-sm  pull-right">
+									  Add Github
+									</a>
+								</li>
+								<li class="pull-left">
+									<a href="{{ URL::route('github-detach') }}" type="button" class="btn btn-sm btn-danger  pull-right">
+									  Remove Github
+									</a>
+								</li>
 					</ul>
 					@if(!Auth::check())
 					<div class="login_inline_form pull-right">
@@ -185,7 +185,7 @@
 
 		                <h2 class="short"><strong>Contact</strong> Us</h2>
 
-		                <form class="clearfix" accept-charset="utf-8" method="get" action="#">
+		                <form class="clearfix" accept-charset="utf-8" method="post" action="{{URL::route('contacts-get')}}">
 		                    <div class="row">
 		                        <div class="col-sm-6 form-group">
 		                            <label for="name">Name</label>
@@ -260,46 +260,5 @@
 		</footer>
 	</body>
 
-
-	<script type="text/javascript">
-		$('homebutton').click(function(){
-			$('div.all').hide();
-		})
-
-		$(function () {
-		  $('#logout').tooltip({'title':'Sign Out', 'placement':'bottom'})
-		})
-	
-		$(window).scroll(function(){
-	       $("#navbar").css({"top": ($(window).scrollTop()) + "px"});
-	        
-	       if ($(window).scrollTop() > 105){
-			    $(".fixedheader1").css({"top": ($(window).scrollTop()) -105 + "px"});
-			} else {
-	        $(".fixedheader1").css("top", "0px");
-	    }
-	    });
-
-	    $('.users_skills_data').on("click", "form.delete_user", function(e){
-			if(confirm("Do you really want to delete user?")){
-
-			}else{
-				e.preventDefault();
-			}	
-		});
-
-	  	var url = window.location;
-		// Will only work if string in href matches with location
-		$('ul.nav a[href="'+ url +'"]').parent().addClass('active');
-
-		// Will also work for relative and absolute hrefs
-		$('ul.nav a').filter(function() {
-		    return this.href == url;
-		}).parent().addClass('active');
-		
-		$(function () {
-		  $('[data-toggle="popover"]').popover()
-		});
-
-	</script>
+	<script src="{{ URL::asset('res/js/main/layout.js') }}"></script>
 </html>

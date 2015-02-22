@@ -22,7 +22,7 @@ class CreateProjectsTable extends Migration {
 		    $table->string('name');
 		    $table->text('description');
 		    $table->string('duration');
-		    $table->tinyInteger('project_type_id');
+		    $table->string('project_type_id');
 		    $table->integer('avg_price');
 		    $table->integer('avg_price_hourly');
 		    $table->string('salary');
