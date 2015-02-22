@@ -84,23 +84,14 @@ class ProjectController extends BaseController {
 	}
 
 	public function bidAccept($bidder_id, $project_id){
-		$user = User::find($bidder_id);
-		$project = Project::find($project_id);
-		$otherBids = $project->users()->where('user_id', '!=', $bidder_id)->get();
-		foreach ($otherBids as $otherBid) {
-			$otherBid->pivot->status = 2;
-			$otherBid->pivot->save();
-		}
-		$bid = $user->projects()->where('project_id', '=', $project_id)->first()->pivot;
-		$bid->status = 1;
-		$bid->save();
-
-		$project->active = 2;
-		$project->save();
-
-		return Redirect::back()
+		if($this->gateway->bidAccept($bidder_id, $project_id)){
+			return Redirect::back()
 			->with('message_type','success')
 			->with('message', 'Bid Accepted!');
+		}else 
+			return Redirect::back()
+				->with('message_type','danger')
+				->with('message', 'Oops... Something Went Wrong...');
 	}
 
 	public function deactivate($id){

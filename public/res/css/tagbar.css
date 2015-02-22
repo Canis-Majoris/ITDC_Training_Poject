@@ -1,4 +1,4 @@
-body { padding-top: 64px; }
+body { padding-top: 69px; }
 input[type="checkbox"].checkbox1 {
     display: none;
 }
@@ -396,7 +396,9 @@ input[type="checkbox"].checkbox1:disabled + label {
     height: 20px;
 }
 .bidders_list{
-    border:2px solid gray;
+    -webkit-box-shadow: 0px 0px 4px 2px rgba(217,217,217,1);
+    -moz-box-shadow: 0px 0px 4px 2px rgba(217,217,217,1);
+    box-shadow: 0px 0px 4px 2px rgba(217,217,217,1);
     position: relative;
    /* z-index: 20;*/
     padding: 10px;
@@ -526,6 +528,11 @@ input[type="checkbox"].checkbox1:disabled + label {
 .project_tytle{
     display:inline-block;
 }
+
+.project_tytle a{
+    text-decoration: none !important;
+}
+
 .project_author_ref{
     margin-top: 40px;
 }
@@ -1092,10 +1099,11 @@ input[type="checkbox"].checkbox1:disabled + label {
 }
 .deactivate{
     position: absolute;
-    bottom: -6%;
+    bottom: -25px;
     right:0%;
 }
 .bid_show_wraper{
+    position: relative;
     padding: 10px;
     margin-top: 20px;
 }
@@ -1105,6 +1113,19 @@ input[type="checkbox"].checkbox1:disabled + label {
 .title a{
     text-decoration: none !important;
     font-weight: bold;
+}
+.show_bid{
+    margin-right: 10px;
+}
+.bid_condition_indicator_text{
+    position: absolute;
+    top: 3%;
+    right: 1%;
+}
+.username_header{
+}
+.indicator_2{
+    font-size: 18px;
 }
 /**********************************************/
 

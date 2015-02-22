@@ -6,6 +6,7 @@
         {{ Session::get('message') }}
     </div>
 @endif
+
 <head>
 	<title>My Staff</title>
 </head>
@@ -18,6 +19,7 @@
 	<a href="{{ URL::route('staff-my', 'suggested') }}" class="btn btn-sm btn-default" id="my_projects_btn">Suggested Projects</a>
 </ul>
 
+<div class="my_staff_container">
 	@if(isset($projects)) 
 		@include('ITDC_Project.home.project.my_staff.my_projects', ['projects' => $projects]);
 	@elseif (isset($bids)) 
@@ -29,6 +31,8 @@
 	@elseif (isset($suggested)) 
 		@include('ITDC_Project.home.project.my_staff.my_suggested', ['suggested' => $suggested]);
 	@endif
+</div>
+	
 
 <a href="#" class="scrollToTop"></a>
 
@@ -70,22 +74,6 @@
 	$('.project_description').hover(function () {
 	    $(this).find('div').toggleClass('hide_1');
 	});
-		
-	/*$('#my_projects_btn').on('click', function(){
-		$('#my_projects_wrapper').show();
-		$('#my_bids_wrapper').hide();
-		$('#my_projects_btn').addClass('active');
-		$('#my_bids_btn').removeClass('active');
-
-
-	});
-	$('#my_bids_btn').on('click', function(){
-		$('#my_projects_wrapper').hide();
-		$('#my_bids_wrapper').show();
-		$('#my_projects_btn').removeClass('active');
-		$('#my_bids_btn').addClass('active');
-
-	});*/
 
 	var url = window.location;
 	// Will only work if string in href matches with location

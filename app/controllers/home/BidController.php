@@ -13,9 +13,14 @@ class BidController extends BaseController {
 		$bid = $this->gateway->showBid($user_id, $id);
 		if ($bid) {
 			$this->layout->content = View::make('ITDC_Project.home.bids.show')->with(['bid' => $bid]);
-		}else return Redirect::route('home')
-			->with('message_type','danger')
-			->with('message', 'Oops... Something Went Wrong...');
+		}elseif ($bid == 1) {
+			return Redirect::back()
+				->with('message_type','success')
+				->with('message', 'Seccessfully Unbidded!');
+		}else 
+			return Redirect::route('home')
+				->with('message_type','danger')
+				->with('message', 'Oops... Something Went Wrong...');
 	}
 
 }

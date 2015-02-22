@@ -39,6 +39,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		'avatar',
 		'description',
 		'reputation',
+		'github_token',
 		'online'
 	);
 	protected $throwValidationExceptions = true;

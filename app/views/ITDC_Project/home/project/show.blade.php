@@ -151,9 +151,10 @@
 								<a href="{{ URL::route('project-unbid', $project->id) }}" class="btn btn-xs btn-warning pull-right unbid"><span class="glyphicon glyphicon-remove-sign"></span> Unbid</a>
 	 						@endif
 	 						@if($currUser->id === $project->user_id || $currUser->type == 0)
-	 							<br>
 								<a href="{{ URL::route('bid-show', [$bidder->id, $project->id]) }}" class="pull-right show_bid"><span class="glyphicon glyphicon-eye-open"></span> Show Bid</a>
 	 						@endif
+	 						
+	 						
 						</td>
 						
 					</tr>

@@ -10,9 +10,10 @@
 		"artdarek/oauth-4-laravel": "dev-master",
 		"watson/validating": "0.10.*@dev",
 		"way/generators": "~2.0",
-		"madewithlove/laravel-oauth2": "0.4.*",
 		"moltin/currency": "1.0.*@dev",
-		"fbf/laravel-comments": "0.3.1"
+		"fbf/laravel-comments": "0.3.1",
+		"guzzle/guzzle": "~3.9",
+		"artdarek/oauth-4-laravel": "1.0.5"
 	},
 	"require-dev": {
     	"barryvdh/laravel-debugbar": "1.8.*@dev",

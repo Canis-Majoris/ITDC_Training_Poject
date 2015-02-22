@@ -59,6 +59,9 @@ class ProjectGateway {
 			return $this->projectRepo->bid($input);
 		}
 	}
+	public function unbid($id){
+		return $this->projectRepo->unbid($id);
+	}
 	public function sort($input){
 		return $this->projectRepo->sort($input);
 	}
@@ -68,7 +71,7 @@ class ProjectGateway {
 	public function staff($user){
 		return $this->projectRepo->staff($user);
 	}
-	public function unbid($id){
-		return $this->projectRepo->unbid($id);
+	public function bidAccept($bidder_id, $project_id){
+		return $this->projectRepo->bidAccept($bidder_id, $project_id);
 	}
 }

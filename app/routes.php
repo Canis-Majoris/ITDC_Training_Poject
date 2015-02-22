@@ -94,6 +94,8 @@ Route::group(['prefix' => 'admin', 'before' => 'auth'], function()
 /*
 /	homepage route
 */
+
+
 Route::get('/users', ['as' => 'users-show', 'uses' => 'HomeController@users']);
 Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
 
@@ -129,6 +131,9 @@ Route::group(['before' => 'guest', 'prefix' => '/'], function(){
 
 	
 	});
+
+
+
 /////////////////////////////////
 	Route::post('/account/recover-password', [
 		'as' => 'recover-password-post',
@@ -202,6 +207,8 @@ Route::group(['before' => 'guest', 'prefix' => '/'], function(){
 / Authenticated group
 */
 Route::group(['before' => 'auth_home'], function(){
+
+	
 	/*
 	/ CSRF protection group
 	*/
@@ -294,6 +301,8 @@ Route::group(['before' => 'auth_home'], function(){
 	'uses' => 'ProfileController@user'
 	]);
 
+	
+
 	Route::get('/comments/all', [
 		'as' => 'allcomments',
 		'uses' => 'CommentController@getAll'
@@ -315,7 +324,17 @@ Route::group(['before' => 'auth_home'], function(){
 		'as' => 'comment-delete',
 		'uses' => 'CommentController@destroy'
 	]);
+	Route::any('profile/github/to', [
+		'as' => 'github-add',
+		'uses' => 'ProfileController@toGithub'
+	]);
+	Route::any('profile/github/detach',[
+		'as' => 'github-detach',
+		'uses' => 'ProfileController@detachGithub'
+	]);
 });
+
+
 
 ///User Profile
 

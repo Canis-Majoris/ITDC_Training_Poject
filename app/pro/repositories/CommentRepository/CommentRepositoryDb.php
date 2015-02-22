@@ -105,6 +105,7 @@ class CommentRepositoryDb implements CommentRepositoryInterface {
 			<div class="clear"></div>
 		</div>';
 		$project = Project::find($comment->project_id);
+		//dd($authUser->id);
 		if($otheruser->id == $data['user']->id || $project->user_id == $authUser->id || $authUser->type == 0){
 			$rendered 	.= '<a href="'.URL::route('comment-delete', $comment->id).'"><span class="glyphicon glyphicon-remove-circle bad delete_comment" data-toggle="tooltip" 
 			title="Delete Comment"><span></a>';

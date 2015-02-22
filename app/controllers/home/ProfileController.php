@@ -38,5 +38,31 @@ class ProfileController extends BaseController {
 		}
 		
 	}
+
+	public function toGithub(){
+		$code = Input::get('code');
+	    $github = OAuth::consumer('GitHub');
+	    if (!empty($code)) {
+
+	        if($token = $github->requestAccessToken($code)->getAccessToken()){
+	        	$user = Auth::user();
+	        	$user->github_token = $token;
+	        	$user->save();
+	        	return Redirect::route('user-profile', $user->username);
+	        }
+	    }
+
+        $url = $github->getAuthorizationUri();
+        return Redirect::to((string)$url);
+
+	}
+
+	public function detachGithub(){
+		$user = Auth::user();
+		$user->github_token = null;
+	    $user->save();
+
+	    return Redirect::route('user-profile', $user->username);
+	}
 	
 }

@@ -40,7 +40,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand homebutton" href="{{ URL::route('home') }}">ITDC <span class="glyphicon glyphicon-leaf"></span></a>
+					<a class="navbar-brand homebutton" href="{{ URL::route('home') }}">ITDC</a>
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					
@@ -58,6 +58,15 @@
 						</li>
 					@endif
 						<li class="pull-left"><a href="{{ URL::route('users-show') }}">Users</a></li>
+						<li class="pull-left"><a href='https://github.com/login/oauth/authorize?client_id=09696cd9626f7270e967' type="button" class="btn btn-success col-xs-5  pull-right">
+							  Add Github
+							</a>
+						</li>
+						<li class="pull-left">
+							<a href="{{ URL::route('github-detach') }}" type="button" class="btn btn-danger col-xs-5  pull-right">
+							  Remove Github
+							</a>
+						</li>
 					@if(Auth::check())
 						<li class="pull-left"><a href="{{ URL::route('project-create') }}">Create Project</a></li>
 						<li class="pull-left"><a href="{{ URL::route('project-browse') }}">Browse Projects</a></li>
@@ -258,7 +267,7 @@
 		})
 
 		$(function () {
-		  $('#logout').tooltip({'title':'Sign out', 'placement':'bottom'})
+		  $('#logout').tooltip({'title':'Sign Out', 'placement':'bottom'})
 		})
 	
 		$(window).scroll(function(){

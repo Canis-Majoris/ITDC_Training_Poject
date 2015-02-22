@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration {
 		    $table->tinyInteger('online');
 		    $table->double('reputation');
 		    $table->string('avatar');
+			$table->string('github_token');
 		    $table->string('remember_token');
 		    $table->timestamps();
 		});

@@ -16,8 +16,13 @@
 					<img src="/uploads/{{ $user->avatar }}" width="120px" height="120px" style="margin:0 auto; display:block;" />	
 				</div>
 			@endif
-			<h1 class="" style="text-align:center;">
+			<h1 class="username_header" style="text-align:center;">
 				{{ $user->firstname }} {{ $user->lastname }}
+				<?php 
+					$onlineIndicator = null;
+					if($user->online) $onlineIndicator = 'good';
+				?>
+				<span class="glyphicon glyphicon-globe {{ $onlineIndicator }} indicator_2"></span>
 			</h1>
 
 			<div class="user_joined_info">
@@ -220,6 +225,37 @@
 <div class="clear"></div>
 
 <script type="text/javascript">
+
+	$('.unbid').on("click", function(e){
+		if(confirm("Do you really want to Unbid?")){
+
+		}else{
+			e.preventDefault();
+		}	
+	});
+	$('.accept').on("click", function(e){
+		if(confirm("Do you really want to Accept?")){
+
+		}else{
+			e.preventDefault();
+		}	
+	});
+	$('.decline').on("click", function(e){
+		if(confirm("Do you really want to decline this offer?")){
+
+		}else{
+			e.preventDefault();
+		}	
+	});
+
+	$('.remove').on("click", function(e){
+		if(confirm("Remove Bid?")){
+
+		}else{
+			e.preventDefault();
+		}	
+	});
+
 	$(function () {
 	  $('#rating_wrapper').tooltip(/*{'title':'Rate This User'}*/)
 	});

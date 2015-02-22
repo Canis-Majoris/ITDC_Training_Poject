@@ -123,6 +123,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Way\Generators\GeneratorsServiceProvider',
 		'Fbf\LaravelComments\LaravelCommentsServiceProvider',
+		'Artdarek\OAuth\OAuthServiceProvider',
 		'pro\repositories\RepositoryServiceProvider'
 
 	),
@@ -192,6 +193,8 @@ return array(
 		'Validator'         => 'Illuminate\Support\Facades\Validator',
 		'View'              => 'Illuminate\Support\Facades\View',
 		'Debuger'			=> 'Barryvdh\Debugbar\Facade',
+		'OAuth' 			=> 'Artdarek\OAuth\Facade\OAuth',
+
 
 	),
 
