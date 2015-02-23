@@ -90,15 +90,26 @@
 
 
 					@endif
-						<li class="pull-left"><a href='https://github.com/login/oauth/authorize?client_id=09696cd9626f7270e967' type="button" class="btn btn-success btn-sm  pull-right">
-									  Add Github
-									</a>
-								</li>
-								<li class="pull-left">
-									<a href="{{ URL::route('github-detach') }}" type="button" class="btn btn-sm btn-danger  pull-right">
-									  Remove Github
-									</a>
-								</li>
+					@if(!Auth::check())
+						<li class="pull-left">
+							
+						</li>
+						<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						  <div class="modal-dialog">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						        <h4 class="modal-title">Sign In</h4>
+						      </div>
+						      <div class="modal-body">
+						       <a href='https://github.com/login/oauth/authorize?client_id=09696cd9626f7270e967' type="button" class="btn btn-success">
+								  Login With GitHub
+								</a>
+						      </div>
+						    </div><!-- /.modal-content -->
+						  </div><!-- /.modal-dialog -->
+						</div><!-- /.modal -->
+					@endif
 					</ul>
 					@if(!Auth::check())
 					<div class="login_inline_form pull-right">
@@ -148,6 +159,9 @@
 		                      </div>
 
 						<button type="submit" class="btn btn-sm btn-default"><small class="glyphicon glyphicon-log-in"></small> Sign in</button>
+						<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
+							 	Social
+							</button>
 						{{Form::close()}} 
 
 						<a href="{{ URL::route('account-create') }}" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-certificate"></span> Register</a>
@@ -158,6 +172,9 @@
 				</div><!--/.nav-collapse -->
 			</div>
 		</nav>
+
+
+		
 
 
 		<div class="container all">

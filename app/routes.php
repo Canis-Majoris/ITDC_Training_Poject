@@ -324,20 +324,22 @@ Route::group(['before' => 'auth_home'], function(){
 		'as' => 'comment-delete',
 		'uses' => 'CommentController@destroy'
 	]);
-	Route::any('profile/github/to', [
-		'as' => 'github-add',
-		'uses' => 'ProfileController@toGithub'
-	]);
-	Route::any('profile/github/detach',[
-		'as' => 'github-detach',
-		'uses' => 'ProfileController@detachGithub'
-	]);
+	
 });
 
 Route::any('contacts/get',[
 	'as' => 'contacts-get',
 	'uses' => 'HomeController@contactUs'
 
+	]);
+
+Route::any('profile/github/to', [
+	'as' => 'github-add',
+	'uses' => 'ProfileController@toGithub'
+	]);
+	Route::any('profile/github/detach',[
+		'as' => 'github-detach',
+		'uses' => 'ProfileController@detachGithub'
 	]);
 
 

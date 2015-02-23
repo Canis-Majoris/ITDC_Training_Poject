@@ -1,9 +1,6 @@
 <?php
 use pro\gateways\UserGateway;
 use pro\gateways\ProjectGateway;
-use OAuth\OAuth2\Service\GitHub;
-use OAuth\Common\Storage\Session;
-use OAuth\Common\Consumer\Credentials;
 
 class ProfileController extends BaseController {
 
@@ -43,70 +40,27 @@ class ProfileController extends BaseController {
 	}
 
 	public function toGithub(){
-		$storage = new Session();
 
-
-
-		$credentials = new Credentials(
-		    '09696cd9626f7270e967',
-		    'a9d620646378642962aa13b5392cbae083745fff',
-		    URL::route('github-add')
-		);
-
-		$serviceFactory = new \OAuth\ServiceFactory();
-		// Instantiate the GitHub service using the credentials, 
-		//         http client and storage mechanism for the token
-		/** @var $gitHub GitHub */
-		$gitHub = $serviceFactory->createService('GitHub', $credentials, $storage, array('user'));
-		
-
-		
-
-		$code = Input::get('code');
-
-		if (!empty($code)) {
-		    // This was a callback request from github, get the token
-		    $gitHub->requestAccessToken($_GET['code']);
-
-
-		    $result = json_decode($gitHub->request('user'), true);
-		    //echo 'The first email on your github account is ' . $result[0];
-
-echo "<pre>";
-	    print_r($result);
-		die;		    
-
-		} elseif (!empty($_GET['go']) && $_GET['go'] === 'go') {
-		    $url = $gitHub->getAuthorizationUri();
-		    header('Location: ' . $url);
-		} else {
-		    $url = $currentUri->getRelativeUri() . '?go=go';
-		    echo "<a href='$url'>Login with Github!</a>";
-		}
-
-/*
 		$code = Input::get('code');
 		
 	    $github = OAuth::consumer('GitHub');
-	   
-	    $result = json_decode($github->request('user/emails'), true);
-	    
-    	echo 'The first email on your github account is ' . $result[0];
-
-
 	    if (!empty($code)) {
-
-	        if($token = $github->requestAccessToken($code)->getAccessToken()){
-	        	$user = Auth::user();
-	        	$user->github_token = $token;
-	        	$user->save();
-	        	return Redirect::route('user-profile', $user->username);
-	        }
+	    	if($github->requestAccessToken($code)){
+		    	$result = json_decode($github->request('user'), true);
+		    	if ($result['email'] != null) {
+		    		$user = User::where('email', '=', $result['email'])->first(['id']);
+				    Auth::login($user);
+				    return Redirect::route('home')
+				    	->with('message_type','success')
+						->with('message', 'Welcome! You Have Logged In With GitHub Account.');
+		    	}else return Redirect::route('home')
+				    	->with('message_type','danger')
+						->with('message', 'Ooops... We Can`t See Your Email Address. Check Your GitHub Settings.' );
+		  	}
 	    }
-
-        $url = $github->getAuthorizationUri();
-        return Redirect::to((string)$url);
-   */
+	    return Redirect::route('home')
+	    	->with('message_type','danger')
+			->with('message', 'Ooops... Something Went Wrong...' );
 
 	}
 

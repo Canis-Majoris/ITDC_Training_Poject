@@ -124,7 +124,8 @@ return array(
 		'Way\Generators\GeneratorsServiceProvider',
 		'Fbf\LaravelComments\LaravelCommentsServiceProvider',
 		'Artdarek\OAuth\OAuthServiceProvider',
-		'pro\repositories\RepositoryServiceProvider'
+		'pro\repositories\RepositoryServiceProvider',
+		'Cartalyst\Sentry\SentryServiceProvider'
 
 	),
 
@@ -194,6 +195,7 @@ return array(
 		'View'              => 'Illuminate\Support\Facades\View',
 		'Debuger'			=> 'Barryvdh\Debugbar\Facade',
 		'OAuth' 			=> 'Artdarek\OAuth\Facade\OAuth',
+		'Sentry' 			=> 'Cartalyst\Sentry\Facades\Laravel\Sentry',
 
 
 	),

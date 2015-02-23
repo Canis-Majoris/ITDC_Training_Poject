@@ -13,7 +13,9 @@
 		"moltin/currency": "1.0.*@dev",
 		"fbf/laravel-comments": "0.3.1",
 		"guzzle/guzzle": "~3.9",
-		"artdarek/oauth-4-laravel": "1.0.5"
+		"artdarek/oauth-4-laravel": "1.0.5",
+		"madewithlove/laravel-oauth2": "0.4.*",
+		"cartalyst/sentry": "2.1.*"
 	},
 	"require-dev": {
     	"barryvdh/laravel-debugbar": "1.8.*@dev",
