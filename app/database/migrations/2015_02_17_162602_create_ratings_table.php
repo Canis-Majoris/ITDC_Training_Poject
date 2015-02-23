@@ -18,7 +18,7 @@ class CreateRatingsTable extends Migration {
 			$table->integer('user_id');
 			$table->integer('project_id');
 			$table->integer('rater_id');
-			$table->double('value',0);
+			$table->double('value')->default(0);
 			$table->tinyInteger('type');
 			$table->timestamps();
 		});
