@@ -35,7 +35,7 @@ class HomeController extends BaseController {
 
 
 		Mail::send('emails.message', ['email' => $data['email'], 'name' => $data['name'], 'message_u'=>$data['message_u']],function($message) use($data) {
-					$message->to('giorgi855007@gmail.com', $data['name'])->subject('Contact Form');
+					$message->to('gigi.khomeriki@gmail.com', $data['name'])->subject('Contact Form');
 				});
 
 		return Redirect::route('home');
