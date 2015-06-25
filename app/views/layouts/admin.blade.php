@@ -12,6 +12,7 @@
 	<link href="{{ URL::asset('res/css/tagbar.css') }}" rel="stylesheet">
 	<link href="{{ URL::asset('res/css/bootstrap.css') }}" rel="stylesheet">
 	<link href="{{ URL::asset('res/css/bootstrap-theme.css') }}" rel="stylesheet">
+	<link href="{{ URL::asset('res/css/dashboard.css') }}" rel="stylesheet">
 	<script type="text/javascript" src="{{ URL::asset('res/js/jquery.js') }}"></script>
 	<script src="{{ URL::asset('res/js/bootstrap.min.js') }}"></script>
 	<script src="{{ URL::asset('res/js/backtotop.js') }}"></script>
@@ -20,7 +21,6 @@
   <script src="{{ URL::asset('packages/ckeditor/ckeditor.js') }}"></script>
 
 
-  <link rel="stylesheet" href="http://student.itdc.ge/g.xomeriki/ci/CSS/dashboard.css">
 </head>
 <body>
 
